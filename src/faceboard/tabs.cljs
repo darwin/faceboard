@@ -33,7 +33,7 @@
           {:keys [selected-tab-id tabs]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class "tabs"}
-        (dom/div {:class "tab-bar"}
+        (dom/div {:class "tab-bar no-select"}
           (om/build logo/logo-component {})
           (for [tab tabs]
             (dom/div {:class    (str "tab" (when (tab-selected? selected-tab-id tab) " selected"))

@@ -2,15 +2,22 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.controller :as controller]
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]))
 
 (defcomponent menu-button-component [data owner opts]
   (render [_]
-    (dom/div {:class "menu-button"}
+    (dom/div {:class    (str "menu-button" (when (:active? data) " active"))
+              :on-click (:handler data)}
       (:label data))))
 
 (defcomponent menu-component [data owner opts]
   (render [_]
-    (dom/div {:class "menu"}
-      (om/build menu-button-component {:label "item1"})
-      (om/build menu-button-component {:label "item2"}))))
+    (let [buttons [{:label   "edit"
+                    :active? (:editing? data)
+                    :handler #(controller/perform-command! owner "toggle-edit")}
+                   {:label   "source"
+                    :active? (:source-editing? data)
+                    :handler #(controller/perform-command! owner "toggle-source")}]]
+      (dom/div {:class "menu"}
+        (om/build-all menu-button-component buttons)))))
