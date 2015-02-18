@@ -1,0 +1,40 @@
+@import url(http://fonts.googleapis.com/css?family=Exo:800);
+
+.tab-bar {
+  line-height: 10px;
+  background: #3a5795;
+  border: 1px solid #999;
+}
+
+.tab-bar > * {
+  display: inline-block;
+}
+
+.tab {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  margin: 2px;
+  margin-left: 8px;
+  margin-bottom: 0px;
+  min-width: 80px;
+  cursor: pointer;
+  position: relative;
+  top: 1px;
+  border: 1px solid transparent;
+  text-align: center;
+  color: #fff;
+}
+
+.tab.selected {
+  color: #000;
+  background: #fff;
+  border: 1px solid #999;
+  border-top-right-radius: 2px;
+  border-top-left-radius: 2px;
+  border-bottom: 1px solid white;
+}
+
+.tab-content {
+  margin: 20px;
+}
