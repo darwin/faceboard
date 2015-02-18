@@ -1,0 +1,29 @@
+.person {
+  float: left;
+  margin: 10px 20px;
+}
+
+.polaroid-frame {
+  background-color: #fafafa;
+  border: 1px solid #eee;
+  width: 126px;
+  padding: 10px 8px;
+}
+
+.polaroid-frame .photo {
+  margin-bottom: 6px;
+  height: 140px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.polaroid-frame .photo img {
+  max-width: 120px;
+  padding: 2px;
+}
+
+.polaroid-frame .name {
+  text-align: center;
+}

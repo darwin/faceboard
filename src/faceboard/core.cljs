@@ -39,6 +39,6 @@
                       :on-click #(om/update! data :selected-tab-id (:id tab))}
               (:label tab))))
         (dom/div {:class "tab-content"}
-          (om/build (tab->component selected-tab) selected-tab {:opts opts}))))))
+          (om/build (tab->component selected-tab) (:data selected-tab) {:opts opts}))))))
 
 (om/root app-component app-state {:target (. js/document (getElementById "app"))})
