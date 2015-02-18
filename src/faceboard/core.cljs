@@ -5,10 +5,12 @@
             [faceboard.fixtures :as fixtures]
             [faceboard.people :as people]
             [faceboard.places :as places]
-            [devtools.core :as devtools]))
+            [devtools.core :as devtools]
+            [figwheel.client :as fw]))
 
 (enable-console-print!)
 (devtools/install!)
+(fw/start {})
 
 (defn tab->component [tab]
   (let [tab-id (:id tab)]
