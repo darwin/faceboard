@@ -1,15 +1,40 @@
 (ns faceboard.core
   (:require [om.core :as om]
-            [om.dom :as dom]))
+            [om-tools.core :refer-macros [defcomponent]]
+            [om-tools.dom :as dom]
+            [faceboard.fixtures :as fixtures]
+            [faceboard.people :as people]
+            [faceboard.places :as places]))
 
 (enable-console-print!)
 
-(def app-state (atom {:text "Hello world!"}))
+(defn tab->component [tab]
+  (let [tab-id (:id tab)]
+    (condp = (:id tab)
+      :people people/people-component
+      :places places/places-component
+      (throw (str "unknow tab id '" tab-id "'")))))
 
-(om/root
-  (fn [app owner]
-    (reify om/IRender
-      (render [_]
-        (dom/h1 nil (:text app)))))
-  app-state
-  {:target (. js/document (getElementById "app"))})
+(defn lookup-tab [id tabs]
+  (first (filter #(= id (:id %)) tabs)))
+
+(def app-state
+  (atom
+    {:selected-tab-id :people
+     :tabs [{:id :people :label "People" :data fixtures/hackerparadise-people}
+            {:id :places :label "Places" :data fixtures/hackerparadise-places}]}))
+
+(defcomponent app-component [data owner opts]
+  (render [_]
+    (let [{:keys [selected-tab-id tabs]} data
+          selected-tab (lookup-tab selected-tab-id tabs)]
+      (dom/div {:class "tabs"}
+        (dom/div {:class "tab-bar"}
+          (for [tab tabs]
+            (dom/div {:class (str "tab" (when (= (:id tab) selected-tab-id) " selected"))
+                      :on-click #(om/update! data :selected-tab-id (:id tab))}
+              (:label tab))))
+        (dom/div {:class "tab-content"}
+          (om/build (tab->component selected-tab) selected-tab {:opts opts}))))))
+
+(om/root app-component app-state {:target (. js/document (getElementById "app"))})
