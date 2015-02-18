@@ -3,9 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.fixtures :as fixtures]
-            [faceboard.tabs :as tabs]
-            [faceboard.people :as people]
-            [faceboard.places :as places]))
+            [faceboard.tabs :as tabs]))
 
 (defonce app-state
   (atom
