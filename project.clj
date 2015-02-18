@@ -8,7 +8,8 @@
                  [org.omcljs/om "0.8.8"]
                  [prismatic/om-tools "0.3.10"]
                  [com.binaryage/devtools "0.0-SNAPSHOT"]
-                 [figwheel "0.2.3-SNAPSHOT"] ]
+                 [figwheel "0.2.3-SNAPSHOT"]
+                 [com.cemerick/pprng "0.0.3"]]
 
   :plugins [[lein-cljsbuild "1.0.4"]
             [lein-figwheel "0.2.3-SNAPSHOT"]]

@@ -7,5 +7,3 @@
   (render [_]
     (dom/div {:class "places-board"}
       "PLACES...")))
-       
-       

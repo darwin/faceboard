@@ -22,7 +22,7 @@
 (defn lookup-tab [id tabs]
   (first (filter #(= id (:id %)) tabs)))
 
-(def app-state
+(defonce app-state
   (atom
     {:selected-tab-id :people
      :tabs [{:id :people :label "People" :data fixtures/hackerparadise-people}
