@@ -10,7 +10,7 @@
           angle (- (rng/int random-generator 5) 3)]
       (dom/div {:class "person"}
         (dom/div {:class "polaroid-frame"
-                  :style { :transform (str "rotate(" angle "deg)") }}
+                  :style {:transform (str "rotate(" angle "deg)")}}
           (dom/div {:class "photo"}
             (dom/img {:src (:photo-url person)}))
           (dom/div {:class "name"}

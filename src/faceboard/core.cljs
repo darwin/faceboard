@@ -2,15 +2,12 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.env :as env]
             [faceboard.fixtures :as fixtures]
             [faceboard.people :as people]
-            [faceboard.places :as places]
-            [devtools.core :as devtools]
-            [figwheel.client :as fw]))
+            [faceboard.places :as places]))
 
-(enable-console-print!)
-(devtools/install!)
-(fw/start {})
+(env/init!)
 
 (defn tab->component [tab]
   (let [tab-id (:id tab)]
