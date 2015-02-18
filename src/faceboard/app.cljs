@@ -28,6 +28,8 @@
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class "tabs"}
         (dom/div {:class "tab-bar"}
+          (dom/div {:class "logo"}
+            (dom/a {:href "/"} "faceboard"))
           (for [tab tabs]
             (dom/div {:class (str "tab" (when (= (:id tab) selected-tab-id) " selected"))
                       :on-click #(om/update! data :selected-tab-id (:id tab))}
