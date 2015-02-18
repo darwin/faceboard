@@ -1,0 +1,10 @@
+@import url(http://fonts.googleapis.com/css?family=Exo:800);
+
+.logo a {
+  font-family: 'Exo', sans-serif;
+  margin: 0px 20px;
+  color: white;
+  position: relative;
+  top: 1px;
+  text-decoration: none;
+}

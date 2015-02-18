@@ -2,6 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [cemerick.pprng :as rng]))
 
 (defcomponent person-component [person owner opts]
@@ -19,6 +20,8 @@
 (defcomponent people-component [data owner opts]
   (render [_]
     (let [random-generator (rng/rng 1337)
-          opts {:rng random-generator}]
+          opts {:rng random-generator}
+          ui (:ui data)
+          people (:data data)]
       (dom/div {:class "people-board"}
-        (om/build-all person-component data {:opts opts})))))
+        (om/build-all person-component people {:opts opts})))))
