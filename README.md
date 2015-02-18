@@ -1,10 +1,11 @@
-# faceboard
+# Faceboard
 
-FIXME: Write a one-line description of your library/project.
+Facebook killer. Or not.
 
 ## Overview
 
-FIXME: Write a paragraph about the library/project and highlight its goals.
+This ↓↓↓ but in the cloud!<br>
+<a href="https://thesacredprofession.files.wordpress.com/2012/08/abby-with-faceboard1.jpg"><img src="https://thesacredprofession.files.wordpress.com/2012/08/abby-with-faceboard1.jpg" style="max-width:900px"></a>
 
 ## Setup
 
@@ -32,6 +33,4 @@ For more info, read [Waitin'](http://swannodette.github.io/2014/12/22/waitin/).
 
 ## License
 
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+[MIT License](http://opensource.org/licenses/MIT)
