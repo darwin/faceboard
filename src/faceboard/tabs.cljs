@@ -3,6 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.utils :as utils]
+            [faceboard.logo :as logo]
             [faceboard.people :as people]
             [faceboard.places :as places]))
 
@@ -27,8 +28,7 @@
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class "tabs"}
         (dom/div {:class "tab-bar"}
-          (dom/div {:class "logo"}
-            (dom/a {:href "/"} "faceboard"))
+          (om/build logo/logo-component data {:opts opts})
           (for [tab tabs]
             (dom/div {:class    (str "tab" (when (tab-selected? selected-tab-id tab) " selected"))
                       :on-click #(om/update! data :selected-tab-id (:id tab))}
