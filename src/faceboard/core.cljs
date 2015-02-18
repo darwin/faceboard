@@ -4,9 +4,11 @@
             [om-tools.dom :as dom]
             [faceboard.fixtures :as fixtures]
             [faceboard.people :as people]
-            [faceboard.places :as places]))
+            [faceboard.places :as places]
+            [devtools.core :as devtools]))
 
 (enable-console-print!)
+(devtools/install!)
 
 (defn tab->component [tab]
   (let [tab-id (:id tab)]

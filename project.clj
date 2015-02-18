@@ -6,7 +6,8 @@
                  [org.clojure/clojurescript "0.0-2850"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.8.8"]
-                 [prismatic/om-tools "0.3.10"]]
+                 [prismatic/om-tools "0.3.10"]
+                 [com.binaryage/devtools "0.0-SNAPSHOT"]]
 
   :plugins [[lein-cljsbuild "1.0.4"]]
 
@@ -16,7 +17,7 @@
 
   :cljsbuild {
     :builds [{:id "faceboard"
-              :source-paths ["src"]
+              :source-paths ["src" "checkouts/cljs-devtools/src"]
               :compiler {
                 :output-to "public/_generated/faceboard.js"
                 :output-dir "public/_generated"
