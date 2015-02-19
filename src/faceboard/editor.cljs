@@ -33,7 +33,8 @@
 
 (defcomponent editor-component [code owner]
   (render [_]
-    (dom/div {:on-key-down #(handle-codemirror-key %)}))
+    (dom/div {:class "editor" :on-key-down #(handle-codemirror-key %)}
+      (dom/div {:class "hint"} (if mac? "CMD+S to save" "CTRL+S to save"))))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner)
                          #js {:mode              #js {:name "javascript" :json true}
