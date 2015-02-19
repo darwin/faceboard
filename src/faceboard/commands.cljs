@@ -37,3 +37,6 @@
 
 (defmethod handle-command "change-extended-set" [_ new-set]
   (reset! app-state (assoc-in @app-state [:ui :extended-set] new-set)))
+
+(defmethod handle-command "switch-tab" [_ new-id]
+  (reset! app-state (assoc-in @app-state [:ui :selected-tab-id] new-id)))

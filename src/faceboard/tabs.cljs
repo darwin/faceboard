@@ -5,6 +5,7 @@
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [faceboard.logo :as logo]
             [faceboard.menu :as menu]
+            [faceboard.controller :as controller]
             [faceboard.editor :as editor]
             [faceboard.people :as people]
             [faceboard.places :as places]))
@@ -24,7 +25,7 @@
 (defn tab-selected? [id tab]
   (= (:id tab) id))
 
-(defn distile-selected-tab-model [data selected-tab-id]
+(defn selected-tab-model [data selected-tab-id]
   {:ui   (:ui data)
    :data (get (:model data) selected-tab-id)})
 
@@ -39,12 +40,12 @@
           (om/build logo/logo-component model)
           (for [tab tabs]
             (dom/div {:class    (str "tab" (when (tab-selected? selected-tab-id tab) " selected"))
-                      :on-click #(om/update! ui :selected-tab-id (:id tab))}
+                      :on-click #(controller/perform-command! "switch-tab" (:id tab))}
               (:label tab)))
           (om/build menu/menu-component ui))
         (dom/div {:class (str "tab-content" (when (:model-editing? ui) " dual-mode"))}
           (dom/div {:class "left-side"}
-            (om/build (tab->component selected-tab) (distile-selected-tab-model data selected-tab-id)))
+            (om/build (tab->component selected-tab) (selected-tab-model data selected-tab-id)))
           (dom/div {:class "right-side"}
             (when (:model-editing? ui)
               (om/build editor/editor-component (utils/model->json model)))))))))
