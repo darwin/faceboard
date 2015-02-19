@@ -10,12 +10,12 @@
 
 (def command-chan (async/chan))
 
-(defn perform-command! [command & args]
-  (go (>! command-chan (cons command args))))
+(defn perform-command! [& command]
+  (go (>! command-chan command)))
 
 (defn start-processing-commands []
   (go-loop []
-    (let [[command & args] (<! command-chan)]
-      (log "handle command:" command args)
-      (apply commands/handle-command command args))
+    (let [command (<! command-chan)]
+      (log "handle command:" command)
+      (apply commands/handle-command command))
     (recur)))

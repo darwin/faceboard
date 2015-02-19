@@ -28,3 +28,11 @@ body {
   top: 1px;
   text-decoration: none;
 }
+
+.clear {
+  clear: both;
+}
+
+.hide {
+  visibility: hidden;
+}

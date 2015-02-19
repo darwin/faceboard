@@ -1,6 +1,6 @@
 (ns faceboard.state
-  (:require [faceboard.utils :as utils :refer [log, log-err, log-warn]]
-            [faceboard.fixtures :as fixtures]))
+            (:require [faceboard.utils :as utils :refer [log, log-err, log-warn]]
+                      [faceboard.fixtures :as fixtures]))
 
 (defonce app-state
   (atom
@@ -10,6 +10,7 @@
              :tabs            [{:id :people :label "People"}
                                {:id :places :label "Places"}]
              :editing?        false
-             :model-editing? false
+             :model-editing?  false
+             :extended-set    #{}
              }
      }))

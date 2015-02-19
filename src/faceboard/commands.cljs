@@ -35,3 +35,5 @@
     (catch js/Object err
       (log-err err))))
 
+(defmethod handle-command "change-extended-set" [_ new-set]
+  (reset! app-state (assoc-in @app-state [:ui :extended-set] new-set)))
