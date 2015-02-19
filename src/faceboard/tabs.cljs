@@ -27,7 +27,7 @@
 
 (defn selected-tab-model [data selected-tab-id]
   {:ui   (:ui data)
-   :data (get (:model data) selected-tab-id)})
+   :data (get-in data [:model selected-tab-id])})
 
 (defcomponent tabs-component [data owner opts]
   (render [_]
@@ -43,7 +43,7 @@
                       :on-click #(controller/perform-command! "switch-tab" (:id tab))}
               (:label tab)))
           (om/build menu/menu-component ui))
-        (dom/div {:class (str "tab-content" (when (:model-editing? ui) " dual-mode"))
+        (dom/div {:class    (str "tab-content" (when (:model-editing? ui) " dual-mode"))
                   :on-click #(controller/perform-command! "change-extended-set" #{})}
           (dom/div {:class "left-side"}
             (om/build (tab->component selected-tab) (selected-tab-model data selected-tab-id)))
