@@ -1,6 +1,5 @@
 .people-board {
-  margin: 20px;
-  zoom: 1;
+  height: 100%;
   perspective: 800px;
 }
 

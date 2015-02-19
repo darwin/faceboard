@@ -43,7 +43,8 @@
                       :on-click #(controller/perform-command! "switch-tab" (:id tab))}
               (:label tab)))
           (om/build menu/menu-component ui))
-        (dom/div {:class (str "tab-content" (when (:model-editing? ui) " dual-mode"))}
+        (dom/div {:class (str "tab-content" (when (:model-editing? ui) " dual-mode"))
+                  :on-click #(controller/perform-command! "change-extended-set" #{})}
           (dom/div {:class "left-side"}
             (om/build (tab->component selected-tab) (selected-tab-model data selected-tab-id)))
           (dom/div {:class "right-side"}

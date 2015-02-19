@@ -5,6 +5,10 @@
   padding: 0;
 }
 
+html, body, #app, .app-box {
+  height:100%;
+}
+
 body {
   font-size: 14px;
   line-height: 1.4;

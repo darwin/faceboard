@@ -39,7 +39,9 @@
           person (:person data)
           self-index (:self-index data)]
       (dom/div {:class (str "person-box" (when extended? " extended"))
-                :on-click #(controller/perform-command! "change-extended-set" (if-not extended? (set [self-index]) #{}))}
+                :on-click (fn [e]
+                            (.stopPropagation e) 
+                            (controller/perform-command! "change-extended-set" (if-not extended? (set [self-index]) #{})))}
         (when extended?
           (dom/div {:class "person-extended-wrapper"}
             (om/build person-basic-info-component {:extended? true
