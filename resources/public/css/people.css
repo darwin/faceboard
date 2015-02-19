@@ -1,3 +1,7 @@
+.people-board {
+  margin: 20px
+}
+
 .person {
   float: left;
   margin: 10px 20px;

@@ -16,8 +16,8 @@
     (let [buttons [{:label   "edit"
                     :active? (:editing? data)
                     :handler #(controller/perform-command! owner "toggle-edit")}
-                   {:label   "source"
-                    :active? (:source-editing? data)
-                    :handler #(controller/perform-command! owner "toggle-source")}]]
+                   {:label   "model"
+                    :active? (:model-editing? data)
+                    :handler #(controller/perform-command! owner "toggle-model")}]]
       (dom/div {:class "menu"}
         (om/build-all menu-button-component buttons)))))

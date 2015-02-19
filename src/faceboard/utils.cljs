@@ -12,3 +12,6 @@
 
 (defn log-warn [& args]
   (apply log-method (cons "warn" args)))
+
+(defn model->json [model]
+  (.stringify js/JSON (clj->js model) nil 2))

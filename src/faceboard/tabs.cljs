@@ -5,6 +5,7 @@
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [faceboard.logo :as logo]
             [faceboard.menu :as menu]
+            [faceboard.editor :as editor]
             [faceboard.people :as people]
             [faceboard.places :as places]))
 
@@ -24,12 +25,13 @@
   (= (:id tab) id))
 
 (defn distile-selected-tab-model [data selected-tab-id]
-  {:ui (om/ref-cursor (:ui (om/root-cursor data)))
+  {:ui   (om/ref-cursor (:ui (om/root-cursor data)))
    :data (om/ref-cursor (get (:model (om/root-cursor data)) selected-tab-id))})
 
 (defcomponent tabs-component [data owner opts]
   (render [_]
     (let [ui (:ui data)
+          model (:model data)
           {:keys [selected-tab-id tabs]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class "tabs"}
@@ -40,5 +42,9 @@
                       :on-click #(om/update! ui :selected-tab-id (:id tab))}
               (:label tab)))
           (om/build menu/menu-component ui))
-        (dom/div {:class "tab-content"}
-          (om/build (tab->component selected-tab) (distile-selected-tab-model data selected-tab-id)))))))
+        (dom/div {:class (str "tab-content" (when (:model-editing? ui) " dual-mode"))}
+          (dom/div {:class "left-side"}
+            (om/build (tab->component selected-tab) (distile-selected-tab-model data selected-tab-id)))
+          (dom/div {:class "right-side"}
+            (when (:model-editing? ui)
+              (om/build editor/editor-component (utils/model->json model)))))))))

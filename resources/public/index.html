@@ -1,14 +1,27 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <link rel="stylesheet" href="codemirror/codemirror.css">
+    <link rel="stylesheet" href="codemirror/addon/lint/lint.css">
+
     <link rel="stylesheet" href="css/app.css">
     <link rel="stylesheet" href="css/tabs.css">
     <link rel="stylesheet" href="css/logo.css">
     <link rel="stylesheet" href="css/menu.css">
     <link rel="stylesheet" href="css/people.css">
     <link rel="stylesheet" href="css/places.css">
+    <link rel="stylesheet" href="css/editor.css">
   </head>
   <body>
     <div id="app"></div>
+    <script src="codemirror/codemirror.js" type="text/javascript"></script>
+    <script src="codemirror/addon/edit/matchbrackets.js" type="text/javascript"></script>
+    <script src="codemirror/addon/edit/closebrackets.js" type="text/javascript"></script>
+    <script src="codemirror/addon/selection/active-line.js" type="text/javascript"></script>
+    <script src="codemirror/addon/lint/jsonlint.js" type="text/javascript"></script>
+    <script src="codemirror/addon/lint/lint.js" type="text/javascript"></script>
+    <script src="codemirror/addon/lint/json-lint.js" type="text/javascript"></script>
+    <script src="codemirror/javascript.js" type="text/javascript"></script>
     <script src="_generated/goog/base.js" type="text/javascript"></script>
     <script src="_generated/faceboard.js" type="text/javascript"></script>
     <script type="text/javascript">goog.require("faceboard.core");</script>

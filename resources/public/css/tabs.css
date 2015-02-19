@@ -36,5 +36,16 @@
 }
 
 .tab-content {
-  margin: 20px;
+}
+
+.dual-mode .left-side {
+  width: 50%;
+  display: inline-block;
+  float: left;
+}
+
+.dual-mode .right-side {
+  width: 50%;
+  display: inline-block;
+  float: right;
 }

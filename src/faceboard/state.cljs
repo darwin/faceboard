@@ -10,6 +10,6 @@
              :tabs            [{:id :people :label "People"}
                                {:id :places :label "Places"}]
              :editing?        false
-             :source-editing? false
+             :model-editing? false
              }
      }))

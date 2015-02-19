@@ -15,14 +15,14 @@
 (defmulti handle-command (fn [command & _] command))
 
 (defmethod handle-command :default [command & _]
-  (log-err "Invalid command '" command "'"))
+  (log-err (str "Invalid command '" command "'")))
 
 (defmethod handle-command "toggle-edit" [_ & _]
   (reset! app-state (-> @app-state
                       (toggle :ui :editing?)
-                      (disable :ui :source-editing?))))
+                      (disable :ui :model-editing?))))
 
-(defmethod handle-command "toggle-source" [_ & _]
+(defmethod handle-command "toggle-model" [_ & _]
   (reset! app-state (-> @app-state
-                      (toggle :ui :source-editing?)
+                      (toggle :ui :model-editing?)
                       (disable :ui :editing?))))

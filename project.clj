@@ -8,6 +8,7 @@
                  [org.omcljs/om "0.8.8"]
                  [prismatic/om-tools "0.3.10"]
                  [com.binaryage/devtools "0.0-SNAPSHOT"]
+                 [org.webjars/codemirror "4.6"]
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]]
 
@@ -16,17 +17,11 @@
 
   :source-paths ["src" "target/classes"]
 
-  :clean-targets ["resources/public/_generated"]
+  :clean-targets ^{:protect false} ["resources/public/_generated"]
 
-  :figwheel {
-             :http-server-root "public" ;; this will be in resources/
+  :figwheel {:http-server-root "public" ;; this will be in resources/
              :server-port 3449
-             :css-dirs ["resources/public/css"]
-             ;:ring-handler example.server/handler
-             ; :open-file-command "myfile-opener"
-             ;; :repl false
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
-             }
+             :css-dirs ["resources/public/css"]}
 
   :cljsbuild {
     :builds [{:id "faceboard"
@@ -36,4 +31,5 @@
                 :output-dir "resources/public/_generated"
                 :optimizations :none
                 :cache-analysis true
-                :source-map true}}]})
+                :source-map true}}]}
+  )
