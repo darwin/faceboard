@@ -5,21 +5,35 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [phalanges.core :as phalanges]
+            [faceboard.env :as env :refer [mac?]]
+            [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]))
 
 (def ^:dynamic *codemirror*)
 
+(defn- apply-model [event]
+  (controller/perform-command! "apply-model" (.getValue *codemirror*))
+  (.preventDefault event))
+
+(def action-table
+  [[#{:meta :s} #{:ctrl :s} apply-model]                    ; CMD+S on Mac, CTRL+S elsewhere
+   ])
+
+(defn select-action [keyset]
+  (loop [table action-table]
+    (when-not (empty? table)
+      (let [record (first table)]
+        (if (or (and mac? (= keyset (nth record 0))) (and (not mac?) (= keyset (nth record 1))))
+          (nth record 2)
+          (recur (rest table)))))))
+
 (defn handle-codemirror-key [event]
-  (let [keyset (phalanges/key-set event)]
-    (condp = keyset
-      #{:meta :s} (do                                       ; CMD+S on Mac
-                    (controller/perform-command! "apply-model" (.getValue *codemirror*))
-                    (.preventDefault event))
-      nil)))
+  (if-let [action (select-action (phalanges/key-set event))]
+    (action event)))
 
 (defcomponent editor-component [code owner]
-  (render-state [this _]
-    (dom/div {:onKeyDown #(handle-codemirror-key %)}))
+  (render [_]
+    (dom/div {:on-key-down #(handle-codemirror-key %)}))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner)
                          #js {:mode              #js {:name "javascript" :json true}
