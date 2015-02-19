@@ -25,8 +25,8 @@
   (= (:id tab) id))
 
 (defn distile-selected-tab-model [data selected-tab-id]
-  {:ui   (om/ref-cursor (:ui (om/root-cursor data)))
-   :data (om/ref-cursor (get (:model (om/root-cursor data)) selected-tab-id))})
+  {:ui   (:ui data)
+   :data (get (:model data) selected-tab-id)})
 
 (defcomponent tabs-component [data owner opts]
   (render [_]

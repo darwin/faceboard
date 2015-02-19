@@ -4,23 +4,22 @@
             [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [phalanges.core :as phalanges]
             [faceboard.controller :as controller]))
 
 (def ^:dynamic *codemirror*)
 
-(defn map-hotkey [e]
-  (when (and (.-ctrlKey e) (.-shiftKey e))
-    (condp = (.-keyCode e)
-      88 "eval-code"
-      90 "load-buff"
+(defn handle-codemirror-key [event]
+  (let [keyset (phalanges/key-set event)]
+    (condp = keyset
+      #{:meta :s} (do                                       ; CMD+S on Mac
+                    (controller/perform-command! "apply-model" (.getValue *codemirror*))
+                    (.preventDefault event))
       nil)))
-
-;(defn handle-codemirror-key [])
 
 (defcomponent editor-component [code owner]
   (render-state [this _]
-    (dom/div {:onKeyDown (fn [e] (if-let [command (map-hotkey e)]
-                                   (controller/perform-command! owner command)))}))
+    (dom/div {:onKeyDown #(handle-codemirror-key %)}))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner)
                          #js {:mode              #js {:name "javascript" :json true}

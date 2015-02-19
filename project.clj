@@ -9,6 +9,7 @@
                  [prismatic/om-tools "0.3.10"]
                  [com.binaryage/devtools "0.0-SNAPSHOT"]
                  [org.webjars/codemirror "4.6"]
+                 [spellhouse/phalanges "0.1.4"]
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]]
 

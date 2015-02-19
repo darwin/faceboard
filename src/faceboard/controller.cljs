@@ -10,9 +10,8 @@
 
 (def command-chan (async/chan))
 
-(defn perform-command! [owner command & args]
-  (let [commands-chan (om/get-shared owner :command-chan)]
-    (go (>! commands-chan (cons command args)))))
+(defn perform-command! [command & args]
+  (go (>! command-chan (cons command args))))
 
 (defn start-processing-commands []
   (go-loop []

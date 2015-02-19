@@ -7,10 +7,10 @@
   (update-in state path #(not %)))
 
 (defn- disable [state & path]
-  (update-in state path (fn [] false)))
+  (assoc-in state path false))
 
 (defn- enable [state & path]
-  (update-in state path (fn [] true)))
+  (assoc-in state path true))
 
 (defmulti handle-command (fn [command & _] command))
 
@@ -26,3 +26,12 @@
   (reset! app-state (-> @app-state
                       (toggle :ui :model-editing?)
                       (disable :ui :editing?))))
+
+(defmethod handle-command "apply-model" [_ json]
+  (try
+    (let [new-model (utils/json->model json)
+          new-state (assoc-in @app-state [:model] new-model)]
+      (reset! app-state new-state))
+    (catch js/Object err
+      (log-err err))))
+

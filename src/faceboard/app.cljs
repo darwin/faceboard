@@ -13,6 +13,5 @@
       (om/build tabs/tabs-component data))))
 
 (defn init! []
-  (om/root app-component app-state {:target (.getElementById js/document "app")
-                                    :shared {:command-chan controller/command-chan}})
+  (om/root app-component app-state {:target (.getElementById js/document "app")})
   (controller/start-processing-commands))
