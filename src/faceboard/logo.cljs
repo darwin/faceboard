@@ -7,4 +7,9 @@
 (defcomponent logo-component [data owner opts]
   (render [_]
     (dom/div {:class "logo"}
-      (dom/a {:href "/"} "faceboard"))))
+      (dom/div {:class "faceboard-logo"}
+        (dom/a {:href "/"} "faceboard"))
+      (dom/div {}
+        "@")
+      (dom/div {:class "board-label"}
+        (dom/a {:href "/"} (:board-name data))))))

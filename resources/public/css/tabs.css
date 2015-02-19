@@ -39,6 +39,10 @@
   font-family: 'Kalam', cursive;
 }
 
+.left-side {
+  width: 80%;
+}
+
 .dual-mode .left-side {
   width: 50%;
   display: inline-block;

@@ -1,4 +1,5 @@
 .CodeMirror {
   border-left: 1px dashed #eee;
   height: auto;
+  font-size: 10px;
 }

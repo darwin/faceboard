@@ -11,11 +11,12 @@
   z-index: 0;
   transform-style: preserve-3d;
   transition: transform 0.4s;
+  transform: translateZ(-100px)
 }
 
 .person-box.extended {
   z-index: 100;
-  transform: translateZ(50px)
+  transform: translateZ(-50px)
 }
 
 .polaroid-frame {

@@ -36,7 +36,7 @@
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class "tabs"}
         (dom/div {:class "tab-bar no-select"}
-          (om/build logo/logo-component {})
+          (om/build logo/logo-component model)
           (for [tab tabs]
             (dom/div {:class    (str "tab" (when (tab-selected? selected-tab-id tab) " selected"))
                       :on-click #(om/update! ui :selected-tab-id (:id tab))}

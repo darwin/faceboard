@@ -4,7 +4,8 @@
 
 (defonce app-state
   (atom
-    {:model {:people fixtures/hackerparadise-people
+    {:model {:board-name "hacker paradise"
+             :people fixtures/hackerparadise-people
              :places fixtures/hackerparadise-places}
      :ui    {:selected-tab-id :people
              :tabs            [{:id :people :label "People"}

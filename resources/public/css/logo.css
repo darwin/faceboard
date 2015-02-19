@@ -5,9 +5,13 @@
   font-size: 16px;
 }
 
+.logo > * {
+  display: inline-block;
+  color: white !important;
+}
+
 .logo a {
-  margin: 0px 20px;
-  color: white;
+  margin: 0px 10px;
   position: relative;
   top: 1px;
   text-decoration: none;
