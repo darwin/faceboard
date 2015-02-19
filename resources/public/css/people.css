@@ -12,22 +12,30 @@
   border: 1px solid #eee;
   width: 126px;
   padding: 10px 8px;
+  
+  box-shadow: 0px 0px 10px -1px rgba(0,0,0,0.2);
 }
 
 .polaroid-frame .photo {
   margin-bottom: 6px;
-  height: 140px;
+  height: 120px;
   overflow: hidden;
-  border: 1px solid #eee;
   border-radius: 4px;
+  border: 2px solid #eee;
   background-color: white;
+  box-shadow: inset 0px 0px 20px 0px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.polaroid-frame img {
+  position: relative;
 }
 
 .polaroid-frame .photo img {
-  max-width: 120px;
-  padding: 2px;
+  max-width: 124px;
 }
 
 .polaroid-frame .name {
   text-align: center;
+  overflow: hidden;
 }
