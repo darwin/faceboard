@@ -8,14 +8,18 @@
 (defcomponent person-component [person owner opts]
   (render [_]
     (let [random-generator (:rng opts)
-          angle (- (rng/int random-generator 5) 3)]
-      (dom/div {:class "person"}
+          angle (- (rng/int random-generator 5) 3)
+          flag-code (:country person)]
+      (dom/div {:class "person f16"}
         (dom/div {:class "polaroid-frame"
                   :style {:transform (str "rotate(" angle "deg)")}}
           (dom/div {:class "photo"}
             (dom/img {:src (:photo-url person)}))
           (dom/div {:class "name"}
-            (:name person)))))))
+            (:name person)
+            (when-not (nil? flag-code)
+              (dom/div {:class (str "flag " flag-code)}))
+            ))))))
 
 (defcomponent people-component [data owner opts]
   (render [_]
