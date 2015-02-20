@@ -13,8 +13,13 @@
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]
                  [compojure "1.3.2"]
-                 [ring "1.3.2"]]
+                 [ring "1.3.2"]
+                 [ring/ring-jetty-adapter "1.2.2"]
+                 [org.clojure/data.json "0.2.5"]
+                 [enlive "1.1.5"]
+                 [environ "0.5.0"]]
 
+  :min-lein-version "2.0.0"
   :plugins [[lein-cljsbuild "1.0.4"]
             [lein-figwheel "0.2.3-SNAPSHOT"]
             [lein-ring "0.9.1"]
@@ -44,7 +49,6 @@
                 :source-map true}}]}
 
   :uberjar-name "faceboard-standalone.jar"
-  :profiles {:production {:env {:production true}}
-             :uberjar {:aot :all}}
+  :profiles {:production {:env {:production true}}}
 
   )

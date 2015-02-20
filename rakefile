@@ -1,0 +1,48 @@
+require 'colored'
+
+def die(msg, status=1)
+  puts "Error[#{status||$?}]: #{msg}".red
+  exit status||$?
+end
+
+def announce(cmd)
+  puts "> " + cmd.yellow
+end
+
+def sys(cmd)
+  announce(cmd)
+  if not system(cmd) then
+    die "failed!"
+  end
+end
+
+def revision()
+  $revision = `git rev-parse HEAD`.strip
+  $short_revision = $revision[0...7]
+end
+
+def is_cwd_clean?
+  system("test -z \"$(git status --porcelain)\" > /dev/null")
+end
+
+def dirty_repo_warning()
+  puts "Repository is not clean! You should commit all changes before releasing.".red unless is_cwd_clean?
+end
+
+desc "deploy to heroku"
+task :deploy do
+  dirty_repo_warning()
+  revision()
+  sys("git push heroku master:master")
+  sys("heroku config:set GIT_REVISION=$revision")
+end
+
+desc "serve"
+task :serve do
+  ENV["PORT"] = "3000"
+  sys("lein uberjar")
+  sys("foreman start")
+  puts "=> http://localhost:3000"
+end
+
+task :default => :serve

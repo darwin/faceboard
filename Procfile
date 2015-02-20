@@ -1,0 +1,1 @@
+web: java $JVM_OPTS -cp target/faceboard-standalone.jar clojure.main -m server.core

@@ -13,3 +13,4 @@ pom.xml
 /checkouts
 *.log
 .lein-*
+.env
