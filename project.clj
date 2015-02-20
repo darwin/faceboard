@@ -11,26 +11,40 @@
                  [org.webjars/codemirror "4.6"]
                  [spellhouse/phalanges "0.1.4"]
                  [figwheel "0.2.3-SNAPSHOT"]
-                 [com.cemerick/pprng "0.0.3"]]
+                 [com.cemerick/pprng "0.0.3"]
+                 [compojure "1.3.2"]
+                 [ring "1.3.2"]]
 
   :plugins [[lein-cljsbuild "1.0.4"]
-            [lein-figwheel "0.2.3-SNAPSHOT"]]
+            [lein-figwheel "0.2.3-SNAPSHOT"]
+            [lein-ring "0.9.1"]
+            [environ/environ.lein "0.2.1"]]
 
-  :source-paths ["src" "target/classes"]
+  :hooks [environ.leiningen.hooks]
+
+  :source-paths ["backend" "target/classes"]
 
   :clean-targets ^{:protect false} ["resources/public/_generated"]
 
+  :ring {:handler server.core/app}
+
   :figwheel {:http-server-root "public" ;; this will be in resources/
-             :server-port 3449
-             :css-dirs ["resources/public/css"]}
+             :server-port 3000
+             :css-dirs ["resources/public/css"]
+             :ring-handler server.core/app}
 
   :cljsbuild {
     :builds [{:id "faceboard"
-              :source-paths ["src" "checkouts/cljs-devtools/src"]
+              :source-paths ["frontend" "checkouts/cljs-devtools/src"]
               :compiler {
                 :output-to "resources/public/_generated/faceboard.js"
                 :output-dir "resources/public/_generated"
                 :optimizations :none
                 :cache-analysis true
                 :source-map true}}]}
+
+  :uberjar-name "faceboard-standalone.jar"
+  :profiles {:production {:env {:production true}}
+             :uberjar {:aot :all}}
+
   )

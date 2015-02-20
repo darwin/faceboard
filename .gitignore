@@ -12,3 +12,4 @@ pom.xml
 /resources/public/_generated
 /checkouts
 *.log
+.lein-*

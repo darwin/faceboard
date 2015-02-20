@@ -7,29 +7,27 @@ Facebook killer. Or not.
 This ↓↓↓ but in the cloud!<br>
 <a href="https://thesacredprofession.files.wordpress.com/2012/08/abby-with-faceboard1.jpg"><img src="https://thesacredprofession.files.wordpress.com/2012/08/abby-with-faceboard1.jpg" style="max-width:900px"></a>
 
-## Setup
+## Local server
 
-First-time Clojurescript developers, add the following to your bash .profile:
+To run local web server with development build ([localhost:3000](localhost:3000)):
 
-    LEIN_FAST_TRAMPOLINE=y
-    export LEIN_FAST_TRAMPOLINE
-    alias cljsbuild="lein trampoline cljsbuild $@"
+    lein ring server
 
-To avoid compiling ClojureScript for each build, AOT Clojurescript locally in your project with the following:
+## Development
 
-    lein trampoline run -m clojure.main
-    user=> (compile 'cljs.closure)
-    user=> (compile 'cljs.core)
+Automatic code rebuilding via figwheel ([localhost:3000](localhost:3000)):
 
-Subsequent builds can use:
+    lein figwheel
+
+### Optional
+
+Automatic code rebuilding in background:
 
     lein cljsbuild auto
 
 Clean project specific out:
 
      lein clean
-
-For more info, read [Waitin'](http://swannodette.github.io/2014/12/22/waitin/).
 
 ## License
 
