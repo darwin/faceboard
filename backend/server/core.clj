@@ -10,12 +10,11 @@
     [net.cgrand.enlive-html :refer [deftemplate, set-attr prepend append html]]
     [environ.core :refer [env]]))
 
-(def client-side-env (select-keys env [:git-revision :mode]))
+(def client-side-env (select-keys env [:git-revision :heroku]))
 
 (def inject-env
   (comp
     (prepend (html [:script {:type "text/javascript"} (str "window.faceboard_env = " (json/write-str client-side-env))]))
-    (prepend (html [:script {:type "text/javascript"} (str "window.faceboard_env_full = " (json/write-str env))]))
     ))
 
 (deftemplate index-page (io/resource "public/index.html") []

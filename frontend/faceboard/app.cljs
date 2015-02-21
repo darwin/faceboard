@@ -5,12 +5,15 @@
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [faceboard.state :as state :refer [app-state]]
             [faceboard.controller :as controller]
-            [faceboard.tabs :as tabs]))
+            [faceboard.info_banner :as info-banner]
+            [faceboard.tabs :as tabs]
+            [faceboard.env :as env]))
 
 (defcomponent app-component [data owner opts]
   (render [_]
     (dom/div {:class "app-box"}
-      (om/build tabs/tabs-component data))))
+      (om/build tabs/tabs-component data)
+      (om/build info-banner/info-banner-component {:git-revision env/git-revision}))))
 
 (defn init! []
   (om/root app-component app-state {:target (.getElementById js/document "app")})

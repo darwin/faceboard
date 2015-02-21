@@ -40,3 +40,21 @@ body {
 .hide {
   visibility: hidden;
 }
+
+.info-banner {
+  position: absolute;
+  bottom: 0px;
+  color: #888;
+  font-size: 10px;
+  background-color: #eee;
+  opacity:0.5;
+  padding: 1px 10px;
+}
+
+.info-banner a {
+  color: #888;
+}
+
+.info-banner a:hover {
+  color: blue;
+}
