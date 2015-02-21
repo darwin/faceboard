@@ -2,7 +2,7 @@
   (:require [om.core :as om]
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [devtools.core :as devtools]
-            [figwheel.client :as fw]))
+            [faceboard.figwheel :as figwheel]))
 
 (defn defined? [v]
   (not (nil? v)))
@@ -11,12 +11,11 @@
 (def env (js->clj js/faceboard-env :keywordize-keys true))
 
 (def mac? (= (get-in platform [:os :family]) "OS X"))
-(def heroku? (defined? (:heroku env)))
 (def git-revision (:git-revision env))
+(def local? (not (defined? (:production env))))
 
 (defn init! []
   (enable-console-print!)
   (devtools/install!)
-  (log "environment:" env "platform:" platform)
-  (when-not heroku? 
-    (fw/start {})))
+  (when local?
+    (figwheel/start)))

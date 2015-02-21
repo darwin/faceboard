@@ -10,14 +10,15 @@
     [net.cgrand.enlive-html :refer [deftemplate, set-attr prepend append html]]
     [environ.core :refer [env]]))
 
-(def client-side-env (select-keys env [:git-revision :heroku]))
+(def client-side-env (select-keys env [:git-revision :heroku :production]))
+(def production? (not (nil? (:production env))))
 
 (def inject-env
   (comp
     (prepend (html [:script {:type "text/javascript"} (str "window.faceboard_env = " (json/write-str client-side-env))]))
     ))
 
-(deftemplate index-page (io/resource "public/index.html") []
+(deftemplate index-page (io/resource (if production? "public/index-production.html" "public/index.html")) []
   [:body] inject-env)
 
 (defroutes app
