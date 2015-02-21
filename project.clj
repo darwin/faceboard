@@ -71,7 +71,7 @@
 
   :profiles {:production {:env {:production true}}}
 
-  :aggravate-files [{:input      ["resources/public/css/imports.css"
+  :aggravate-files [{:input      ["resources/public/css/imports.css" ; must go first
                                   "resources/public/css/app.css"
                                   "resources/public/css/tabs.css"
                                   "resources/public/css/logo.css"

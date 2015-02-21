@@ -9,7 +9,7 @@
 (defcomponent person-extended-info-component [person owner opts]
   (render [_]
     (dom/div {:class "person-extended-info"}
-      "some additional info")))
+      "TBD: some additional info")))
 
 (defcomponent person-basic-info-component [data owner opts]
   (render [_]
@@ -38,16 +38,16 @@
     (let [extended? (:extended? data)
           person (:person data)
           self-index (:self-index data)]
-      (dom/div {:class (str "person-box" (when extended? " extended"))
+      (dom/div {:class    (str "person-box" (when extended? " extended"))
                 :on-click (fn [e]
-                            (.stopPropagation e) 
+                            (.stopPropagation e)
                             (controller/perform-command! "change-extended-set" (if-not extended? (set [self-index]) #{})))}
         (when extended?
           (dom/div {:class "person-extended-wrapper"}
             (om/build person-basic-info-component {:extended? true
-                                                   :person person})))
+                                                   :person    person})))
         (dom/div {:class "person-essentials-wrapper"}
-          (om/build person-basic-info-component {:hide? extended?
+          (om/build person-basic-info-component {:hide?  extended?
                                                  :person person}))
         ))))
 
@@ -58,7 +58,7 @@
           extended-set (:extended-set ui)]
       (dom/div {:class "people-board"}
         (for [i (range (count people))]
-          (let [data {:person (nth people i)
-                      :extended? (contains? extended-set i)
+          (let [data {:person     (nth people i)
+                      :extended?  (contains? extended-set i)
                       :self-index i}]
             (om/build person-component data)))))))

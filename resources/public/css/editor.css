@@ -1,6 +1,6 @@
-.CodeMirror {
+.editor .CodeMirror {
   border-left: 1px dashed #eee;
-  height: auto;
+  height: 100%;
   font-size: 10px;
 }
 

@@ -40,7 +40,7 @@ body {
 }
 
 .info-banner {
-  position: absolute;
+  position: fixed;
   bottom: 0px;
   color: #888;
   font-size: 10px;

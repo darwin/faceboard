@@ -12,6 +12,6 @@
           "local version"
           (let [url (str "https://github.com/darwin/faceboard/tree/" rev)
                 label (str "darwin/faceboard @ " (subs rev 0 7))]
-          (dom/div {:class "github"}
-            "deployed from github: "
-            (dom/a {:href url} label))))))))
+            (dom/div {:class "github"}
+              "deployed from github: "
+              (dom/a {:href url} label))))))))
