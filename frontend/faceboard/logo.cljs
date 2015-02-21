@@ -9,7 +9,6 @@
     (dom/div {:class "logo"}
       (dom/div {:class "faceboard-logo"}
         (dom/a {:href "/"} "faceboard"))
-      (dom/div {}
-        "@")
-      (dom/div {:class "board-label"}
-        (dom/a {:href "/"} (:board-name data))))))
+      (if-let [board-name (:board-name data)]
+        (dom/div {:class "board-label"}
+          "@" (dom/a {:href "/"} board-name))))))
