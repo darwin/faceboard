@@ -25,7 +25,8 @@
             [lein-ring "0.9.1"]
             [environ/environ.lein "0.2.1"]]
 
-  :hooks [environ.leiningen.hooks]
+  :hooks [environ.leiningen.hooks
+          leiningen.cljsbuild]
 
   :source-paths ["backend" "target/classes"]
 
@@ -40,7 +41,7 @@
 
   :cljsbuild {
     :builds [{:id "faceboard"
-              :source-paths ["frontend" "checkouts/cljs-devtools/src"]
+              :source-paths ["frontend"]
               :compiler {
                 :output-to "resources/public/_generated/faceboard.js"
                 :output-dir "resources/public/_generated"

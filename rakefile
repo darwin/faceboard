@@ -34,7 +34,7 @@ task :deploy do
   dirty_repo_warning()
   revision()
   sys("git push heroku master:master")
-  sys("heroku config:set GIT_REVISION=$revision")
+  sys("heroku config:set GIT_REVISION=#{$revision}")
 end
 
 desc "serve"
