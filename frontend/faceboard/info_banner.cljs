@@ -4,7 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]))
 
-(defcomponent info-banner-component [data owner opts]
+(defcomponent info-banner-component [data _ _]
   (render [_]
     (dom/div {:class "info-banner"}
       (let [rev (:git-revision data)]

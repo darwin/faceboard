@@ -40,3 +40,6 @@
 
 (defmethod handle-command "switch-tab" [_ new-id]
   (reset! app-state (assoc-in @app-state [:ui :selected-tab-id] new-id)))
+
+(defmethod handle-command "switch-view" [_ new-view]
+  (reset! app-state (assoc-in @app-state [:ui :view] new-view)))

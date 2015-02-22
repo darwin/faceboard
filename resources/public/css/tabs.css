@@ -1,15 +1,15 @@
-.tabs, .tab-content, .left-side, .right-side {
+.page, .page-content, .board-view, .left-side, .right-side {
   height: 100%;
 }
 
-.tab-bar {
+.top-bar {
   line-height: 10px;
   background: #3a5795;
   border: 1px solid #999;
   font-size: 12px;
 }
 
-.tab-bar > * {
+.top-bar > * {
   display: inline-block;
 }
 
@@ -37,21 +37,21 @@
   border-bottom: 1px solid white;
 }
 
-.tab-content {
+.page-content {
   font-family: 'Kalam', cursive;
 }
 
-.left-side {
+.page-content .left-side {
   width: 80%;
   }
 
-.dual-mode .left-side {
+.page-content .dual-mode .left-side {
   width: 50%;
   display: inline-block;
   float: left;
 }
 
-.dual-mode .right-side {
+.page-content .dual-mode .right-side {
   width: 50%;
   display: inline-block;
   float: right;

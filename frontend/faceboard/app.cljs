@@ -12,8 +12,7 @@
 (defcomponent app-component [data owner opts]
   (render [_]
     (dom/div {:class "app-box"}
-      (om/build tabs/tabs-component data)
-      (om/build info-banner/info-banner-component {:git-revision env/git-revision}))))
+      (om/build tabs/tabs-component data))))
 
 (defn init! []
   (om/root app-component app-state {:target (.getElementById js/document "app")})
