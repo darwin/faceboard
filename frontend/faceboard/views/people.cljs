@@ -4,18 +4,18 @@
             [om-tools.dom :as dom]
             [faceboard.controller :as controller]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [cemerick.pprng :as rng]))
+            [cemerick.pprng]))
 
-(defcomponent person-extended-info-component [person owner opts]
+(defcomponent person-extended-info-component [_ _ _]
   (render [_]
     (dom/div {:class "person-extended-info"}
       "TBD: some additional info")))
 
-(defcomponent person-basic-info-component [data owner opts]
+(defcomponent person-basic-info-component [data _ _]
   (render [_]
     (let [person (:person data)
-          random-generator (rng/rng (hash (:name person)))
-          angle (- (rng/int random-generator 5) 3)
+          random-generator (cemerick.pprng/rng (hash (:name person)))
+          angle (- (cemerick.pprng/int random-generator 5) 3)
           flag-code (:country person)]
       (dom/div {:class (str "person"
                          (when (:hide? data) " hide"))}
@@ -33,7 +33,7 @@
               (om/build person-extended-info-component person)))
           (dom/div {:class "clear"}))))))
 
-(defcomponent person-component [data owner opts]
+(defcomponent person-component [data _ _]
   (render [_]
     (let [extended? (:extended? data)
           person (:person data)
@@ -51,7 +51,7 @@
                                                  :person person}))
         ))))
 
-(defcomponent people-component [data owner opts]
+(defcomponent people-component [data _ _]
   (render [_]
     (let [people (:data data)
           ui (:ui data)

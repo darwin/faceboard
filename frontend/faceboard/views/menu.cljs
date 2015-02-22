@@ -5,13 +5,13 @@
             [faceboard.controller :as controller]
             [faceboard.logging :refer [log, log-err, log-warn]]))
 
-(defcomponent menu-button-component [data owner opts]
+(defcomponent menu-button-component [data _ _]
   (render [_]
     (dom/div {:class    (str "menu-button" (when (:active? data) " active"))
               :on-click (:handler data)}
       (:label data))))
 
-(defcomponent menu-component [data owner opts]
+(defcomponent menu-component [data _ _]
   (render [_]
     (let [buttons [{:label   "edit"
                     :active? (:editing? data)

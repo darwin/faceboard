@@ -1,10 +1,7 @@
 (ns faceboard.views.error
-  (:require [om.core :as om]
-            [om-tools.core :refer-macros [defcomponent]]
-            [om-tools.dom :as dom]
+  (:require [om-tools.core :refer-macros [defcomponent]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.page :as page]
-            [faceboard.controller :as controller]))
+            [faceboard.page :as page]))
 
 (defcomponent error-component [data _ _]
   (render [_]
