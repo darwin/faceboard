@@ -1,6 +1,6 @@
 (ns faceboard.env
   (:require [faceboard.logging :refer [log, log-err, log-warn]]
-            [devtools.core :as devtools]
+            [faceboard.devtools :as devtools]
             [faceboard.figwheel :as figwheel]))
 
 (defn defined? [v]
@@ -15,6 +15,6 @@
 
 (defn init! []
   (enable-console-print!)
-  (devtools/install!)
   (when local?
+    (devtools/install!)
     (figwheel/start)))
