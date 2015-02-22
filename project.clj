@@ -45,14 +45,14 @@
 
   :cljsbuild {
               :builds {:dev
-                       {:source-paths ["frontend", "frontend-dev"]
+                       {:source-paths ["frontend/src", "frontend/src-dev"]
                         :compiler     {:optimizations  :none
                                        :output-to      "resources/public/_generated/dev/faceboard.js"
                                        :output-dir     "resources/public/_generated/dev"
                                        :cache-analysis true
                                        :source-map     true}}
                        :production
-                       {:source-paths ["frontend", "frontend-rel"]
+                       {:source-paths ["frontend/src", "frontend/src-prod"]
                         :compiler     {:optimizations :advanced
                                        :pretty-print  false
                                        :output-to     "resources/public/_generated/prod/faceboard.js"
