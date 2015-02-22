@@ -13,6 +13,10 @@
   display: inline-block;
 }
 
+.top-bar .tab-area > * {
+  display: inline-block;
+}
+
 .tab {
   padding: 4px 8px;
   font-weight: bold;

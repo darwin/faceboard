@@ -6,13 +6,13 @@
             [faceboard.state :as state :refer [app-state]]
             [faceboard.controller :as controller]
             [faceboard.info_banner :as info-banner]
-            [faceboard.tabs :as tabs]
+            [faceboard.board :as board]
             [faceboard.env :as env]))
 
-(defcomponent app-component [data owner opts]
+(defcomponent app-component [data _ _]
   (render [_]
     (dom/div {:class "app-box"}
-      (om/build tabs/tabs-component data))))
+      (om/build board/board-component data))))
 
 (defn init! []
   (om/root app-component app-state {:target (.getElementById js/document "app")})
