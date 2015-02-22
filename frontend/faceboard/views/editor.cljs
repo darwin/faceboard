@@ -1,4 +1,4 @@
-(ns faceboard.editor
+(ns faceboard.views.editor
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [put! <! chan]]
             [clojure.set :refer [subset?]]
@@ -6,7 +6,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [phalanges.core :as phalanges]
-            [faceboard.env :as env :refer [mac?]]
+            [faceboard.env :refer [mac?]]
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]))
 

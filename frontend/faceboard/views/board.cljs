@@ -1,20 +1,20 @@
-(ns faceboard.board
+(ns faceboard.views.board
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.utils :as utils :refer [log, log-err, log-warn]]
-            [faceboard.page :as page]
-            [faceboard.menu :as menu]
             [faceboard.controller :as controller]
-            [faceboard.editor :as editor]
-            [faceboard.people :as people]
-            [faceboard.places :as places]))
+            [faceboard.page :as page]
+            [faceboard.views.menu :refer [menu-component]]
+            [faceboard.views.editor :refer [editor-component]]
+            [faceboard.views.people :refer [people-component]]
+            [faceboard.views.places :refer [places-component]]))
 
 (defn tab->component [tab]
   (condp = (:id tab)
-    :people people/people-component
-    :places places/places-component
-    people/people-component))                               ; default
+    :people people-component
+    :places places-component
+    people-component))                               ; default
 
 (defn lookup-tab [id tabs]
   (let [result (first (filter #(= id (:id %)) tabs))]
@@ -54,7 +54,7 @@
                                                    :data (selected-tab-id model)}))
         (dom/div {:class "right-side"}
           (when model-editing?
-            (om/build editor/editor-component (utils/model->json model))))))))
+            (om/build editor-component (utils/model->json model))))))))
 
 (defcomponent board-component [data _ _]
   (render [_]
@@ -64,5 +64,5 @@
       (page/page-skeleton
         [(om/build board-label-component {:board-label (:board-name model)})
          (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
-         (om/build menu/menu-component ui)]
+         (om/build menu-component ui)]
         (om/build board-content-component data)))))

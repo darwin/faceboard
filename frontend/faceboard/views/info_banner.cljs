@@ -1,4 +1,4 @@
-(ns faceboard.info_banner
+(ns faceboard.views.info_banner
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]

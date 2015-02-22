@@ -1,4 +1,4 @@
-(ns faceboard.people
+(ns faceboard.views.people
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
