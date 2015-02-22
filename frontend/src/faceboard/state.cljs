@@ -1,12 +1,10 @@
 (ns faceboard.state
   (:require [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.fixtures :as fixtures]))
+            [faceboard.data.sample_board :refer [sample-board]]))
 
 (defonce app-state
   (atom
-    {:model {:board-name "hacker paradise"
-             :people     fixtures/hackerparadise-people
-             :places     fixtures/hackerparadise-places}
+    {:model sample-board
      :ui    {:view            :welcome
              :view-params     nil
              :selected-tab-id :people
@@ -17,4 +15,5 @@
              :loading?        false
              :extended-set    #{}
              }
-     }))
+     }
+    ))
