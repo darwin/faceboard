@@ -21,7 +21,7 @@
     (model/disable [:ui :editing?])))
 
 (defmethod handle-command "apply-model" [_ json]
-  (try
+  (try                                                      ; json is provided by user, can be broken
     (transform-app-state
       (model/set [:model] (json->model json)))
     (catch js/Object err
