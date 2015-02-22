@@ -1,6 +1,5 @@
 (ns faceboard.env
-  (:require [om.core :as om]
-            [faceboard.utils :as utils :refer [log, log-err, log-warn]]
+  (:require [faceboard.utils :as utils :refer [log, log-err, log-warn]]
             [devtools.core :as devtools]
             [faceboard.figwheel :as figwheel]))
 
