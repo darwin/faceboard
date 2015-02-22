@@ -5,6 +5,10 @@
   font-size: 16px;
 }
 
+.top-bar .logo {
+  margin-left: 12px;
+}
+
 .top-bar .logo > *,
 .top-bar .label > * {
   line-height: 22px;

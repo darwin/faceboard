@@ -8,7 +8,9 @@
 
 (defcomponent error-component [data _ _]
   (render [_]
-    (let [message (:message data)]
+    (let [ui (:ui data)
+          message (get-in ui [:view-params :message])]
       (page/page-skeleton
+        ui
         []
         (str "ERROR: " message)))))

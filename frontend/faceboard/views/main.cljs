@@ -10,12 +10,11 @@
 (defcomponent main-component [data _ _]
   (render [_]
     (dom/div {:class "main-box"}
-      (let [view (get-in data [:ui :view] :view-key-not-found)
-            view-params (get-in data [:ui :view-params])]
+      (let [view (get-in data [:ui :view] :view-key-not-found)]
         (condp = view                                       ; app-level view switching logic
           :welcome (om/build welcome-component data)
           :board (om/build board-component data)
-          :error (om/build error-component view-params)
+          :error (om/build error-component data)
           (do
             (log-err "request to dispatch an unknown view: " view)
             (om/build error-component data)))))))

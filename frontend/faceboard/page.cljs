@@ -7,8 +7,10 @@
             [faceboard.views.logo :refer [logo-component]]
             [faceboard.env :as env]))
 
-(defn page-skeleton [top-bar page-content]
+(defn page-skeleton [ui top-bar page-content]
   (dom/div {:class "page"}
+    (dom/div {:class (str "loading-indicator" (when (:loading? ui) " visible"))}
+      (dom/img {:src "images/loader.gif"}))
     (dom/div {:class "top-bar no-select"}
       (om/build logo-component {})
       top-bar)

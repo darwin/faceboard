@@ -12,5 +12,6 @@
           model (:model data)
           {:keys [selected-tab-id tabs]} ui]
       (page/page-skeleton
+        ui
         []
         "WELCOME!"))))

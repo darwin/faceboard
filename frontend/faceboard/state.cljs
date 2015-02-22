@@ -14,6 +14,7 @@
                                {:id :places :label "Places"}]
              :editing?        false
              :model-editing?  false
+             :loading?        false
              :extended-set    #{}
              }
      }))

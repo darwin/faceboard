@@ -31,7 +31,7 @@
     (dom/div {:class "board-label"}
       (if-let [board-label (:board-label data)]
         (dom/div {:class "label"}
-          "@" (dom/a {:href "/"} board-label))))))
+          "/" (dom/a {:href "/"} board-label))))))
 
 (defcomponent board-tabs-component [data _ _]
   (render [_]
@@ -63,6 +63,7 @@
           model (:model data)
           {:keys [selected-tab-id tabs]} ui]
       (page/page-skeleton
+        ui
         [(om/build board-label-component {:board-label (:board-name model)})
          (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
          (om/build menu-component ui)]

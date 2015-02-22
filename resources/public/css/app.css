@@ -3,7 +3,7 @@
   padding: 0;
 }
 
-html, body, #app, .app-box {
+html, body, #app, .main-box {
   height:100%;
 }
 
@@ -55,4 +55,21 @@ body {
 
 .info-banner a:hover {
   color: blue;
+}
+
+.loading-indicator {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+}
+
+.loading-indicator.visible {
+  opacity: 1;
+}
+
+.loading-indicator img {
+  width: 18px;
+  height: 18px;
 }
