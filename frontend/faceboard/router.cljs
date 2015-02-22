@@ -2,7 +2,7 @@
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]
-            [goog.events :as events])
+            [goog.events])
   (:import goog.History
            goog.history.EventType))
 
@@ -20,7 +20,7 @@
 
   ; catch-all case
   (defroute "*" []
-    (controller/perform-command! "switch-view" :invalid)))
+    (controller/perform-command! "switch-view" :error {:message "nothing to be seen here"})))
 
 (defn enable-history [history]
   (goog.events/listen history EventType.NAVIGATE #(secretary/dispatch! (.-token %)))

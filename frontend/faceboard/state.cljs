@@ -8,6 +8,7 @@
              :people     fixtures/hackerparadise-people
              :places     fixtures/hackerparadise-places}
      :ui    {:view            :welcome
+             :view-params     nil
              :selected-tab-id :people
              :tabs            [{:id :people :label "People"}
                                {:id :places :label "Places"}]

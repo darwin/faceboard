@@ -1,4 +1,4 @@
-(ns faceboard.views.invalid
+(ns faceboard.views.error
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -6,11 +6,9 @@
             [faceboard.page :as page]
             [faceboard.controller :as controller]))
 
-(defcomponent invalid-component [data _ _]
+(defcomponent error-component [data _ _]
   (render [_]
-    (let [ui (:ui data)
-          model (:model data)
-          {:keys [selected-tab-id tabs]} ui]
+    (let [message (:message data)]
       (page/page-skeleton
         []
-        "INVALID!"))))
+        (str "ERROR: " message)))))

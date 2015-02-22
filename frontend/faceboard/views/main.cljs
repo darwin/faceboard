@@ -5,16 +5,17 @@
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.views.board :refer [board-component]]
             [faceboard.views.welcome :refer [welcome-component]]
-            [faceboard.views.invalid :refer [invalid-component]]))
+            [faceboard.views.error :refer [error-component]]))
 
 (defcomponent main-component [data _ _]
   (render [_]
     (dom/div {:class "main-box"}
-      (let [view (get-in data [:ui :view] :view-key-not-found)]
+      (let [view (get-in data [:ui :view] :view-key-not-found)
+            view-params (get-in data [:ui :view-params])]
         (condp = view                                       ; app-level view switching logic
           :welcome (om/build welcome-component data)
           :board (om/build board-component data)
-          :invalid (om/build invalid-component data)
+          :error (om/build error-component view-params)
           (do
             (log-err "request to dispatch an unknown view: " view)
-            (om/build invalid-component data)))))))
+            (om/build error-component data)))))))

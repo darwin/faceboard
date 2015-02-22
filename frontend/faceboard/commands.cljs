@@ -35,9 +35,10 @@
   (transform-app-state
     (model/set [:ui :selected-tab-id] new-id)))
 
-(defmethod handle-command "switch-view" [_ new-view]
+(defmethod handle-command "switch-view" [_ new-view params]
   (transform-app-state
-    (model/set [:ui :view] new-view)))
+    (model/set [:ui :view] new-view)
+    (model/set [:ui :view-params] params)))
 
 (defmethod handle-command "switch-board" [_ _]
   (transform-app-state
