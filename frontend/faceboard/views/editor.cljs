@@ -7,7 +7,7 @@
             [om-tools.dom :as dom]
             [phalanges.core :as phalanges]
             [faceboard.env :refer [mac?]]
-            [faceboard.utils :as utils :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]))
 
 (def ^:dynamic *codemirror*)

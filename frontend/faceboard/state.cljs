@@ -1,5 +1,5 @@
 (ns faceboard.state
-  (:require [faceboard.utils :as utils :refer [log, log-err, log-warn]]
+  (:require [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.fixtures :as fixtures]))
 
 (defonce app-state

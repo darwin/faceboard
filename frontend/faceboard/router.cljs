@@ -1,6 +1,6 @@
 (ns faceboard.router
   (:require [secretary.core :as secretary :refer-macros [defroute]]
-            [faceboard.utils :as utils :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]
             [goog.events :as events])
   (:import goog.History

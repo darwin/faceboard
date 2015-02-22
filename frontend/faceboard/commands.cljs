@@ -1,7 +1,7 @@
 (ns faceboard.commands
   (:require [cljs.core.async :as async :refer [<!]]
             [faceboard.state :as state :refer [app-state]]
-            [faceboard.utils :as utils :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log, log-err, log-warn]]))
 
 (defn- toggle [state & path]
   (update-in state path #(not %)))
