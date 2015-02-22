@@ -43,3 +43,6 @@
 
 (defmethod handle-command "switch-view" [_ new-view]
   (reset! app-state (assoc-in @app-state [:ui :view] new-view)))
+
+(defmethod handle-command "switch-board" [_ new-board]
+  (reset! app-state (assoc-in @app-state [:ui :view] :board)))

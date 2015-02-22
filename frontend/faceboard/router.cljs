@@ -15,7 +15,7 @@
   (defroute "/" []
     (controller/perform-command! "switch-view" :welcome))
 
-  (defroute "/boards/:id" [id]
+  (defroute "/board/:id" [id]
     (controller/perform-command! "switch-board" id))
 
   ; catch-all case

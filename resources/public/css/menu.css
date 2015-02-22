@@ -2,7 +2,8 @@
   color: #fff;
   float: right;
   font-size: 12px;
-  padding: 2px 8px;
+  line-height: 18px;
+  padding: 2px 0px;
 }
 
 .menu > * {
@@ -11,7 +12,7 @@
 
 .menu-button {
   margin-right: 10px;
-  padding: 4px 10px;
+  padding: 0px 10px;
   cursor: pointer;
   background-color: #26386c;
   border-radius: 2px;

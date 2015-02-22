@@ -3,7 +3,8 @@
 }
 
 .top-bar {
-  line-height: 10px;
+  min-height: 22px;
+  line-height: 18px;
   background: #3a5795;
   border: 1px solid #999;
   font-size: 12px;
@@ -18,7 +19,7 @@
 }
 
 .tab {
-  padding: 4px 8px;
+  padding: 0px 8px;
   font-weight: bold;
   margin: 2px;
   margin-left: 8px;
