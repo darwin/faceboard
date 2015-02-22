@@ -3,7 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.views.info_banner :refer [info-banner-component]]
+            [faceboard.views.banner :refer [banner-component]]
             [faceboard.views.logo :refer [logo-component]]
             [faceboard.env :as env]))
 
@@ -15,4 +15,4 @@
       (om/build logo-component {})
       top-bar)
     (dom/div {:class "page-content"} page-content)
-    (om/build info-banner-component {:git-revision env/git-revision})))
+    (om/build banner-component {:git-revision env/git-revision})))

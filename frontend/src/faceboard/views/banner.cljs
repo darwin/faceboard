@@ -1,11 +1,11 @@
-(ns faceboard.views.info_banner
+(ns faceboard.views.banner
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]))
 
-(defcomponent info-banner-component [data _ _]
+(defcomponent banner-component [data _ _]
   (render [_]
-    (dom/div {:class "info-banner"}
+    (dom/div {:class "banner"}
       (let [rev (:git-revision data)]
         (if-not rev
           "local version"

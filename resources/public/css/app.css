@@ -39,7 +39,7 @@ body {
   visibility: hidden;
 }
 
-.info-banner {
+.banner {
   position: fixed;
   bottom: 0px;
   color: #888;
@@ -49,11 +49,11 @@ body {
   padding: 1px 10px;
 }
 
-.info-banner a {
+.banner a {
   color: #888;
 }
 
-.info-banner a:hover {
+.banner a:hover {
   color: blue;
 }
 
