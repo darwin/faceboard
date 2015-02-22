@@ -4,6 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]
+            [faceboard.utils :refer [model->json]]
             [faceboard.page :as page]
             [faceboard.views.menu :refer [menu-component]]
             [faceboard.views.editor :refer [editor-component]]
@@ -54,7 +55,7 @@
                                                    :data (selected-tab-id model)}))
         (dom/div {:class "right-side"}
           (when model-editing?
-            (om/build editor-component (utils/model->json model))))))))
+            (om/build editor-component (model->json model))))))))
 
 (defcomponent board-component [data _ _]
   (render [_]

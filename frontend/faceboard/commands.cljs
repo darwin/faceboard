@@ -1,7 +1,7 @@
 (ns faceboard.commands
-  (:require [cljs.core.async :as async :refer [<!]]
-            [faceboard.state :as state :refer [app-state]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+  (:require [faceboard.state :refer [app-state]]
+            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.utils :refer [json->model]]))
 
 (defn- toggle [state & path]
   (update-in state path #(not %)))
@@ -29,7 +29,7 @@
 
 (defmethod handle-command "apply-model" [_ json]
   (try
-    (let [new-model (utils/json->model json)
+    (let [new-model (json->model json)
           new-state (assoc-in @app-state [:model] new-model)]
       (reset! app-state new-state))
     (catch js/Object err
