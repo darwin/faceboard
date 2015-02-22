@@ -8,10 +8,10 @@
 
 (def history (History.))
 
-(defn setup []
+(defn setup! []
   (secretary/set-config! :prefix "#"))
 
-(defn define-routes []
+(defn define-routes! []
   (defroute "/" []
     (controller/perform-command! "switch-view" :welcome))
 
@@ -22,11 +22,11 @@
   (defroute "*" []
     (controller/perform-command! "switch-view" :error {:message "nothing to be seen here"})))
 
-(defn enable-history [history]
+(defn enable-history! [history]
   (goog.events/listen history EventType.NAVIGATE #(secretary/dispatch! (.-token %)))
   (.setEnabled history true))
 
 (defn init! []
-  (setup)
-  (define-routes)
-  (enable-history history))
+  (setup!)
+  (define-routes!)
+  (enable-history! history))
