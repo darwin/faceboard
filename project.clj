@@ -10,6 +10,7 @@
                  [binaryage/devtools "0.1.0"]
                  [spellhouse/phalanges "0.1.4"]
                  [secretary "1.2.1"]
+                 [matchbox "0.0.5-SNAPSHOT"]
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "4.6"]
