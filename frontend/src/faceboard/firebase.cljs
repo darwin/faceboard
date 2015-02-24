@@ -33,6 +33,7 @@
                               new-model (:model new)]
                           (when (not= old-model new-model)
                             (log "app model changed, writing model to firebase...")
+                            (transform-app-state (model/set [:ui :loading?] true))
                             (p/reset! board-ref new-model))))]
     (go-loop []
       (add-watch app-state :model-watcher model-watcher)
@@ -43,6 +44,7 @@
             (remove-watch app-state :model-watcher)
             (transform-app-state
               (model/set [:ui :view] :board)
+              (model/set [:ui :loading?] false)
               (model/set [:model] value))
             (add-watch app-state :model-watcher model-watcher))
           (recur))

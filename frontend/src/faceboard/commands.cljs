@@ -44,5 +44,6 @@
 (defmethod handle-command "switch-board" [_ board-id]
   (transform-app-state
     (model/set [:ui :view] :loading)
+    (model/set [:ui :loading?] true)
     (model/set [:ui :view-params] {:message "Loading faceboard..."}))
   (db/connect-board board-id))
