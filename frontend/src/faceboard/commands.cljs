@@ -45,9 +45,4 @@
   (transform-app-state
     (model/set [:ui :view] :loading)
     (model/set [:ui :view-params] {:message "Loading faceboard..."}))
-  (db/connect-board board-id #(handle-command "update-board" %)))
-
-(defmethod handle-command "update-board" [_ value]
-  (transform-app-state
-    (model/set [:ui :view] :board)
-    (model/set [:model] value)))
+  (db/connect-board board-id))
