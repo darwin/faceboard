@@ -5,6 +5,7 @@
             [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.utils :refer [model->json]]
             [phalanges.core :as phalanges]
             [faceboard.env :refer [mac?]]
             [faceboard.logging :refer [log, log-err, log-warn]]
@@ -14,6 +15,10 @@
 
 (defn- codemirror-value []
   (.call (aget *codemirror* "getValue") *codemirror*))      ; prevent name mangling under advanced compilation
+
+(defn- set-codemirror-value! [value]
+  (when-not (nil? *codemirror*)
+    (.call (aget *codemirror* "setValue") *codemirror* value)))
 
 (defn- apply-model [event]
   (controller/perform-command! "apply-model" (codemirror-value))
@@ -39,14 +44,15 @@
   (if-let [action (select-action (phalanges/key-code event) (phalanges/modifier-set event))]
     (action event)))
 
-(defcomponent editor-component [code owner]
+(defcomponent editor-component [data owner]
   (render [_]
+    (set-codemirror-value! (model->json data))
     (dom/div {:class "editor" :on-key-down #(handle-codemirror-key %)}
       (dom/div {:class "hint"} (if mac? "CMD+S to save" "CTRL+S to save"))))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner)
                          #js {:mode              #js {:name "javascript" :json true}
-                              :value             code
+                              :value             (model->json data)
                               :matchBrackets     true
                               :autoCloseBrackets true
                               :styleActiveLine   true
