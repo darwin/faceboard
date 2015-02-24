@@ -11,20 +11,15 @@
 (defn setup! []
   (secretary/set-config! :prefix "#"))
 
-(defn define-routes! []
-  (defroute "/" []
-    (controller/perform-command! "switch-view" :welcome))
-
-  (defroute "/board/:id" [id]
-    (controller/perform-command! "switch-board" id))
-
-  ; catch-all case
-  (defroute "*" []
-    (controller/perform-command! "switch-view" :error {:message "nothing to be seen here"})))
-
 (defn enable-history! [history]
   (goog.events/listen history EventType.NAVIGATE #(secretary/dispatch! (.-token %)))
   (.setEnabled history true))
+
+(defn define-routes! []
+  (defroute "/" [] (controller/perform-command! "switch-view" :welcome))
+  (defroute "/local" [] (controller/perform-command! "switch-view" :board))
+  (defroute "/board/:id" [id] (controller/perform-command! "switch-board" id))
+  (defroute "*" [] (controller/perform-command! "switch-view" :error {:message "nothing to be seen here"})))
 
 (defn init! []
   (setup!)

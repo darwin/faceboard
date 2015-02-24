@@ -53,12 +53,12 @@
 
 (defcomponent people-component [data _ _]
   (render [_]
-    (let [people (:data data)
+    (let [people (seq (:data data))
           ui (:ui data)
           extended-set (:extended-set ui)]
       (dom/div {:class "people-board"}
         (for [i (range (count people))]
-          (let [data {:person     (nth people i)
+          (let [data {:person     (second (nth people i))
                       :extended?  (contains? extended-set i)
                       :self-index i}]
             (om/build person-component data)))))))

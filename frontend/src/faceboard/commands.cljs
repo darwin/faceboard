@@ -2,6 +2,7 @@
   (:require [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.model :as model]
+            [faceboard.firebase :as db]
             [faceboard.utils :refer [json->model]])
   (:require-macros [faceboard.macros.model :refer [transform-app-state]]))
 
@@ -40,6 +41,13 @@
     (model/set [:ui :view] new-view)
     (model/set [:ui :view-params] params)))
 
-(defmethod handle-command "switch-board" [_ _]
+(defmethod handle-command "switch-board" [_ board-id]
   (transform-app-state
-    (model/set [:ui :view] :board)))
+    (model/set [:ui :view] :loading)
+    (model/set [:ui :view-params] {:message "Loading faceboard..."}))
+  (db/connect-board board-id #(handle-command "update-board" %)))
+
+(defmethod handle-command "update-board" [_ value]
+  (transform-app-state
+    (model/set [:ui :view] :board)
+    (model/set [:model] value)))

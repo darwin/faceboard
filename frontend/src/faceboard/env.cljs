@@ -12,6 +12,7 @@
 (def mac? (= (get-in platform [:os :family]) "OS X"))
 (def git-revision (:git-revision env))
 (def local? (not (defined? (:production env))))
+(def firebase-db (get env :firebase-db "blinding-heat-4410"))
 
 (defn init! []
   (enable-console-print!)

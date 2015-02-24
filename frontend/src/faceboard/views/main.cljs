@@ -5,6 +5,7 @@
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.views.board :refer [board-component]]
             [faceboard.views.welcome :refer [welcome-component]]
+            [faceboard.views.loading :refer [loading-component]]
             [faceboard.views.error :refer [error-component]]))
 
 (defcomponent main-component [data _ _]
@@ -13,6 +14,7 @@
       (let [view (get-in data [:ui :view] :view-key-not-found)]
         (condp = view                                       ; app-level view switching logic
           :welcome (om/build welcome-component data)
+          :loading (om/build loading-component data)
           :board (om/build board-component data)
           :error (om/build error-component data)
           (do
