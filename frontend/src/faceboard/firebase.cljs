@@ -32,21 +32,21 @@
                         (let [old-model (:model old)
                               new-model (:model new)]
                           (when (not= old-model new-model)
-                            (log "app model changed, writing model to firebase...")
+                            (log "app model changed")
+                            (log "firebase:" board-id "<<" new-model)
                             (transform-app-state (model/set [:ui :loading?] true))
                             (p/reset! board-ref new-model))))]
     (go-loop []
       (add-watch app-state :model-watcher model-watcher)
-      (let [[msg chan] (alts! [board-chan control-chan])]
+      (let [[[id value] chan] (alts! [board-chan control-chan])]
         (when (= chan board-chan)
-          (log "firebase:" msg)
-          (let [value (second msg)]
-            (remove-watch app-state :model-watcher)
-            (transform-app-state
-              (model/set [:ui :view] :board)
-              (model/set [:ui :loading?] false)
-              (model/set [:model] value))
-            (add-watch app-state :model-watcher model-watcher))
+          (log "firebase:" id ">>" value)
+          (remove-watch app-state :model-watcher)
+          (transform-app-state
+            (model/set [:ui :view] :board)
+            (model/set [:ui :loading?] false)
+            (model/set [:model] value))
+          (add-watch app-state :model-watcher model-watcher)
           (recur))
         (remove-watch app-state :model-watcher)
         (log "disconnected board " board-id)))))
