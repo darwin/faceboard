@@ -2,7 +2,9 @@
   (:require [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.model :as model]
+            [faceboard.router :as router]
             [faceboard.firebase :as db]
+            [faceboard.data.initial_board :refer [initial-board]]
             [faceboard.utils :refer [json->model]])
   (:require-macros [faceboard.macros.model :refer [transform-app-state]]))
 
@@ -47,3 +49,14 @@
     (model/set [:ui :loading?] true)
     (model/set [:ui :view-params] {:message "Loading faceboard..."}))
   (db/connect-board board-id))
+
+(defmethod handle-command "create-board" [_ board-id]
+  (transform-app-state
+    (model/set [:ui :view] :loading)
+    (model/set [:ui :loading?] true)
+    (model/set [:ui :view-params] {:message "Creating a new board..."}))
+  (let [init-and-navigate (fn [_]
+                            (transform-app-state
+                              (model/set [:model] initial-board))
+                            (router/navigate! (router/board-route {:id board-id})))]
+    (db/connect-board board-id {:on-connect init-and-navigate})))

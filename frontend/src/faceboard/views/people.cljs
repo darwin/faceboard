@@ -23,7 +23,7 @@
                   :style {:transform (str "rotate(" angle "deg)")}}
           (dom/div {:class "left-part"}
             (dom/div {:class "photo"}
-              (dom/img {:src (:photo-url person)}))
+              (dom/img {:src (or (:photo-url person) "/images/unknown.jpg")}))
             (dom/div {:class "name f16"}
               (:name person)
               (when-not (nil? flag-code)

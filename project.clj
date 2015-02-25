@@ -11,6 +11,7 @@
                  [spellhouse/phalanges "0.1.4"]
                  [secretary "1.2.1"]
                  [matchbox "0.0.5-SNAPSHOT"]
+                 [cljs-uuid "0.0.4"]
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "4.6"]
