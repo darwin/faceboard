@@ -14,7 +14,8 @@
 (def ^:dynamic *codemirror*)
 
 (defn- codemirror-value []
-  (.call (aget *codemirror* "getValue") *codemirror*))      ; prevent name mangling under advanced compilation
+  (when-not (nil? *codemirror*)
+    (.call (aget *codemirror* "getValue") *codemirror*)))
 
 (defn- set-codemirror-value! [value]
   (when-not (nil? *codemirror*)
@@ -46,11 +47,29 @@
 
 (defcomponent editor-component [data owner]
   (render [_]
-    (set-codemirror-value! (model->json data))
-    (dom/div {:class "editor" :on-key-down #(handle-codemirror-key %)}
-      (dom/div {:class "hint"} (if mac? "CMD+S to save" "CTRL+S to save"))))
+    (let [new-value (model->json data)
+          old-value (if (nil? *codemirror*) new-value (codemirror-value))
+          not-in-sync (not (= old-value new-value))]
+      (dom/div {:class "editor"}
+        (dom/div {:class       "editor-host"
+                  :ref         "host"
+                  :on-key-down #(handle-codemirror-key %)})
+        (dom/div {:class    "hint"
+                  :title    "Save model and update the app."
+                  :on-click (fn [e] (if not-in-sync
+                                      (when (js/confirm "Really overwrite external changes?")
+                                        (apply-model e))
+                                      (apply-model e)))}
+          (if mac? "CMD+S to save" "CTRL+S to save"))
+        (when not-in-sync
+          (dom/div {:class    "refresh"
+                    :title    "The model has been modified by someone else. You are editing old data."
+                    :on-click (fn [_]
+                                (set-codemirror-value! new-value)
+                                (om/refresh! owner))} 
+            "discard & reload")))))
   (did-mount [_]
-    (set! *codemirror* (js/CodeMirror (om/get-node owner)
+    (set! *codemirror* (js/CodeMirror (om/get-node owner "host")
                          #js {:mode              #js {:name "javascript" :json true}
                               :value             (model->json data)
                               :matchBrackets     true
