@@ -4,15 +4,9 @@
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.views.banner :refer [banner-component]]
-            [faceboard.views.logo :refer [logo-component]]
             [faceboard.env :as env]))
 
-(defn page-skeleton [ui top-bar page-content]
+(defn page-skeleton [& page-content]
   (dom/div {:class "page"}
-    (dom/div {:class (str "loading-indicator" (when (:loading? ui) " visible"))}
-      (dom/img {:src "images/loader.gif"}))
-    (dom/div {:class "top-bar no-select"}
-      (om/build logo-component {})
-      top-bar)
     (dom/div {:class "page-content"} page-content)
     (om/build banner-component {:git-revision env/git-revision})))

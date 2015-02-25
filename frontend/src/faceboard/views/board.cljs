@@ -5,6 +5,7 @@
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]
             [faceboard.page :as page]
+            [faceboard.views.logo :refer [logo-component]]
             [faceboard.views.menu :refer [menu-component]]
             [faceboard.views.editor :refer [editor-component]]
             [faceboard.views.people :refer [people-component]]
@@ -62,8 +63,12 @@
           model (:model data)
           {:keys [selected-tab-id tabs]} ui]
       (page/page-skeleton
-        ui
-        [(om/build board-label-component {:board-label (:board-name model)})
-         (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
-         (om/build menu-component ui)]
-        (om/build board-content-component data)))))
+        (dom/div {:class (str "loading-indicator" (when (:loading? ui) " visible"))}
+          (dom/img {:src "images/loader.gif"}))
+        (dom/div {:class "top-bar no-select"}
+          (om/build logo-component {})
+          (om/build board-label-component {:board-label (:board-name model)})
+          (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
+          (om/build menu-component ui))
+        (dom/div {:class "tab-contents"}
+          (om/build board-content-component data))))))

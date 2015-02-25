@@ -8,6 +8,4 @@
     (let [ui (:ui data)
           params (:view-params ui)]
       (page/page-skeleton
-        ui
-        []
         (str (:message params))))))

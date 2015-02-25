@@ -8,6 +8,4 @@
     (let [ui (:ui data)
           message (get-in ui [:view-params :message])]
       (page/page-skeleton
-        ui
-        []
         (str "ERROR: " message)))))

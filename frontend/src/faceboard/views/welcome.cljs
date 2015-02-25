@@ -7,6 +7,4 @@
   (render [_]
     (let [ui (:ui data)]
       (page/page-skeleton
-        ui
-        []
         "WELCOME!"))))
