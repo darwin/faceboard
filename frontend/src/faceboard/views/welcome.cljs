@@ -12,9 +12,9 @@
     (let [ui (:ui data)]
       (page/page-skeleton
         (dom/div {:class "standard-page welcome"}
-          (dom/div {:class "big-logo"}
+          (dom/div {:class "big-logo no-select"}
             (dom/span {} "FACEBOARD"))
-          (dom/div {:class "teaser"}
+          (dom/div {:class "teaser no-select"}
             (dom/img {:src "images/faceboard-teaser.jpg"}))
           (dom/div {:class "buttons"}
             (dom/span {:class "button"
