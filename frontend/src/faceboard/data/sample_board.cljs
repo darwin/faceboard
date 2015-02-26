@@ -36,6 +36,6 @@
           :description "Best burgers in the town"}})
 
 (def sample-board
-  {:board-name "hacker paradise"
-   :people     hackerparadise-people
-   :places     hackerparadise-places})
+  {:board  {:name "hacker paradise"}
+   :people hackerparadise-people
+   :places hackerparadise-places})

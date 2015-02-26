@@ -4,6 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :as controller]
+            [faceboard.router :as router]
             [faceboard.page :as page]
             [faceboard.views.logo :refer [logo-component]]
             [faceboard.views.menu :refer [menu-component]]
@@ -15,7 +16,7 @@
   (condp = (:id tab)
     :people people-component
     :places places-component
-    people-component))                               ; default
+    people-component))                                      ; default
 
 (defn lookup-tab [id tabs]
   (let [result (first (filter #(= id (:id %)) tabs))]
@@ -28,10 +29,11 @@
 
 (defcomponent board-label-component [data _ _]
   (render [_]
-    (dom/div {:class "board-label"}
-      (if-let [board-label (:board-label data)]
-        (dom/div {:class "label"}
-          "/" (dom/a {:href "/"} board-label))))))
+    (if-let [board-label (:board-label data)]
+      (dom/div {:class "board-label"}
+        "/"
+        (dom/span {:class "label"}
+          (dom/a {:href (:board-url data)} board-label))))))
 
 (defcomponent board-tabs-component [data _ _]
   (render [_]
@@ -59,15 +61,16 @@
 
 (defcomponent board-component [data _ _]
   (render [_]
-    (let [ui (:ui data)
-          model (:model data)
-          {:keys [selected-tab-id tabs]} ui]
+    (let [model (:model data)
+          ui (:ui data)
+          {:keys [selected-tab-id tabs loading?]} ui]
       (page/page-skeleton
-        (dom/div {:class (str "loading-indicator" (when (:loading? ui) " visible"))}
+        (dom/div {:class (str "loading-indicator" (when loading? " visible"))}
           (dom/img {:src "images/loader.gif"}))
         (dom/div {:class "top-bar no-select"}
           (om/build logo-component {})
-          (om/build board-label-component {:board-label (:board-name model)})
+          (om/build board-label-component {:board-label (get-in model [:board :name])
+                                           :board-url (router/current-route)})
           (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
           (om/build menu-component ui))
         (dom/div {:class "tab-contents"}

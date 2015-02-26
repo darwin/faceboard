@@ -10,9 +10,8 @@
 }
 
 .top-bar .logo > *,
-.top-bar .label > * {
+.top-bar .board-label * {
   line-height: 22px;
-  display: inline-block;
   color: white !important;
 }
 
@@ -22,4 +21,12 @@
   position: relative;
   top: 1px;
   text-decoration: none;
+}
+
+.faceboard-logo:hover {
+  text-decoration: underline;
+}
+
+.board-label .label:hover {
+  text-decoration: underline;
 }
