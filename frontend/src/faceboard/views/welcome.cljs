@@ -18,4 +18,4 @@
             (dom/img {:src "images/faceboard-teaser.jpg"}))
           (dom/div {:class "buttons"}
             (dom/span {:class "button"
-                       :on-click #(perform! "create-board" (str (uuid/make-random)))} "Create a new board")))))))
+                       :on-click #(perform! :create-board (str (uuid/make-random)))} "Create a new board")))))))

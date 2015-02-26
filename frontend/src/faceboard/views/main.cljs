@@ -20,4 +20,4 @@
           :error (om/build error-component data)
           (do
             (log-err "request to dispatch an unknown view: " view)
-            (om/build error-component data)))))))
+            (om/build error-component {:ui {:view-params {:message "internal app error"}}})))))))

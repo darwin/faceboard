@@ -15,9 +15,9 @@
   (render [_]
     (let [buttons [{:label   "edit"
                     :active? (:editing? data)
-                    :handler #(perform! "toggle-edit")}
+                    :handler #(perform! :toggle-edit)}
                    {:label   "model"
                     :active? (:model-editing? data)
-                    :handler #(perform! "toggle-model")}]]
+                    :handler #(perform! :toggle-model)}]]
       (dom/div {:class "menu"}
         (om/build-all menu-button-component buttons)))))

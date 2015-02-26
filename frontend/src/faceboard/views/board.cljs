@@ -41,7 +41,7 @@
       (for [tab (:tabs data)
             :let [selected-tab-id (:selected-tab-id data)]]
         (dom/div {:class    (str "tab" (when (tab-selected? selected-tab-id tab) " selected"))
-                  :on-click #(perform! "switch-tab" (:id tab))}
+                  :on-click #(perform! :switch-tab (:id tab))}
           (:label tab))))))
 
 (defcomponent board-content-component [data _ _]
@@ -51,7 +51,7 @@
           {:keys [selected-tab-id tabs model-editing?]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class    (str "board-view" (when model-editing? " dual-mode"))
-                :on-click #(perform! "change-extended-set" #{})}
+                :on-click #(perform! :change-extended-set #{})}
         (dom/div {:class "left-side"}
           (om/build (tab->component selected-tab) {:ui   ui
                                                    :data (selected-tab-id model)}))

@@ -22,7 +22,7 @@
     (.call (aget *codemirror* "setValue") *codemirror* value)))
 
 (defn- apply-model [event]
-  (perform! "apply-model" (codemirror-value))
+  (perform! :apply-model (codemirror-value))
   (.preventDefault event))
 
 (def action-table

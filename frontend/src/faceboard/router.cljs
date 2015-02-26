@@ -33,10 +33,10 @@
   (.setEnabled history true))
 
 (defn define-routes! []
-  (defroute-with-info home-route "/" [] (perform! "switch-view" :welcome))
-  (defroute-with-info local-route "/local" [] (perform! "switch-view" :board))
-  (defroute-with-info board-route "/board/:id" [id] (perform! "switch-board" id))
-  (defroute-with-info catch-route "*" [] (perform! "switch-view" :error {:message "nothing to be seen here"})))
+  (defroute-with-info home-route "/" [] (perform! :switch-view :welcome))
+  (defroute-with-info local-route "/local" [] (perform! :switch-view :board))
+  (defroute-with-info board-route "/board/:id" [id] (perform! :switch-board id))
+  (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "nothing to be seen here"})))
 
 (defn init! []
   (setup!)
