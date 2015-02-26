@@ -5,5 +5,5 @@
 
 (def command-chan (async/chan))
 
-(defn perform-command! [& command]
+(defn perform! [& command]
   (go (>! command-chan command)))

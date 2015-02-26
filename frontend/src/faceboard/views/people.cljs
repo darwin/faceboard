@@ -2,7 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.controller :as controller]
+            [faceboard.controller :as controller :refer [perform!]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [cemerick.pprng]))
 
@@ -41,7 +41,7 @@
       (dom/div {:class    (str "person-box" (when extended? " extended"))
                 :on-click (fn [e]
                             (.stopPropagation e)
-                            (controller/perform-command! "change-extended-set" (if-not extended? (set [self-index]) #{})))}
+                            (perform! "change-extended-set" (if-not extended? (set [self-index]) #{})))}
         (when extended?
           (dom/div {:class "person-extended-wrapper"}
             (om/build person-basic-info-component {:extended? true

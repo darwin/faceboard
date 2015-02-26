@@ -1,7 +1,7 @@
 (ns faceboard.router
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.controller :as controller]
+            [faceboard.controller :as controller :refer [perform!]]
             [goog.events])
   (:import goog.History
            goog.history.EventType)
@@ -33,10 +33,10 @@
   (.setEnabled history true))
 
 (defn define-routes! []
-  (defroute-with-info home-route "/" [] (controller/perform-command! "switch-view" :welcome))
-  (defroute-with-info local-route "/local" [] (controller/perform-command! "switch-view" :board))
-  (defroute-with-info board-route "/board/:id" [id] (controller/perform-command! "switch-board" id))
-  (defroute-with-info catch-route "*" [] (controller/perform-command! "switch-view" :error {:message "nothing to be seen here"})))
+  (defroute-with-info home-route "/" [] (perform! "switch-view" :welcome))
+  (defroute-with-info local-route "/local" [] (perform! "switch-view" :board))
+  (defroute-with-info board-route "/board/:id" [id] (perform! "switch-board" id))
+  (defroute-with-info catch-route "*" [] (perform! "switch-view" :error {:message "nothing to be seen here"})))
 
 (defn init! []
   (setup!)

@@ -4,7 +4,7 @@
             [om-tools.dom :as dom]
             [cljs-uuid.core :as uuid]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.controller :as controller]
+            [faceboard.controller :as controller :refer [perform!]]
             [faceboard.page :as page]))
 
 (defcomponent welcome-component [data _ _]
@@ -18,4 +18,4 @@
             (dom/img {:src "images/faceboard-teaser.jpg"}))
           (dom/div {:class "buttons"}
             (dom/span {:class "button"
-                       :on-click #(controller/perform-command! "create-board" (str (uuid/make-random)))} "Create a new board")))))))
+                       :on-click #(perform! "create-board" (str (uuid/make-random)))} "Create a new board")))))))

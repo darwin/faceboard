@@ -2,7 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.controller :as controller]
+            [faceboard.controller :as controller :refer [perform!]]
             [faceboard.logging :refer [log, log-err, log-warn]]))
 
 (defcomponent menu-button-component [data _ _]
@@ -15,9 +15,9 @@
   (render [_]
     (let [buttons [{:label   "edit"
                     :active? (:editing? data)
-                    :handler #(controller/perform-command! "toggle-edit")}
+                    :handler #(perform! "toggle-edit")}
                    {:label   "model"
                     :active? (:model-editing? data)
-                    :handler #(controller/perform-command! "toggle-model")}]]
+                    :handler #(perform! "toggle-model")}]]
       (dom/div {:class "menu"}
         (om/build-all menu-button-component buttons)))))

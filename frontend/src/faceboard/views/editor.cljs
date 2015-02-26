@@ -9,7 +9,7 @@
             [phalanges.core :as phalanges]
             [faceboard.env :refer [mac?]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.controller :as controller]))
+            [faceboard.controller :as controller :refer [perform!]]))
 
 (def ^:dynamic *codemirror*)
 
@@ -22,7 +22,7 @@
     (.call (aget *codemirror* "setValue") *codemirror* value)))
 
 (defn- apply-model [event]
-  (controller/perform-command! "apply-model" (codemirror-value))
+  (perform! "apply-model" (codemirror-value))
   (.preventDefault event))
 
 (def action-table
