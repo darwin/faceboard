@@ -5,7 +5,7 @@
 (defonce app-state
   (atom
     {:model sample-board
-     :ui    {:view            :welcome
+     :ui    {:view            :blank
              :view-params     nil
              :selected-tab-id :people
              :tabs            [{:id :people :label "People"}

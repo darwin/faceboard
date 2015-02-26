@@ -13,6 +13,7 @@
     (dom/div {:class "main-box"}
       (let [view (get-in data [:ui :view] :view-key-not-found)]
         (condp = view                                       ; app-level view switching logic
+          :blank ""                                         ; blank view is rendered before router dispatches url
           :welcome (om/build welcome-component data)
           :loading (om/build loading-component data)
           :board (om/build board-component data)
