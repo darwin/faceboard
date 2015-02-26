@@ -2,7 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.controller :as controller :refer [perform!]]
+            [faceboard.controller :refer [perform!]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [cemerick.pprng]))
 

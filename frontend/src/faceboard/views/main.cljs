@@ -3,6 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.controller :refer [perform!]]
             [faceboard.views.board :refer [board-component]]
             [faceboard.views.welcome :refer [welcome-component]]
             [faceboard.views.loading :refer [loading-component]]
@@ -20,4 +21,4 @@
           :error (om/build error-component data)
           (do
             (log-err "request to dispatch an unknown view: " view)
-            (om/build error-component {:ui {:view-params {:message "internal app error"}}})))))))
+            (perform! :switch-view :error {:message "invalid app state"})))))))

@@ -3,7 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.controller :as controller :refer [perform!]]
+            [faceboard.controller :refer [perform!]]
             [faceboard.router :as router]
             [faceboard.page :as page]
             [faceboard.views.logo :refer [logo-component]]
@@ -70,7 +70,7 @@
         (dom/div {:class "top-bar no-select"}
           (om/build logo-component {})
           (om/build board-label-component {:board-label (get-in model [:board :name])
-                                           :board-url (router/current-route)})
+                                           :board-url   (router/current-route)})
           (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
           (om/build menu-component ui))
         (dom/div {:class "tab-contents"}

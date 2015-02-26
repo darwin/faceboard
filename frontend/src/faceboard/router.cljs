@@ -1,14 +1,15 @@
 (ns faceboard.router
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.controller :as controller :refer [perform!]]
+            [faceboard.controller :refer [perform!]]
             [goog.events])
   (:import goog.History
            goog.history.EventType)
   (:require-macros [faceboard.macros.router :refer [defroute-with-info]]))
 
 (defonce history (History.))
-(def ^:dynamic *current-route-info*)                        ; see defroute macro
+
+(def ^:dynamic *current-route-info*)                        ; see defroute-with-info macro
 
 (defn setup! []
   (secretary/set-config! :prefix "#"))

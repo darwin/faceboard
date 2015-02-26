@@ -6,6 +6,9 @@
             [faceboard.views.main :refer [main-component]]
             [faceboard.dispatcher :as dispatcher]))
 
+(defn- root-app-element []
+  (.getElementById js/document "app"))
+
 (defn init! []
-  (om/root main-component app-state {:target (.getElementById js/document "app")})
-  (dispatcher/start-processing-commands))
+  (om/root main-component app-state {:target (root-app-element)})
+  (dispatcher/start-handling-commands))

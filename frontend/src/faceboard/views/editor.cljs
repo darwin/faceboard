@@ -9,7 +9,7 @@
             [phalanges.core :as phalanges]
             [faceboard.env :refer [mac?]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.controller :as controller :refer [perform!]]))
+            [faceboard.controller :refer [perform!]]))
 
 (def ^:dynamic *codemirror*)
 
@@ -66,7 +66,7 @@
                     :title    "The model has been modified by someone else. You are editing old data."
                     :on-click (fn [_]
                                 (set-codemirror-value! new-value)
-                                (om/refresh! owner))} 
+                                (om/refresh! owner))}
             "discard & reload")))))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner "host")

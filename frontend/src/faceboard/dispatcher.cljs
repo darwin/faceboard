@@ -5,7 +5,7 @@
             [faceboard.logging :refer [log, log-err, log-warn]])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
 
-(defn start-processing-commands []
+(defn start-handling-commands []
   (go-loop []
     (let [command (<! command-chan)]
       (log "handle command:" command)
