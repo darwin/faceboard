@@ -1,13 +1,13 @@
 (ns faceboard.dispatcher
-  (:require-macros [cljs.core.async.macros :refer [go go-loop]])
-  (:require [cljs.core.async :as async :refer [<! >!]]
-            [faceboard.commands :as commands]
-            [faceboard.controller :as controller :refer [perform!]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+  (:require [cljs.core.async :refer [<! >!]]
+            [faceboard.commands :refer [handle-command]]
+            [faceboard.controller :refer [perform! command-chan]]
+            [faceboard.logging :refer [log, log-err, log-warn]])
+  (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
 
 (defn start-processing-commands []
   (go-loop []
-    (let [command (<! controller/command-chan)]
+    (let [command (<! command-chan)]
       (log "handle command:" command)
-      (apply commands/handle-command command))
+      (apply handle-command command))
     (recur)))
