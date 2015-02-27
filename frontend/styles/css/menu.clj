@@ -2,11 +2,12 @@
   (:require [styles.lib.helpers :refer [>> mv px]]))
 
 (def styles
-  [(>> menu {:color       "#fff"
-             :float       "right"
-             :font-size   (px 12)
-             :line-height (px 18)
-             :padding     (px 2 0)}
+  [(>> menu
+     {:color       "#fff"
+      :float       "right"
+      :font-size   (px 12)
+      :line-height (px 18)
+      :padding     (px 2 0)}
      (>> [> *]
        {:display "inline-block"})
      (>> menu-button

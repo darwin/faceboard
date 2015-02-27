@@ -33,8 +33,8 @@
             [lein-aggravate "0.1.2-SNAPSHOT"]]
 
   :hooks [environ.leiningen.hooks
-          leiningen.garden
           leiningen.cljsbuild
+          leiningen.garden
           leiningen.aggravate]
 
   :source-paths ["backend" "target/classes" "resources" "frontend"]
@@ -84,14 +84,7 @@
                                 :vendors ["webkit"]
                                 :auto-prefix #{:border-radius}}}]}
 
-  :aggravate-files [{:input      ["resources/public/css/imports.css" ; must go first
-                                  "resources/public/css/app.css"
-                                  "resources/public/css/tabs.css"
-                                  "resources/public/css/logo.css"
-                                  "resources/public/css/menu.css"
-                                  "resources/public/css/people.css"
-                                  "resources/public/css/places.css"
-                                  "resources/public/css/editor.css"
+  :aggravate-files [{:input      ["resources/public/css/garden.css" ; must go first
                                   "resources/public/css/flags.css"
                                   "resources/public/codemirror/codemirror.css"
                                   "resources/public/codemirror/addon/lint/lint.css"
