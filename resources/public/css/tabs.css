@@ -1,7 +1,8 @@
+/*
 .page, .page-content, .tab-contents, .board-view, .left-side, .right-side {
   height: 100%;
-}
-
+}*/
+/*
 .top-bar {
   min-height: 22px;
   line-height: 18px;
@@ -41,23 +42,25 @@
   border-top-left-radius: 2px;
   border-bottom: 1px solid white;
 }
-
+*/
+/*
 .board-view {
   font-family: 'Kalam', cursive;
 }
 
-.page-content .left-side {
+.board-view .left-side {
   width: 80%;
   }
 
-.page-content .dual-mode .left-side {
+.board-view.dual-mode .left-side {
   width: 50%;
   display: inline-block;
   float: left;
 }
 
-.page-content .dual-mode .right-side {
+.board-view.dual-mode .right-side {
   width: 50%;
   display: inline-block;
   float: right;
 }
+*/

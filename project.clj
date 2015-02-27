@@ -12,6 +12,7 @@
                  [secretary "1.2.1"]
                  [matchbox "0.0.5-SNAPSHOT"]
                  [cljs-uuid "0.0.4"]
+                 [garden "1.2.5"]
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "4.6"]
@@ -25,16 +26,18 @@
   :min-lein-version "2.0.0"
 
   :plugins [[lein-cljsbuild "1.0.5"]
+            [lein-garden "0.2.5"]
             [lein-figwheel "0.2.3-SNAPSHOT"]
             [lein-ring "0.9.1"]
             [environ/environ.lein "0.2.1"]
             [lein-aggravate "0.1.2-SNAPSHOT"]]
 
   :hooks [environ.leiningen.hooks
+          leiningen.garden
           leiningen.cljsbuild
           leiningen.aggravate]
 
-  :source-paths ["backend" "target/classes" "resources"]
+  :source-paths ["backend" "target/classes" "resources" "frontend"]
 
   :clean-targets ^{:protect false} ["resources/public/_generated"]
 
@@ -73,6 +76,13 @@
                         }}}
 
   :profiles {:production {:env {:production true}}}
+
+  :garden {:builds [{:source-paths ["frontend/styles"]
+                     :stylesheet styles.garden/garden
+                     :compiler {:output-to "resources/public/css/garden.css"
+                                :pretty-print? true
+                                :vendors ["webkit"]
+                                :auto-prefix #{:border-radius}}}]}
 
   :aggravate-files [{:input      ["resources/public/css/imports.css" ; must go first
                                   "resources/public/css/app.css"
