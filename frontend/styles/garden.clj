@@ -5,7 +5,7 @@
     [styles.css.utils :as utils]
     [styles.css.page :as page]
     [styles.css.logo :as logo]
-    [styles.css.top_bar :as top_bar]
+    [styles.css.topbar :as topbar]
     [styles.css.tabs :as tabs]
     [styles.css.board :as board]
     [styles.css.editor :as editor]
@@ -25,7 +25,7 @@
   [imports
    utils/styles
    page/styles
-   top_bar/styles
+   topbar/styles
    logo/styles
    menu/styles
    tabs/styles

@@ -1,4 +1,4 @@
-(ns styles.css.top_bar
+(ns styles.css.topbar
   (:require [styles.lib.helpers :refer [>> mv px]]))
 
 (def styles
