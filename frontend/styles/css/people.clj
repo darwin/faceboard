@@ -1,4 +1,5 @@
 (ns styles.css.people
+  (:use [styles.lib.constants])
   (:require [styles.lib.helpers :refer [>> mv px]]))
 
 (def styles

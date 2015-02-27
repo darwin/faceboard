@@ -1,9 +1,10 @@
 (ns styles.css.board
+  (:use [styles.lib.constants])
   (:require [styles.lib.helpers :refer [>> mv px]]))
 
 (def styles
   [(>> board-view
-     {:font-family "'Kalam', cursive"
+     {:font-family board-font
       :height      "100%"}
      (>> [> *]
        {:height "100%"})
@@ -12,8 +13,8 @@
      (>> &.dual-mode
        (>> [> *]
          {:width   "50%"
-          :display "inline-block"})
+          :display :inline-block})
        (>> left-side
-         {:float "left"})
+         {:float :left})
        (>> right-side
-         {:float "right"})))])
+         {:float :right})))])

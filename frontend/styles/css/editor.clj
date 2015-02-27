@@ -1,4 +1,5 @@
 (ns styles.css.editor
+  (:use [styles.lib.constants])
   (:require [styles.lib.helpers :refer [>> mv px]]))
 
 (def styles
@@ -8,25 +9,18 @@
        {:border-left "1px dashed #eee"
         :height      "100%"
         :font-size   (px 10)})
-     (>> hint
-       {:z-index          100
-        :font-family      "monospace"
+     (>> hint refresh
+       {
+        :z-index          100
+        :font-family      editor-font
         :position         :absolute
         :right            (px 20)
-        :top              (px 10)
-        :background-color "#ddd"
         :font-size        (px 12)
         :padding          (px 2 6)
         :border-radius    (px 2)
+        :background-color "#ddd"
         :cursor           :pointer})
+     (>> hint
+       {:top (px 10)})
      (>> refresh
-       {:z-index          100
-        :font-family      "monospace"
-        :position         :absolute
-        :right            (px 20)
-        :top              (px 33)
-        :background-color "#ddd"
-        :font-size        (px 12)
-        :padding          (px 2 6)
-        :border-radius    (px 2)
-        :cursor           :pointer}))])
+       {:top (px 33)}))])
