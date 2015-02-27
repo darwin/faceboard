@@ -11,6 +11,8 @@
      {:font-size   (px 14)
       :line-height 1.4
       :font-family "'Lucida Sans Unicode', 'Lucida Grande', Verdana, sans-serif"})
+   (>> :#app
+     {:display "block !important"})
    (>> page
      (>> loading-indicator
        {:position :absolute
@@ -36,6 +38,7 @@
          (>> &:hover
            {:color "blue"}))))
    (>> standard-page
+     {:margin (px 40)}
      (>> button
        {:display          "inline-block"
         :cursor           :pointer
