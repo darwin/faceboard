@@ -26,24 +26,17 @@
   (.preventDefault event))
 
 (def action-table
-  [[#{:meta} #{:ctrl} 83 apply-model]                       ; CMD+S on Mac, CTRL+S elsewhere
+  [[#{:meta :s} #{:ctrl :s} apply-model]                    ; CMD+S on Mac, CTRL+S elsewhere
    ])
 
-(defn select-action [keycode modifiers]
-  (loop [table action-table]
-    (when-not (empty? table)
-      (let [record (first table)]
-        (if (and
-              (or
-                (and mac? (subset? (nth record 0) modifiers))
-                (and (not mac?) (subset? (nth record 1) modifiers)))
-              (= keycode (nth record 2)))                   ; workaround https://github.com/spellhouse/phalanges/issues/4
-          (nth record 3)
-          (recur (rest table)))))))
+(defn dispatch-action [keyset event]
+  (doseq [[mac-keyset non-mac-keyset action] action-table]
+    (when (or (and mac? (= keyset mac-keyset))
+            (and (not mac?) (= keyset non-mac-keyset)))
+      (action event))))
 
 (defn handle-codemirror-key [event]
-  (if-let [action (select-action (phalanges/key-code event) (phalanges/modifier-set event))]
-    (action event)))
+  (dispatch-action (phalanges/key-set event) event))
 
 (defcomponent editor-component [data owner]
   (render [_]

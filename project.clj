@@ -8,7 +8,7 @@
                  [org.omcljs/om "0.8.8"]
                  [prismatic/om-tools "0.3.10"]
                  [binaryage/devtools "0.1.0"]
-                 [spellhouse/phalanges "0.1.4"]
+                 [spellhouse/phalanges "0.1.5"]
                  [secretary "1.2.1"]
                  [matchbox "0.0.5-SNAPSHOT"]
                  [cljs-uuid "0.0.4"]
