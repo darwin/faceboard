@@ -16,9 +16,10 @@
 (defcomponent person-basic-info-component [data _ _]
   (render [_]
     (let [person (:person data)
+          id (:id data)
           extended? (:extended? data)
-          random-generator (cemerick.pprng/rng (hash (:name person)))
-          angle (- (cemerick.pprng/int random-generator 90) 45)
+          random-generator (cemerick.pprng/rng (hash id))
+          angle (- (cemerick.pprng/int random-generator 20) 10)
           flag-code (:country person)]
       (dom/div {:class (str "person"
                          (when (:hide? data) " hide"))}
@@ -39,9 +40,10 @@
 (defcomponent person-component [data _ _]
   (render [_]
     (let [person (:person data)
-          self-index (:self-index data)
-          expansion-anim (anims/person-expanding self-index)
-          shrinking-anim (anims/person-shrinking self-index)
+          index (:index data)
+          id (:id data)
+          expansion-anim (anims/person-expanding index)
+          shrinking-anim (anims/person-shrinking index)
           extended? (or (:extended? data) (= (anim-phase shrinking-anim) 0))]
       (dom/div {:class    (str "person-box"
                             (anim-class expansion-anim " expanding")
@@ -49,13 +51,15 @@
                             (when extended? " extended"))
                 :on-click (fn [e]
                             (.stopPropagation e)
-                            (perform! :change-extended-set (if-not extended? (set [self-index]) #{})))}
+                            (perform! :change-extended-set (if-not extended? (set [index]) #{})))}
         (dom/div {:class "person-extended-wrapper"}
           (om/build person-basic-info-component {:hide?     (not extended?)
                                                  :extended? extended?
+                                                 :id id
                                                  :person    person}))
         (dom/div {:class "person-essentials-wrapper"}
           (om/build person-basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
+                                                 :id id
                                                  :person person}))))))
 
 (defcomponent people-component [data _ _]
@@ -66,8 +70,10 @@
           extended-set (:extended-set ui)]
       (dom/div {:class "people-board"}
         (for [i (range (count people))]
-          (let [data {:person     (second (nth people i))
+          (let [record (nth people i)
+                data {:id (first record)
+                      :person     (second record)
                       :extended?  (contains? extended-set i)
                       :anim       (:person anims)
-                      :self-index i}]
+                      :index i}]
             (om/build person-component data)))))))

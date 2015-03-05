@@ -38,10 +38,7 @@
            {:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)}))
        (>> &.shrinking-phase0
          (>> [person right-part]
-           {:width "0px"}))
-       #_(>> &.shrinking-phase1
-         (>> polaroid-frame
-           {:transform "inherit !important"})))
+           {:width "0px"})))
      (>> polaroid-frame
        {:transform-origin "70px 80px"
         :background-color "#f6f6f6"
