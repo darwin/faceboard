@@ -1,4 +1,4 @@
-(ns styles.lib.constants
+(ns faceboard.lib.constants
   (:require [garden.units :as units]))
 
 (def base-font "'Lucida Sans Unicode', 'Lucida Grande', Verdana, sans-serif")

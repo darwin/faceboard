@@ -15,5 +15,6 @@
              :loading?        false
              :extended-set    #{}
              }
+     :anims {}
      }
     ))

@@ -8,7 +8,7 @@
                  [org.omcljs/om "0.8.8"]
                  [prismatic/om-tools "0.3.10"]
                  [binaryage/devtools "0.1.0"]
-                 [spellhouse/phalanges "0.1.5"]
+                 [spellhouse/phalanges "0.1.6"]
                  [secretary "1.2.1"]
                  [matchbox "0.0.5-SNAPSHOT"]
                  [cljs-uuid "0.0.4"]
@@ -78,7 +78,7 @@
   :profiles {:production {:env {:production true}}}
 
   :garden {:builds [{:source-paths ["frontend/styles"]
-                     :stylesheet styles.garden/garden
+                     :stylesheet faceboard.garden/garden
                      :compiler {:output-to "resources/public/css/garden.css"
                                 :pretty-print? true
                                 :vendors ["webkit"]

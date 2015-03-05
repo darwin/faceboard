@@ -1,6 +1,6 @@
-(ns styles.css.page
-  (:use [styles.lib.constants])
-  (:require [styles.lib.helpers :refer [>> mv px]]))
+(ns faceboard.css.page
+  (:use [faceboard.lib.constants])
+  (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
   [(>> *

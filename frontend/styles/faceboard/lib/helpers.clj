@@ -1,4 +1,4 @@
-(ns styles.lib.helpers
+(ns faceboard.lib.helpers
   (:require
     [garden.compiler :refer [CSSRenderer render-css]]
     [garden.def :refer [defstylesheet defstyles defcssfn]]
@@ -52,3 +52,6 @@
 (defmacro px [& args]
   (let [items (map #(if (number? %) (list units/px %) %) args)]
     `(mv ~@items)))
+
+(defn ms [v]
+  (format "%.3fs" (/ (float v) 1000)))

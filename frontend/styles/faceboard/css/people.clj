@@ -1,6 +1,7 @@
-(ns styles.css.people
-  (:use [styles.lib.constants])
-  (:require [styles.lib.helpers :refer [>> mv px]]))
+(ns faceboard.css.people
+  (:use [faceboard.lib.constants])
+  (:use [faceboard.shared.anims])
+  (:require [faceboard.lib.helpers :refer [>> mv px ms]]))
 
 (def styles
   [(>> people-board
@@ -12,13 +13,37 @@
         :margin          (px 20 20)
         :z-index         0
         :transform-style :preserve-3d
-        :transition      "transform 0.4s"
+        :transition      (str "transform 0.5s " ease-out-back)
         :transform       "translateZ(-100px)"}
+       ; zoom-in animation
        (>> &.extended
          {:z-index   100
-          :transform "translateZ(-50px)"}))
+          :transform "translateZ(0px)"})
+       ; expanding animation
+       (>> &.expanding
+         (>> [person right-part]
+           {:transition (str "width " (ms person-expanding-sliding-delay) " " ease-in-quit)})
+         (>> polaroid-frame
+           {:transition (str "transform " (ms person-expanding-rotation-delay) " " ease-out-quit)}))
+       (>> &.expanding-phase0
+         (>> [person right-part]
+           {:width      "0px"
+            :visibility :hidden}))
+       ; shrinking animation
+       (>> &.shrinking
+         (>> [person right-part]
+           {:transition (str "width " (ms person-shrinking-sliding-delay) " " ease-in-quit)
+            :width      "0px"})
+         (>> polaroid-frame
+           {:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)}))
+       (>> &.shrinking-phase0
+         (>> [person right-part]
+           {:width "0px"}))
+       #_(>> &.shrinking-phase1
+         (>> polaroid-frame
+           {:transform "inherit !important"})))
      (>> polaroid-frame
-       {:transform-origin "0% 0%"
+       {:transform-origin "70px 80px"
         :background-color "#f6f6f6"
         :border           "1px solid #eee"
         :padding          (px 10 8)
@@ -26,7 +51,6 @@
         :box-shadow       "0px 0px 10px -1px rgba(0,0,0,0.2)"
         :cursor           :pointer
         :opacity          0.8
-        :transition       "opacity .3s ease-in-out"
         :white-space      :nowrap}
        (>> &:hover
          {:background-color "#fafafa"
@@ -42,7 +66,7 @@
           :background-color "white"
           :box-shadow       "inset 0px 0px 20px 0px rgba(0,0,0,0.2)"}
          (>> :img
-           {:max-width (px 124)}))
+           {:max-width (px 126)}))
        (>> flag
          {:margin-left (px 6)
           :height      "14px !important"
@@ -58,19 +82,23 @@
        {:position :absolute})
      (>> [extended polaroid-frame]
        {:background-color "#fafafa"
+        :transform        "rotate(0deg) !important"
         :opacity          1
         :box-shadow       "0px 0px 20px -1px rgba(0,0,0,0.2)"})
      (>> person
        (>> left-part
          {:display :inline-block})
        (>> right-part
-         {:display        :inline-block
-          :vertical-align :top
-          :border-left    "2px dashed #dedede"
-          :padding-left   (px 10)
-          :margin-left    (px 10)
-          :min-height     (px 150)}))
+         {:display    :inline-block
+          :overflow   :hidden
+          :visibility :visible
+          :width      "300px"
+          }))
      (>> person-extended-info
-       {:min-width   (px 300)
-        :margin-left (px 10)
-        :font-size   (px 12)}))])
+       {:min-width      (px 300)
+        :border-left    "2px dashed #dedede"
+        :vertical-align :top
+        :min-height     (px 150)
+        :padding-left   (px 10)
+        :margin-left    (px 10)
+        :font-size      (px 12)}))])

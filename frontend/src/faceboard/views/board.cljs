@@ -47,13 +47,15 @@
 (defcomponent board-content-component [data _ _]
   (render [_]
     (let [ui (:ui data)
+          anims (:anims data)
           model (:model data)
           {:keys [selected-tab-id tabs model-editing?]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class    (str "board-view" (when model-editing? " dual-mode"))
                 :on-click #(perform! :change-extended-set #{})}
         (dom/div {:class "left-side"}
-          (om/build (tab->component selected-tab) {:ui   ui
+          (om/build (tab->component selected-tab) {:anims anims
+                                                   :ui   ui
                                                    :data (selected-tab-id model)}))
         (dom/div {:class "right-side"}
           (when model-editing?

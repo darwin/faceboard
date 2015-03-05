@@ -1,18 +1,18 @@
-(ns styles.garden
+(ns faceboard.garden
   (:require
     [garden.def :refer [defstyles]]
     [garden.stylesheet :refer [at-import]]
-    [styles.css.utils :as utils]
-    [styles.css.page :as page]
-    [styles.css.logo :as logo]
-    [styles.css.topbar :as topbar]
-    [styles.css.tabs :as tabs]
-    [styles.css.board :as board]
-    [styles.css.editor :as editor]
-    [styles.css.welcome :as welcome]
-    [styles.css.people :as people]
-    [styles.css.places :as places]
-    [styles.css.menu :as menu]))
+    [faceboard.css.utils :as utils]
+    [faceboard.css.page :as page]
+    [faceboard.css.logo :as logo]
+    [faceboard.css.topbar :as topbar]
+    [faceboard.css.tabs :as tabs]
+    [faceboard.css.board :as board]
+    [faceboard.css.editor :as editor]
+    [faceboard.css.welcome :as welcome]
+    [faceboard.css.people :as people]
+    [faceboard.css.places :as places]
+    [faceboard.css.menu :as menu]))
 
 (def ad-hoc
   [#_[:body {:background-color "#eee"}]])

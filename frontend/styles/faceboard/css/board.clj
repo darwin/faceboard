@@ -1,6 +1,6 @@
-(ns styles.css.board
-  (:use [styles.lib.constants])
-  (:require [styles.lib.helpers :refer [>> mv px]]))
+(ns faceboard.css.board
+  (:use [faceboard.lib.constants])
+  (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
   [(>> board-view

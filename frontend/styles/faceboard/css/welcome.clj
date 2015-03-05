@@ -1,6 +1,6 @@
-(ns styles.css.welcome
-  (:use [styles.lib.constants])
-  (:require [styles.lib.helpers :refer [>> mv px]]))
+(ns faceboard.css.welcome
+  (:use [faceboard.lib.constants])
+  (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
   [(>> welcome

@@ -1,10 +1,13 @@
 (ns faceboard.commands
-  (:require [faceboard.state :refer [app-state]]
+  (:require [clojure.set :refer [difference]]
+            [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.model :as model]
             [faceboard.router :as router]
             [faceboard.firebase :as db]
             [faceboard.data.initial_board :refer [initial-board]]
+            [faceboard.shared.anims :as anims]
+            [faceboard.animator :refer [animate invalidate-animations]]
             [faceboard.utils :refer [json->model]])
   (:require-macros [faceboard.macros.model :refer [transform-app-state]]))
 
@@ -30,9 +33,23 @@
     (catch js/Object err
       (log-err err))))
 
-(defmethod handle-command :change-extended-set [_ new-set]
+(defn kill-anims [path]
+  (invalidate-animations path)
   (transform-app-state
-    (model/set [:ui :extended-set] new-set)))
+    (model/set path nil)))                                  ; potentially resets whole animations subtree
+
+(defmethod handle-command :change-extended-set [_ new-set]
+  (let [old-set (model/get [:ui :extended-set])
+        expanding-set (difference new-set old-set)
+        shrinking-set (difference old-set new-set)]
+    (kill-anims [:anims :person :person-expanding])
+    (kill-anims [:anims :person :person-shrinking])
+    (doseq [item expanding-set]
+      (animate (anims/person-expanding item)))
+    (doseq [item shrinking-set]
+      (animate (anims/person-shrinking item)))
+    (transform-app-state
+      (model/set [:ui :extended-set] new-set))))
 
 (defmethod handle-command :switch-tab [_ new-id]
   (transform-app-state
@@ -60,3 +77,15 @@
                               (model/set [:model] initial-board))
                             (router/navigate! (router/board-route {:id board-id})))]
     (db/connect-board board-id {:on-connect init-and-navigate})))
+
+(defmethod handle-command :start-anim [_ anim-path]
+  (transform-app-state
+    (model/set anim-path 0)))
+
+(defmethod handle-command :stop-anim [_ anim-path]
+  (transform-app-state
+    (model/set anim-path nil)))
+
+(defmethod handle-command :animate [_ anim-path]
+  (transform-app-state
+    (model/update anim-path inc)))
