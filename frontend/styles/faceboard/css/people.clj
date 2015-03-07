@@ -29,16 +29,24 @@
          (>> [person right-part]
            [:width "0px"
             :visibility :hidden]))
+       (>> &.expanding-phase1
+         (>> [person right-part]
+           [:width "300px"]))
        ; shrinking animation
        (>> &.shrinking
          (>> [person right-part]
-           [:transition (str "width " (ms person-shrinking-sliding-delay) " " ease-in-quit)
-            :width "0px"])
+           [:transition (str "width " (ms person-shrinking-sliding-delay) " " ease-in-quit)])
          (>> polaroid-frame
            [:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)]))
        (>> &.shrinking-phase0
          (>> [person right-part]
-           [:width "0px"])))
+           [:width (px 300)]))
+       (>> &.shrinking-phase1
+         (>> [person right-part]
+           [:width (px 0)]))
+       (>> &.shrinking-phase2
+         (>> [person right-part]
+           [:visibility :hidden])))
      (>> polaroid-frame
        [:transform-origin "70px 80px"
         :background-color "#f6f6f6"
@@ -88,14 +96,24 @@
        (>> right-part
          [:display :inline-block
           :overflow :hidden
-          :visibility :visible
-          :width "300px"
-          ]))
+          :visibility :visible]))
      (>> person-extended-info
        [:min-width (px 300)
-        :border-left "2px dashed #dedede"
         :vertical-align :top
         :min-height (px 150)
-        :padding-left (px 10)
         :margin-left (px 10)
-        :font-size (px 12)]))])
+        :line-height (px 16)
+        :font-size (px 12)]
+       (>> social-item
+         (>> icon
+           [:font-size (px 16)
+            :position :relative
+            :top (px 1)
+            :color "#ddd"])
+         (>> social-type
+           [:color "#999"])
+         (>> :a
+           [:font-weight :bold
+            :color signature-color
+            :text-decoration :none])
+         )))])

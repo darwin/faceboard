@@ -6,29 +6,70 @@
             [faceboard.controller :refer [perform!]]
             [faceboard.shared.anims :as anims]
             [faceboard.logging :refer [log, log-err, log-warn]]
+            [clojure.string :as string]
             [cemerick.pprng]))
 
-(defcomponent person-extended-info-component [_ _ _]
+(defn social [data]
+  (let [parts (string/split data #"\|" 2)]
+    (cond
+      (< (count parts) 1) [nil data]
+      (< (count parts) 2) [nil (first parts)]
+      :else parts)))
+
+(defn social->url [item]
+  (let [id (second item)]
+    (condp = (first item)
+      "twitter" (str "http://twitter.com/" id)
+      id)))
+
+(defn social->icon [item]
+  (condp = (first item)
+    "twitter" "fa-twitter-square"
+    "github" "fa-github-square"
+    "facebook" "fa-facebook-square"
+    "fa-external-link-square"))
+
+(defcomponent social-section-item-component [data _ _]
+  (render [_]
+    (let [item (social data)
+          type (first item)
+          id (second item)
+          icon (social->icon item)
+          url (social->url item)]
+      (log item)
+      (dom/div {:class "social-item"}
+        (when icon (dom/i {:class (str "icon fa " icon)}))
+        (dom/a {:href url} (str " " id))
+        (when type
+          (dom/span {:class "social-type"} " on " type))))))
+
+(defcomponent social-section-component [data _ _]
+  (render [_]
+    (dom/div {:class "extended-info-section social"}
+      (om/build-all social-section-item-component data))))
+
+(defcomponent person-extended-info-component [data _ _]
   (render [_]
     (dom/div {:class "person-extended-info"}
-      "TBD: some additional info")))
+      (om/build social-section-component (:social data)))))
 
 (defcomponent person-basic-info-component [data _ _]
   (render [_]
     (let [person (:person data)
+          bio (:bio person)
           id (:id data)
           extended? (:extended? data)
           random-generator (cemerick.pprng/rng (hash id))
           angle (- (cemerick.pprng/int random-generator 20) 10)
-          flag-code (:country person)]
+          flag-code (:country bio)]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
                   :style {:transform (str "rotate(" angle "deg)")}}
           (dom/div {:class "left-part"}
             (dom/div {:class "photo"}
-              (dom/img {:src (or (:photo-url person) "/images/unknown.jpg")}))
+              (dom/img {:src (or (get-in bio [:photo :url] nil) "/images/unknown.jpg")}))
             (dom/div {:class "name f16"}
-              (:name person)
+              (:name bio)
               (when-not (nil? flag-code)
                 (dom/div {:class (str "flag " flag-code)}))))
           (when extended?
@@ -43,7 +84,7 @@
           id (:id data)
           expansion-anim (anims/person-expanding index)
           shrinking-anim (anims/person-shrinking index)
-          extended? (or (:extended? data) (= (anim-phase shrinking-anim) 0))]
+          extended? (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1))]
       (dom/div {:class    (str "person-box"
                             (anim-class expansion-anim " expanding")
                             (anim-class shrinking-anim " shrinking")

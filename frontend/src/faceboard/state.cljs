@@ -13,8 +13,5 @@
              :editing?        false
              :model-editing?  false
              :loading?        false
-             :extended-set    #{}
-             }
-     :anims {}
-     }
-    ))
+             :extended-set    #{}}
+     :anims {}}))
