@@ -8,4 +8,4 @@
 
 (def signature-color "#3a5795")
 (def error-color "#e00000")
-(def loading-color signature-color)
+(def loading-color "#666")

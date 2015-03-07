@@ -64,7 +64,7 @@
   (transform-app-state
     (model/set [:ui :view] :loading)
     (model/set [:ui :loading?] true)
-    (model/set [:ui :view-params] {:message "Loading faceboard..."}))
+    (model/set [:ui :view-params] {:message "Loading the board..."}))
   (db/connect-board board-id))
 
 (defmethod handle-command :create-board [_ board-id]

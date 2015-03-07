@@ -32,4 +32,5 @@
       :border-top-left-radius (px 4)
       :border-top-right-radius (px 4)]
      (>> :span
-       [:display :inline-block]))])
+       [:position :relative
+        :top (px 2)]))])

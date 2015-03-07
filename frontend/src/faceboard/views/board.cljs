@@ -68,7 +68,7 @@
           {:keys [selected-tab-id tabs loading?]} ui]
       (page/page-skeleton
         (dom/div {:class (str "loading-indicator" (when loading? " visible"))}
-          (dom/img {:src "images/loader.gif"}))
+          (dom/i {:class "fa fa-refresh fa-spin"}))
         (dom/div {:class "top-bar no-select"}
           (om/build small-logo-component {})
           (om/build board-label-component {:board-label (get-in model [:board :name])

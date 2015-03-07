@@ -17,15 +17,13 @@
    (>> page
      (>> loading-indicator
        [:position :absolute
-        :top (px 2)
-        :left (px 2)
+        :color "#bbb"
+        :top (px 1)
+        :left (px 5)
         :opacity 0
         :transition "opacity .3s ease-in-out"]
        (>> &.visible
-         [:opacity 1])
-       (:img
-         [:width (px 18)
-          :height (px 18)]))
+         [:opacity 1]))
      (>> banner
        [:position :fixed
         :bottom (px 0)
