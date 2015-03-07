@@ -21,8 +21,7 @@
           random-generator (cemerick.pprng/rng (hash id))
           angle (- (cemerick.pprng/int random-generator 20) 10)
           flag-code (:country person)]
-      (dom/div {:class (str "person"
-                         (when (:hide? data) " hide"))}
+      (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
                   :style {:transform (str "rotate(" angle "deg)")}}
           (dom/div {:class "left-part"}
@@ -55,11 +54,11 @@
         (dom/div {:class "person-extended-wrapper"}
           (om/build person-basic-info-component {:hide?     (not extended?)
                                                  :extended? extended?
-                                                 :id id
+                                                 :id        id
                                                  :person    person}))
         (dom/div {:class "person-essentials-wrapper"}
           (om/build person-basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
-                                                 :id id
+                                                 :id     id
                                                  :person person}))))))
 
 (defcomponent people-component [data _ _]
@@ -71,9 +70,9 @@
       (dom/div {:class "people-board"}
         (for [i (range (count people))]
           (let [record (nth people i)
-                data {:id (first record)
-                      :person     (second record)
-                      :extended?  (contains? extended-set i)
-                      :anim       (:person anims)
-                      :index i}]
+                data {:id        (first record)
+                      :person    (second record)
+                      :extended? (contains? extended-set i)
+                      :anim      (:person anims)
+                      :index     i}]
             (om/build person-component data)))))))

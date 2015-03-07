@@ -2,6 +2,7 @@
   (:require [secretary.core :as secretary :refer-macros [defroute]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :refer [perform!]]
+            [faceboard.env :refer [local?]]
             [goog.events])
   (:import goog.History
            goog.history.EventType)
@@ -37,9 +38,16 @@
   (defroute-with-info home-route "/" [] (perform! :switch-view :welcome))
   (defroute-with-info local-route "/local" [] (perform! :switch-view :board))
   (defroute-with-info board-route "/board/:id" [id] (perform! :switch-board id))
-  (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "nothing to be seen here"})))
+  (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
+
+(defn define-test-routes! []
+  (defroute-with-info test-route "/test" [] (perform! :switch-view :test))
+  (defroute-with-info test-error-route "/test/error" [] (perform! :switch-view :error {:message "This is a sample error message xxxx this is a sample error message this is a sample error message this is a sample error message."}))
+  (defroute-with-info test-loading-route "/test/loading" [] (perform! :switch-view :loading {:message "This is a sample loading message."})))
 
 (defn init! []
   (setup!)
+  (when local?
+    (define-test-routes!))
   (define-routes!)
   (enable-history! history))

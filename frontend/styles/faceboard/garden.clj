@@ -10,6 +10,9 @@
     [faceboard.css.board :as board]
     [faceboard.css.editor :as editor]
     [faceboard.css.welcome :as welcome]
+    [faceboard.css.error :as error]
+    [faceboard.css.test :as test]
+    [faceboard.css.loading :as loading]
     [faceboard.css.people :as people]
     [faceboard.css.places :as places]
     [faceboard.css.menu :as menu]))
@@ -32,6 +35,9 @@
    board/styles
    editor/styles
    welcome/styles
+   error/styles
+   test/styles
+   loading/styles
    people/styles
    places/styles
    ad-hoc])

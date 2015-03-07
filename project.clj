@@ -85,6 +85,7 @@
                                 :auto-prefix #{:border-radius}}}]}
 
   :aggravate-files [{:input      ["resources/public/css/garden.css" ; must go first
+                                  "resources/public/css/font-awesome.css"
                                   "resources/public/css/flags.css"
                                   "resources/public/codemirror/codemirror.css"
                                   "resources/public/codemirror/addon/lint/lint.css"

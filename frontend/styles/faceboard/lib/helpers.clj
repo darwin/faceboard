@@ -2,14 +2,13 @@
   (:require
     [garden.compiler :refer [CSSRenderer render-css]]
     [garden.def :refer [defstylesheet defstyles defcssfn]]
-    [garden.units :as units])
-  (:import (clojure.lang PersistentArrayMap)))
+    [garden.units :as units]))
 
 ; garden is nice but this makes it beautiful
 
 (defn symbol-vector? [item]
   (when (vector? item)
-    (every? #(or (symbol? %) (keyword? %) (string? %)) item)))
+    (every? #(or (symbol? %) (string? %)) item)))
 
 (defn produce-class [x]
   (if (keyword? x)
@@ -23,10 +22,10 @@
   (apply str (interpose " " (map #(produce-class %) v))))
 
 ; see https://github.com/noprompt/garden/issues/72#issuecomment-76331495
-; this will break CSS declaration maps into series of 1-rule maps while preserving their order
+; this will break CSS declaration vectors into series of 1-declaration maps while preserving their order
 ; {:b 1 :a 2} => [{:b 1} {:a 2}]
-(defn break-map [m]
-  (map (fn [x] {(first x) (second x)}) m))
+(defn make-maps [m]
+  (map #(apply hash-map %) (partition 2 m)))
 
 ; a convenience macro for our CSS declarations to be more DRY
 (defmacro >> [& args]
@@ -35,7 +34,7 @@
                         (keyword? item) [(produce-class item)]
                         (symbol? item) [(produce-class item)]
                         (symbol-vector? item) [(produce-class-from-vector item)]
-                        (instance? PersistentArrayMap item) (break-map item)
+                        (vector? item) (make-maps item)
                         :else [item]))]
     (vec (mapcat transformer args))))
 

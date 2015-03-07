@@ -6,25 +6,25 @@
             [faceboard.controller :refer [perform!]]
             [faceboard.router :as router]
             [faceboard.page :as page]
-            [faceboard.views.logo :refer [logo-component]]
+            [faceboard.views.logo :refer [small-logo-component]]
             [faceboard.views.menu :refer [menu-component]]
             [faceboard.views.editor :refer [editor-component]]
             [faceboard.views.people :refer [people-component]]
             [faceboard.views.places :refer [places-component]]))
 
-(defn tab->component [tab]
+(defn- tab->component [tab]
   (condp = (:id tab)
     :people people-component
     :places places-component
     people-component))                                      ; default
 
-(defn lookup-tab [id tabs]
+(defn- lookup-tab [id tabs]
   (let [result (first (filter #(= id (:id %)) tabs))]
     (when (nil? result)
       (log-warn (str "unknow tab id '" id "' in ") tabs))
     result))
 
-(defn tab-selected? [id tab]
+(defn- tab-selected? [id tab]
   (= (:id tab) id))
 
 (defcomponent board-label-component [data _ _]
@@ -70,7 +70,7 @@
         (dom/div {:class (str "loading-indicator" (when loading? " visible"))}
           (dom/img {:src "images/loader.gif"}))
         (dom/div {:class "top-bar no-select"}
-          (om/build logo-component {})
+          (om/build small-logo-component {})
           (om/build board-label-component {:board-label (get-in model [:board :name])
                                            :board-url   (router/current-route)})
           (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})

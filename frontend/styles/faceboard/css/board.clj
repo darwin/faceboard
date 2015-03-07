@@ -4,17 +4,17 @@
 
 (def styles
   [(>> board-view
-     {:font-family board-font
-      :height      "100%"}
+     [:font-family board-font
+      :height "100%"]
      (>> [> *]
-       {:height "100%"})
+       [:height "100%"])
      (>> left-side
-       {:width "80%"})
+       [:width "80%"])
      (>> &.dual-mode
        (>> [> *]
-         {:width   "50%"
-          :display :inline-block})
+         [:width "50%"
+          :display :inline-block])
        (>> left-side
-         {:float :left})
+         [:float :left])
        (>> right-side
-         {:float :right})))])
+         [:float :right])))])

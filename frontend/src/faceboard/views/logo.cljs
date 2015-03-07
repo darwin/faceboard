@@ -3,8 +3,14 @@
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log, log-err, log-warn]]))
 
-(defcomponent logo-component [_ _ _]
+(defcomponent small-logo-component [_ _ _]
   (render [_]
-    (dom/div {:class "logo"}
+    (dom/div {:class "small-logo"}
       (dom/div {:class "faceboard-logo"}
         (dom/a {:href "/"} "faceboard")))))
+
+
+(defcomponent big-logo-component [_ _ _]
+  (render [_]
+    (dom/div {:class "big-logo no-select"}
+      (dom/span {} "FACEBOARD"))))
