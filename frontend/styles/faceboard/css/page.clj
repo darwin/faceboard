@@ -3,7 +3,7 @@
   (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
-  [(>> *
+  [(>> :body
      [:margin (px 0)
       :padding (px 0)])
    (>> :html :body :#app main-box page [page page-content]
