@@ -92,7 +92,8 @@
         :box-shadow "0px 0px 20px -1px rgba(0,0,0,0.2)"])
      (>> person
        (>> left-part
-         [:display :inline-block])
+         [:display :inline-block
+          :vertical-align :top])
        (>> right-part
          [:display :inline-block
           :overflow :hidden

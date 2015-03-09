@@ -11,12 +11,12 @@
 
 (defcomponent social-section-item-component [data _ _]
   (render [_]
-    (let [{:keys [type content icon url]} (social-info data)]
+    (let [{:keys [type label content icon url]} (social-info data)]
       (dom/div {:class "social-item"}
         (when icon (dom/i {:class (str "icon fa " icon)}))
         (dom/a {:href url} (str " " content))
         (when type
-          (dom/span {:class "social-type"} " on " type))))))
+          (dom/span {:class "social-type"} " on " label))))))
 
 (defcomponent social-section-component [data _ _]
   (render [_]

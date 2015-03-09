@@ -18,10 +18,16 @@
                      "bitcoin"
                      "totalfinder"
                      "binaryage"]
-            :social ["twitter|dr_win"
+            :social ["facebook|antonin.hildebrand"
+                     "linkedin|hildebrand"
                      "github|darwin"
-                     "facebook|antonin.hildebrand"
-                     "web|http://about.me/darwin"]}
+                     "twitter|dr_win"
+                     "reddit|dr_win"
+                     "hacker-news|dr_win"
+                     "flickr|woid"
+                     "lastfm|woid"
+                     "web|http://about.me/darwin"
+                     "binaryage|http://www.binaryage.com"]}
    :alexey {:bio  {:name      "Alexey"
                    :full-name "Alexey Komissarouk"
                    :photo     {:url "https://dl.dropboxusercontent.com/u/559047/alexey.png"}
