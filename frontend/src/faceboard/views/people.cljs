@@ -5,41 +5,16 @@
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
             [faceboard.shared.anims :as anims]
+            [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [clojure.string :as string]
             [cemerick.pprng]))
-
-(defn social [data]
-  (let [parts (string/split data #"\|" 2)]
-    (cond
-      (< (count parts) 1) [nil data]
-      (< (count parts) 2) [nil (first parts)]
-      :else parts)))
-
-(defn social->url [item]
-  (let [id (second item)]
-    (condp = (first item)
-      "twitter" (str "http://twitter.com/" id)
-      id)))
-
-(defn social->icon [item]
-  (condp = (first item)
-    "twitter" "fa-twitter-square"
-    "github" "fa-github-square"
-    "facebook" "fa-facebook-square"
-    "fa-external-link-square"))
 
 (defcomponent social-section-item-component [data _ _]
   (render [_]
-    (let [item (social data)
-          type (first item)
-          id (second item)
-          icon (social->icon item)
-          url (social->url item)]
-      (log item)
+    (let [{:keys [type content icon url]} (social-info data)]
       (dom/div {:class "social-item"}
         (when icon (dom/i {:class (str "icon fa " icon)}))
-        (dom/a {:href url} (str " " id))
+        (dom/a {:href url} (str " " content))
         (when type
           (dom/span {:class "social-type"} " on " type))))))
 
