@@ -33,7 +33,7 @@
       (< (count parts) 2) [nil (first parts)]
       :else [(str/lower (first parts)) (str/lower (second parts))])))
 
-(defn complete-url [type id]
+(defn build-known-url [type id]
   ; TODO: add more services
   (condp = type                                             ; recognized urls from id
     "facebook" (str "https://github.com/" id)
@@ -47,7 +47,7 @@
 (defn social->url [[type id]]
   (if (str/starts-with? id "http")
     id
-    (complete-url type id)))
+    (or (build-known-url type id) id)))
 
 (defn social->icon [[type _]]
   (let [prefix-matches (filter #(str/starts-with? % type) known-icons)
