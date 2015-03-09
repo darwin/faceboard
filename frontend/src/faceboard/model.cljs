@@ -2,7 +2,7 @@
   (:refer-clojure :exclude [get set update])
   (:require [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log, log-err, log-warn]]
-            [faceboard.utils :refer [json->model]]))
+            [faceboard.helpers.utils :refer [json->model]]))
 
 (defn update
   ([state path fn] (update-in state path fn))

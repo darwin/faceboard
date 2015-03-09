@@ -5,7 +5,7 @@
             [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.utils :refer [model->json]]
+            [faceboard.helpers.utils :refer [model->json]]
             [phalanges.core :as phalanges]
             [faceboard.env :refer [mac?]]
             [faceboard.logging :refer [log, log-err, log-warn]]

@@ -1,4 +1,4 @@
-(ns faceboard.utils)
+(ns faceboard.helpers.utils)
 
 (defn model->json [model]
   (.stringify js/JSON (clj->js model) nil 2))

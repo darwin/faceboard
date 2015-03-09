@@ -8,7 +8,7 @@
             [faceboard.data.initial_board :refer [initial-board]]
             [faceboard.shared.anims :as anims]
             [faceboard.animator :refer [animate invalidate-animations]]
-            [faceboard.utils :refer [json->model]])
+            [faceboard.helpers.utils :refer [json->model]])
   (:require-macros [faceboard.macros.model :refer [transform-app-state]]))
 
 (defmulti handle-command (fn [command & _] command))
