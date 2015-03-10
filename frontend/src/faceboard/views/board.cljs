@@ -9,21 +9,19 @@
             [faceboard.views.logo :refer [small-logo-component]]
             [faceboard.views.menu :refer [menu-component]]
             [faceboard.views.editor :refer [editor-component]]
-            [faceboard.views.people :refer [people-component]]
-            [faceboard.views.places :refer [places-component]]))
+            [faceboard.views.boards.people :refer [people-component]]
+            [faceboard.views.boards.places :refer [places-component]]
+            [faceboard.views.boards.generic :refer [generic-component]]))
 
 (defn- tab->component [tab]
   (condp = (:kind tab)
     "people" people-component
     "places" places-component
-    people-component))                                      ; default
+    generic-component))
 
 (defn- lookup-tab [id tabs]
   (let [result (first (filter #(= id (:id %)) tabs))]
     (or result (first tabs))))
-
-(defn- tab-selected? [id tab]
-  (= (:id tab) id))
 
 (defcomponent board-label-component [data _ _]
   (render [_]
@@ -46,12 +44,15 @@
   (render [_]
     (let [{:keys [ui anims model selected-tab]} data
           {:keys [model-editing?]} ui]
-      (dom/div {:class    (str "board-view" (when model-editing? " dual-mode"))
+      (dom/div {:class    (str "tab-view" (when model-editing? " dual-mode"))
                 :on-click #(perform! :change-extended-set #{})}
         (dom/div {:class "left-side"}
-          (om/build (tab->component selected-tab) {:anims   anims
-                                                   :ui      ui
-                                                   :content (:content selected-tab)}))
+          (let [kind (or (:kind selected-tab) "generic")
+                id (:id selected-tab)]
+            (dom/div {:class (str "board " kind "-board " (when id (str "id-" (:id selected-tab))))}
+              (om/build (tab->component selected-tab) {:anims   anims
+                                                       :ui      ui
+                                                       :content (:content selected-tab)}))))
         (dom/div {:class "right-side"}
           (when model-editing?
             (om/build editor-component model)))))))

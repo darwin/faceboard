@@ -18,7 +18,8 @@
     [faceboard.css.menu :as menu]))
 
 (def ad-hoc
-  [#_[:body {:background-color "#eee"}]])
+  [
+  #_[:body {:background-color "#eee"}]])
 
 (def imports
   [(at-import "http://fonts.googleapis.com/css?family=Exo:800")

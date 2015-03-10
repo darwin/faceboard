@@ -60,4 +60,7 @@
            {:id      "places"
             :label   "Places"
             :kind    "places"
-            :content hackerparadise-places}]})
+            :content hackerparadise-places}
+           {:id "sample-generic"
+            :label "Generic"
+            :content "<b>hello world</b><br>this is a generic HTML content"}]})

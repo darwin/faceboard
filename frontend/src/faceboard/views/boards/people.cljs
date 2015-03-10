@@ -1,4 +1,4 @@
-(ns faceboard.views.people
+(ns faceboard.views.boards.people
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -99,7 +99,7 @@
     (let [{:keys [ui anims]} data
           people (:content data)
           extended-set (:extended-set ui)]
-      (dom/div {:class "people-board"}
+      (dom/div {}
         (for [i (range (count people))]
           (let [person (nth people i)
                 data {:person    person
