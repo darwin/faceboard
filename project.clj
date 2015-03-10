@@ -57,7 +57,6 @@
                         :compiler     {:optimizations  :none
                                        :output-to      "resources/public/_generated/dev/faceboard.js"
                                        :output-dir     "resources/public/_generated/dev"
-                                       :cache-analysis true
                                        :source-map     true}}
                        :production
                        {:source-paths ["frontend/src", "frontend/src-prod"]
@@ -75,8 +74,7 @@
                                                        "public/codemirror/addon/lint/lint.js"
                                                        "public/codemirror/addon/lint/json-lint.js"
                                                        "public/codemirror/javascript.js"
-                                                       ]}
-                        }}}
+                                                       ]}}}}
 
   :profiles {:production {:env {:production true}}}
 
