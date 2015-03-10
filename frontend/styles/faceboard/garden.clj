@@ -15,6 +15,7 @@
     [faceboard.css.loading :as loading]
     [faceboard.css.people :as people]
     [faceboard.css.places :as places]
+    [faceboard.css.iframe :as iframe]
     [faceboard.css.menu :as menu]))
 
 (def ad-hoc
@@ -41,6 +42,7 @@
    loading/styles
    people/styles
    places/styles
+   iframe/styles
    ad-hoc])
 
 ; fully generated stylesheet => resources/public/css/garden.css

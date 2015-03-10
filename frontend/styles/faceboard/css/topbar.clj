@@ -4,7 +4,9 @@
 
 (def styles
   [(>> top-bar
-     [:min-height (px 22)
+     [:z-index 10
+      :position :relative
+      :min-height (px 22)
       :line-height (px 18)
       :background-color signature-color
       :border-bottom "1px solid #999"

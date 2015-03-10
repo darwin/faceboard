@@ -11,12 +11,14 @@
             [faceboard.views.editor :refer [editor-component]]
             [faceboard.views.boards.people :refer [people-component]]
             [faceboard.views.boards.places :refer [places-component]]
+            [faceboard.views.boards.iframe :refer [iframe-component]]
             [faceboard.views.boards.generic :refer [generic-component]]))
 
 (defn- tab->component [tab]
   (condp = (:kind tab)
     "people" people-component
     "places" places-component
+    "iframe" iframe-component
     generic-component))
 
 (defn- lookup-tab [id tabs]
@@ -53,8 +55,8 @@
               (om/build (tab->component selected-tab) {:anims   anims
                                                        :ui      ui
                                                        :content (:content selected-tab)}))))
-        (dom/div {:class "right-side"}
-          (when model-editing?
+        (when model-editing?
+          (dom/div {:class "right-side"}
             (om/build editor-component model)))))))
 
 (defcomponent board-component [data _ _]

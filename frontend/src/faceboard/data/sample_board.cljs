@@ -57,10 +57,22 @@
             :label   "People"
             :kind    "people"
             :content hackerparadise-people}
-           {:id      "places"
+           #_{:id      "places"
             :label   "Places"
             :kind    "places"
             :content hackerparadise-places}
-           {:id "sample-generic"
+           #_{:id "sample-generic"
             :label "Generic"
-            :content "<b>hello world</b><br>this is a generic HTML content"}]})
+            :content "<b>hello world</b><br>this is a generic HTML content"}
+           {:id      "docs"
+            :label   "Docs"
+            :kind    "iframe"
+            :content {:url "https://drive.google.com/embeddedfolderview?id=0B008sEIaoPmvfjd6T3RxeUR4My0zOGtVbVNOeG9YcGhWRHl3Qmlia1VLOFdPOGwwQXJIYmc#grid"}}
+           {:id      "calendar"
+            :label   "Calendar"
+            :kind    "iframe"
+            :content {:url "https://www.google.com/calendar/embed?showTitle=0&showPrint=0&showTabs=0&showTz=0&height=750&wkst=2&bgcolor=%23eee&src=uomn8jge32pvacda11fsrqgqqs%40group.calendar.google.com&ctz=Asia/Saigon"}}
+           {:id      "more"
+            :label   "More"
+            :kind    "gist"
+            :content {:url ""}}]})
