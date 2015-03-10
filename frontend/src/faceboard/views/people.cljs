@@ -73,7 +73,7 @@
   (render [_]
     (let [person (:person data)
           index (:index data)
-          id (:id data)
+          id (:id person)
           expansion-anim (anims/person-expanding index)
           shrinking-anim (anims/person-shrinking index)
           extended? (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1))]
@@ -96,16 +96,15 @@
 
 (defcomponent people-component [data _ _]
   (render [_]
-    (let [people (seq (:data data))
-          ui (:ui data)
-          anims (:anims data)
+    (let [{:keys [ui anims]} data
+          people (:data data)
           extended-set (:extended-set ui)]
       (dom/div {:class "people-board"}
         (for [i (range (count people))]
-          (let [record (nth people i)
-                data {:id        (first record)
-                      :person    (second record)
+          (let [person (nth people i)
+                data {:person    person
                       :extended? (contains? extended-set i)
                       :anim      (:person anims)
                       :index     i}]
+            (log data)
             (om/build person-component data)))))))
