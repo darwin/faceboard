@@ -97,7 +97,7 @@
 (defcomponent people-component [data _ _]
   (render [_]
     (let [{:keys [ui anims]} data
-          people (:data data)
+          people (:content data)
           extended-set (:extended-set ui)]
       (dom/div {:class "people-board"}
         (for [i (range (count people))]

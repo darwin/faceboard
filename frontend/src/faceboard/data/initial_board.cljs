@@ -14,11 +14,11 @@
 
 (def initial-board
   {:board {:name "our group"}
-   :tabs  [{:id    :people
-            :label "People"
-            :kind  :people
-            :data  example-people}
-           {:id    :places
-            :label "Places"
-            :kind  :places
-            :data  example-places}]})
+   :tabs  [{:id      "people"
+            :label   "People"
+            :kind    "people"
+            :content example-people}
+           {:id      "places"
+            :label   "Places"
+            :kind    "places"
+            :content example-places}]})

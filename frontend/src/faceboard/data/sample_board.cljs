@@ -53,11 +53,11 @@
 
 (def sample-board
   {:board {:name "hacker paradise"}
-   :tabs  [{:id    :people
-            :label "People"
-            :kind  :people
-            :data  hackerparadise-people}
-           {:id    :places
-            :label "Places"
-            :kind  :places
-            :data  hackerparadise-places}]})
+   :tabs  [{:id      "people"
+            :label   "People"
+            :kind    "people"
+            :content hackerparadise-people}
+           {:id      "places"
+            :label   "Places"
+            :kind    "places"
+            :content hackerparadise-places}]})

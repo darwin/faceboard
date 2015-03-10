@@ -7,7 +7,6 @@
     {:model sample-board
      :ui    {:view            :blank
              :view-params     nil
-             :selected-tab-id :people
              :editing?        false
              :model-editing?  false
              :loading?        false

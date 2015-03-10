@@ -14,15 +14,13 @@
 
 (defn- tab->component [tab]
   (condp = (:kind tab)
-    :people people-component
-    :places places-component
+    "people" people-component
+    "places" places-component
     people-component))                                      ; default
 
 (defn- lookup-tab [id tabs]
   (let [result (first (filter #(= id (:id %)) tabs))]
-    (when (nil? result)
-      (log-warn (str "unknow tab id '" id "' in ") tabs))
-    result))
+    (or result (first tabs))))
 
 (defn- tab-selected? [id tab]
   (= (:id tab) id))
@@ -38,33 +36,32 @@
 (defcomponent board-tabs-component [data _ _]
   (render [_]
     (dom/div {:class "tab-area"}
-      (for [tab (:tabs data)
-            :let [selected-tab-id (:selected-tab-id data)]]
-        (dom/div {:class    (str "tab" (when (tab-selected? selected-tab-id tab) " selected"))
-                  :on-click #(perform! :switch-tab (:id tab))}
-          (:label tab))))))
+      (let [{:keys [tabs selected-tab]} data]
+        (for [tab tabs]
+          (dom/div {:class    (str "tab" (when (= tab selected-tab) " selected"))
+                    :on-click #(perform! :switch-tab (:id tab))}
+            (:label tab)))))))
 
 (defcomponent board-content-component [data _ _]
   (render [_]
-    (let [{:keys [ui anims model]} data
-          {:keys [tabs]} model
-          {:keys [selected-tab-id model-editing?]} ui
-          selected-tab (lookup-tab selected-tab-id tabs)]
+    (let [{:keys [ui anims model selected-tab]} data
+          {:keys [model-editing?]} ui]
       (dom/div {:class    (str "board-view" (when model-editing? " dual-mode"))
                 :on-click #(perform! :change-extended-set #{})}
         (dom/div {:class "left-side"}
-          (om/build (tab->component selected-tab) {:anims anims
-                                                   :ui   ui
-                                                   :data (:data selected-tab)}))
+          (om/build (tab->component selected-tab) {:anims   anims
+                                                   :ui      ui
+                                                   :content (:content selected-tab)}))
         (dom/div {:class "right-side"}
           (when model-editing?
             (om/build editor-component model)))))))
 
 (defcomponent board-component [data _ _]
   (render [_]
-    (let [{:keys [model ui]} data
+    (let [{:keys [model ui anims]} data
           {:keys [tabs]} model
-          {:keys [selected-tab-id loading?]} ui]
+          {:keys [selected-tab-id loading?]} ui
+          selected-tab (lookup-tab selected-tab-id tabs)]
       (page/page-skeleton
         (dom/div {:class (str "loading-indicator" (when loading? " visible"))}
           (dom/i {:class "fa fa-refresh fa-spin"}))
@@ -72,7 +69,10 @@
           (om/build small-logo-component {})
           (om/build board-label-component {:board-label (get-in model [:board :name] "")
                                            :board-url   (router/current-route)})
-          (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
+          (om/build board-tabs-component {:tabs tabs :selected-tab selected-tab})
           (om/build menu-component ui))
         (dom/div {:class "tab-contents"}
-          (om/build board-content-component data))))))
+          (om/build board-content-component {:ui           ui
+                                             :anims        anims
+                                             :model        model
+                                             :selected-tab selected-tab}))))))
