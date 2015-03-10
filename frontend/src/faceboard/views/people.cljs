@@ -106,5 +106,4 @@
                       :extended? (contains? extended-set i)
                       :anim      (:person anims)
                       :index     i}]
-            (log data)
             (om/build person-component data)))))))

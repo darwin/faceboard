@@ -13,7 +13,7 @@
             [faceboard.views.places :refer [places-component]]))
 
 (defn- tab->component [tab]
-  (condp = (:id tab)
+  (condp = (:kind tab)
     :people people-component
     :places places-component
     people-component))                                      ; default
@@ -46,32 +46,31 @@
 
 (defcomponent board-content-component [data _ _]
   (render [_]
-    (let [ui (:ui data)
-          anims (:anims data)
-          model (:model data)
-          {:keys [selected-tab-id tabs model-editing?]} ui
+    (let [{:keys [ui anims model]} data
+          {:keys [tabs]} model
+          {:keys [selected-tab-id model-editing?]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (dom/div {:class    (str "board-view" (when model-editing? " dual-mode"))
                 :on-click #(perform! :change-extended-set #{})}
         (dom/div {:class "left-side"}
           (om/build (tab->component selected-tab) {:anims anims
                                                    :ui   ui
-                                                   :data (selected-tab-id model)}))
+                                                   :data (:data selected-tab)}))
         (dom/div {:class "right-side"}
           (when model-editing?
             (om/build editor-component model)))))))
 
 (defcomponent board-component [data _ _]
   (render [_]
-    (let [model (:model data)
-          ui (:ui data)
-          {:keys [selected-tab-id tabs loading?]} ui]
+    (let [{:keys [model ui]} data
+          {:keys [tabs]} model
+          {:keys [selected-tab-id loading?]} ui]
       (page/page-skeleton
         (dom/div {:class (str "loading-indicator" (when loading? " visible"))}
           (dom/i {:class "fa fa-refresh fa-spin"}))
         (dom/div {:class "top-bar no-select"}
           (om/build small-logo-component {})
-          (om/build board-label-component {:board-label (get-in model [:board :name])
+          (om/build board-label-component {:board-label (get-in model [:board :name] "")
                                            :board-url   (router/current-route)})
           (om/build board-tabs-component {:tabs tabs :selected-tab-id selected-tab-id})
           (om/build menu-component ui))

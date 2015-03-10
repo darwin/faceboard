@@ -8,8 +8,6 @@
      :ui    {:view            :blank
              :view-params     nil
              :selected-tab-id :people
-             :tabs            [{:id :people :label "People"}
-                               {:id :places :label "Places"}]
              :editing?        false
              :model-editing?  false
              :loading?        false

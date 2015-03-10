@@ -46,12 +46,18 @@
     :tags ["design"]}])
 
 (def hackerparadise-places
-  {:ans  {:name        "An's"
-          :description "Great coffee"}
-   :tams {:name        "Tam's"
-          :description "Best burgers in the town"}})
+  [{:name        "An's"
+    :description "Great coffee"}
+   {:name        "Tam's"
+    :description "Best burgers in the town"}])
 
 (def sample-board
-  {:board  {:name "hacker paradise"}
-   :people hackerparadise-people
-   :places hackerparadise-places})
+  {:board {:name "hacker paradise"}
+   :tabs  [{:id    :people
+            :label "People"
+            :kind  :people
+            :data  hackerparadise-people}
+           {:id    :places
+            :label "Places"
+            :kind  :places
+            :data  hackerparadise-places}]})
