@@ -21,14 +21,31 @@
 (defcomponent social-section-component [data _ _]
   (render [_]
     (dom/div {:class "extended-info-section social"}
+      (dom/div {:class "info-title"} "social")
       (om/build-all social-section-item-component data))))
+
+(defcomponent tags-section-item-component [data _ _]
+  (render [_]
+    (let [tag data]
+      (dom/span {:class "tags-item"}
+        tag))))
+
+(defcomponent tags-section-component [data _ _]
+  (render [_]
+    (dom/div {:class "extended-info-section tags"}
+      (dom/div {:class "info-title"} "tags")
+      (om/build-all tags-section-item-component data))))
 
 (defcomponent person-extended-info-component [data _ _]
   (render [_]
+    (let [{:keys [social tags]} data]
     (dom/div {:class "person-extended-info"}
-      (om/build social-section-component (:social data)))))
+      (when (and social (> (count social) 0))
+        (om/build social-section-component social))
+      (when (and tags (> (count tags) 0))
+        (om/build tags-section-component tags))))))
 
-(defcomponent person-basic-info-component [data _ _]
+(defcomponent person-info-component [data _ _]
   (render [_]
     (let [person (:person data)
           bio (:bio person)
@@ -68,14 +85,14 @@
                             (.stopPropagation e)
                             (perform! :change-extended-set (if-not extended? (set [index]) #{})))}
         (dom/div {:class "person-extended-wrapper"}
-          (om/build person-basic-info-component {:hide?     (not extended?)
-                                                 :extended? extended?
-                                                 :id        id
-                                                 :person    person}))
+          (om/build person-info-component {:hide?     (not extended?)
+                                           :extended? extended?
+                                           :id        id
+                                           :person    person}))
         (dom/div {:class "person-essentials-wrapper"}
-          (om/build person-basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
-                                                 :id     id
-                                                 :person person}))))))
+          (om/build person-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
+                                           :id     id
+                                           :person person}))))))
 
 (defcomponent people-component [data _ _]
   (render [_]

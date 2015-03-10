@@ -35,13 +35,15 @@
 
 (defn build-known-url [type id]
   ; TODO: add more services
-  (condp = type                                             ; recognized urls from id
+  (condp #(str/starts-with? %2 %1) type                     ; recognized urls from id
     "facebook" (str "https://github.com/" id)
     "twitter" (str "https://twitter.com/" id)
     "github" (str "https://github.com/" id)
     "linkedin" (str "https://www.linkedin.com/in/" id)
     "flickr" (str "https://www.flickr.com/people/" id)
     "lastfm" (str "http://www.last.fm/user/" id)
+    "hacker-news" (str "https://news.ycombinator.com/user?id=" id)
+    "reddit" (str "http://www.reddit.com/user/" id)
     nil))
 
 (defn social->url [[type id]]

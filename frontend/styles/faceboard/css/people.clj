@@ -22,7 +22,7 @@
        ; expanding animation
        (>> &.expanding
          (>> [person right-part]
-           [:transition (str "width " (ms person-expanding-sliding-delay) " " ease-in-quit)])
+           [:transition (str "all " (ms person-expanding-sliding-delay) " " ease-in-quit)])
          (>> polaroid-frame
            [:transition (str "transform " (ms person-expanding-rotation-delay) " " ease-out-quit)]))
        (>> &.expanding-phase0
@@ -35,7 +35,7 @@
        ; shrinking animation
        (>> &.shrinking
          (>> [person right-part]
-           [:transition (str "width " (ms person-shrinking-sliding-delay) " " ease-in-quit)])
+           [:transition (str "all " (ms person-shrinking-sliding-delay) " " ease-in-quit)])
          (>> polaroid-frame
            [:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)]))
        (>> &.shrinking-phase0
@@ -105,6 +105,19 @@
         :margin-left (px 10)
         :line-height (px 16)
         :font-size (px 12)]
+       (>> extended-info-section
+         [:margin-bottom (px 20)]
+         (>> &.tags
+           [:margin-bottom (px 0)
+            :max-width (px 300)
+            :line-height (px 18)
+            :white-space :normal])
+         (>> info-title
+           [:color "#aaa"
+            :font-weight :bold
+            :line-height (px 10)
+            :margin-bottom (px 6)
+            :border-bottom "2px solid #eee"]))
        (>> social-item
          (>> icon
            [:font-size (px 16)
@@ -116,5 +129,12 @@
          (>> :a
            [:font-weight :bold
             :color signature-color
-            :text-decoration :none])
-         )))])
+            :text-decoration :none]))
+       (>> tags-item
+         [:float :left
+          :margin-bottom (px 3)
+          :padding (px 1 6 0 6)
+          :margin-right (px 3)
+          :white-space :nowrap
+          :border-radius (px 2)
+          :background-color "#ddd"])))])
