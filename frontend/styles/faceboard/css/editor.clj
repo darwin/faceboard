@@ -5,6 +5,8 @@
 (def styles
   [(>> editor
      [:position :relative]
+     (>> CodeMirror
+       [:height :auto])
      (>> editor-host
        [:border-left "1px dashed #eee"
         :height "100%"
