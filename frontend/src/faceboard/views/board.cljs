@@ -12,6 +12,7 @@
             [faceboard.views.boards.people :refer [people-component]]
             [faceboard.views.boards.places :refer [places-component]]
             [faceboard.views.boards.iframe :refer [iframe-component]]
+            [faceboard.views.boards.webget :refer [webget-component]]
             [faceboard.views.boards.generic :refer [generic-component]]))
 
 (defn- tab->component [tab]
@@ -19,6 +20,7 @@
     "people" people-component
     "places" places-component
     "iframe" iframe-component
+    "webget" webget-component
     generic-component))
 
 (defn- lookup-tab [id tabs]

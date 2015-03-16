@@ -72,6 +72,10 @@
             :label   "Calendar"
             :kind    "iframe"
             :content {:url "https://www.google.com/calendar/embed?showTitle=0&showPrint=0&showTabs=0&showTz=0&height=750&wkst=2&bgcolor=%23eee&src=uomn8jge32pvacda11fsrqgqqs%40group.calendar.google.com&ctz=Asia/Saigon"}}
+           {:id "sample-gist"
+            :label "Gist"
+            :kind "webget"
+            :content {:url "https://gist.githubusercontent.com/darwin/7d684ec4bada672df9c0/raw/19765be25df0c2a14eb60310ca2cacf16061f382/gistfile1.txt"}}
            {:id      "more"
             :label   "More"
             :kind    "gist"

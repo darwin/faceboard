@@ -12,6 +12,7 @@
                  [secretary "1.2.1"]
                  [matchbox "0.0.5-SNAPSHOT" :exclusions [commons-codec]]
                  [cljs-uuid "0.0.4"]
+                 [cljs-http "0.1.25"]
                  [cuerdas "0.3.0"]
                  [garden "1.2.5"]
                  [figwheel "0.2.3-SNAPSHOT"]
