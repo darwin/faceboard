@@ -82,5 +82,5 @@
             :content {:inkpad-id "aqBdkShhea"}}
            {:id      "more"
             :label   "More"
-            :kind    "gist"
-            :content {:url ""}}]})
+            :kind    "webget"
+            :content {:url "https://www.dropbox.com/"}}]})
