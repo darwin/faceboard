@@ -1,5 +1,8 @@
 (ns faceboard.commands
+  (:require-macros [faceboard.macros.model :refer [transform-app-state]]
+                   [cljs.core.async.macros :refer [go]])
   (:require [clojure.set :refer [difference]]
+            [cljs-http.client :as http]
             [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.model :as model]
@@ -9,7 +12,7 @@
             [faceboard.shared.anims :as anims]
             [faceboard.animator :refer [animate invalidate-animations]]
             [faceboard.helpers.utils :refer [json->model]])
-  (:require-macros [faceboard.macros.model :refer [transform-app-state]]))
+  )
 
 (defmulti handle-command (fn [command & _] command))
 
@@ -63,14 +66,14 @@
 (defmethod handle-command :switch-board [_ board-id]
   (transform-app-state
     (model/set [:ui :view] :loading)
-    (model/set [:ui :loading?] true)
+    (model/inc [:ui :loading?])
     (model/set [:ui :view-params] {:message "Loading the board..."}))
   (db/connect-board board-id))
 
 (defmethod handle-command :create-board [_ board-id]
   (transform-app-state
     (model/set [:ui :view] :loading)
-    (model/set [:ui :loading?] true)
+    (model/inc [:ui :loading?])
     (model/set [:ui :view-params] {:message "Creating a new board..."}))
   (let [init-and-navigate (fn [_]
                             (transform-app-state
@@ -88,4 +91,16 @@
 
 (defmethod handle-command :animate [_ anim-path]
   (transform-app-state
-    (model/update anim-path inc)))
+    (model/inc anim-path)))
+
+(defmethod handle-command :update-tab-cache [_ tab-id content]
+  (transform-app-state
+    (model/set [:cache :tabs tab-id] {:content content})
+    (model/dec [:ui :loading?])))
+
+(defmethod handle-command :fetch-data [_ url fn]
+  (transform-app-state
+    (model/inc [:ui :loading?]))
+  (go (let [opts {:with-credentials? false}                 ; http://stackoverflow.com/a/24443043/84283
+            response (<! (http/get url opts))]
+        (when fn (fn response)))))

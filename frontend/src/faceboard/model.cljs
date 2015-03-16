@@ -1,5 +1,5 @@
 (ns faceboard.model
-  (:refer-clojure :exclude [get set update])
+  (:refer-clojure :exclude [get set update inc dec])
   (:require [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.helpers.utils :refer [json->model]]))
@@ -27,3 +27,11 @@
 (defn get
   ([state path] (get-in state path))
   ([path] (get @app-state path)))
+
+(defn inc
+  ([state path] (update state path cljs.core/inc))
+  ([path] (update @app-state path cljs.core/inc)))
+
+(defn dec
+  ([state path] (update state path cljs.core/dec))
+  ([path] (update @app-state path cljs.core/dec)))

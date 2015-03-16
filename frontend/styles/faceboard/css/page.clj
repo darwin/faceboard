@@ -18,6 +18,7 @@
    (>> page
      (>> loading-indicator
        [:position :absolute
+        :z-index 11
         :color "#bbb"
         :top (px 1)
         :left (px 5)

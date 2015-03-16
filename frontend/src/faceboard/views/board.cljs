@@ -60,19 +60,21 @@
             (dom/div {:class (str "board " kind "-board " (when id (str "id-" (:id selected-tab))))}
               (om/build (tab->component selected-tab) {:anims   anims
                                                        :ui      ui
-                                                       :content (:content selected-tab)}))))
+                                                       :id      id
+                                                       :content (:content selected-tab)
+                                                       :cache (get-in data [:cache :tabs id])}))))
         (when model-editing?
           (dom/div {:class "right-side"}
             (om/build editor-component model)))))))
 
 (defcomponent board-component [data _ _]
   (render [_]
-    (let [{:keys [model ui anims]} data
+    (let [{:keys [model ui anims cache]} data
           {:keys [tabs]} model
           {:keys [selected-tab-id loading?]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (page/page-skeleton
-        (dom/div {:class (str "loading-indicator" (when loading? " visible"))}
+        (dom/div {:class (str "loading-indicator" (when (> loading? 0) " visible"))}
           (dom/i {:class "fa fa-refresh fa-spin"}))
         (dom/div {:class "top-bar no-select"}
           (om/build small-logo-component {})
@@ -84,4 +86,5 @@
           (om/build board-content-component {:ui           ui
                                              :anims        anims
                                              :model        model
+                                             :cache        cache
                                              :selected-tab selected-tab}))))))

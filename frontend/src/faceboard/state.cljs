@@ -9,6 +9,7 @@
              :view-params     nil
              :editing?        false
              :model-editing?  false
-             :loading?        false
+             :loading?        0
              :extended-set    #{}}
-     :anims {}}))
+     :anims {}
+     :cache {:tabs {}}}))

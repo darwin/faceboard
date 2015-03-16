@@ -31,7 +31,8 @@
                           (when (not= old-model new-model)
                             (log "app model changed")
                             (log "firebase:" board-id "<<" new-model)
-                            (transform-app-state (model/set [:ui :loading?] true))
+                            (transform-app-state
+                              (model/inc [:ui :loading?]))
                             (p/reset! board-ref new-model))))]
     (log "firebase: connecting board " board-id)
     (go-loop [counter 0]
@@ -43,7 +44,7 @@
             (remove-watch app-state :model-watcher)
             (transform-app-state
               (model/set [:ui :view] :board)
-              (model/set [:ui :loading?] false)
+              (model/dec [:ui :loading?])
               (model/set [:model] value))
             (add-watch app-state :model-watcher model-watcher)
             (when (and (= counter 0) (fn? on-connect) (on-connect value)))
