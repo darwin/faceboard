@@ -26,7 +26,7 @@
 (defn process-response [id url response]
   (perform! :update-tab-cache id (if (:success response)
                                    (extract-content (:body response))
-                                   (str "Unable to load <a href='" url "'>board content</a>"))))
+                                   (str "Unable to load <a href='" url "'>gist content</a>"))))
 
 (defcomponent gist-component [data _ _]
   (render [_]

@@ -7,7 +7,7 @@
 (defn process-response [id url response]
   (perform! :update-tab-cache id (if (:success response)
                                    (:body response)
-                                   (str "Unable to load <a href='" url "'>board content</a>"))))
+                                   (str "Unable to load <a href='" url "'>web content</a>"))))
 
 (defcomponent webget-component [data _ _]
   (render [_]
