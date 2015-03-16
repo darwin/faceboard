@@ -10,3 +10,8 @@
 (def error-color "#e00000")
 (def loading-color "#666")
 (def selected-tab-color "#eee")
+
+(def menu-button-background-color "#000")
+(def pressed-menu-button-background-color "#000")
+(def menu-button-text-color "white")
+(def pressed-menu-button-text-color "yellow")

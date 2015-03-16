@@ -4,8 +4,10 @@
 
 (def styles
   [(>> board
-     [:font-family board-font
-      :background-color selected-tab-color
+     [:margin (px 20)
+      :font-family board-font
       :height "100%"]
      (>> [> *]
-       [:height "100%"]))])
+       [:height "100%"]))
+   (>> people-board
+     [:margin (px 0)])])

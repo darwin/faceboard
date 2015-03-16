@@ -11,14 +11,16 @@
       :padding (px 2 0)]
      (>> [> *]
        [:display :inline-block])
+     (>> edit-button
+       [:display :none])
      (>> menu-button
        [:margin-right (px 10)
         :padding (px 0 10)
         :cursor :pointer
-        :background-color "#26386c"
+        :color menu-button-text-color
+        :background-color menu-button-background-color
         :border-radius (px 2)
         :font-weight :bold]
        (>> &.active
-         [:background-color "yellow"
-          :color "black"])
-       ))])
+         [:background-color pressed-menu-button-background-color
+          :color pressed-menu-button-text-color])))])

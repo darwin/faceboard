@@ -76,6 +76,10 @@
             :label "Gist"
             :kind "gist"
             :content {:gist-id "e04bd2ed2da938a2ff48"}}
+           {:id "sample-inkpad"
+            :label "Inkpad"
+            :kind "inkpad"
+            :content {:inkpad-id "aqBdkShhea"}}
            {:id      "more"
             :label   "More"
             :kind    "gist"

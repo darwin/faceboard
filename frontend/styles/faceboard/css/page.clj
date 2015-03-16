@@ -11,7 +11,8 @@
    (>> :body
      [:font-size (px 14)
       :line-height 1.4
-      :font-family base-font])
+      :font-family base-font
+      :background-color selected-tab-color])
    (>> :#app
      [:display "block !important"])
    (>> page
@@ -29,7 +30,7 @@
         :bottom (px 0)
         :color "#888"
         :font-size (px 10)
-        :background-color "#eee"
+        :background-color "#ddd"
         :opacity 0.5
         :padding (px 1 10)]
        (>> :a

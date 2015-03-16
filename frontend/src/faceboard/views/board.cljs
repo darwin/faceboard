@@ -14,6 +14,7 @@
             [faceboard.views.boards.iframe :refer [iframe-component]]
             [faceboard.views.boards.webget :refer [webget-component]]
             [faceboard.views.boards.gist :refer [gist-component]]
+            [faceboard.views.boards.inkpad :refer [inkpad-component]]
             [faceboard.views.boards.generic :refer [generic-component]]))
 
 (defn- tab->component [tab]
@@ -23,6 +24,7 @@
     "iframe" iframe-component
     "webget" webget-component
     "gist" gist-component
+    "inkpad" inkpad-component
     generic-component))
 
 (defn- lookup-tab [id tabs]
