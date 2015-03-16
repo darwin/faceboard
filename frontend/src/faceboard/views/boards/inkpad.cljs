@@ -1,7 +1,5 @@
 (ns faceboard.views.boards.inkpad
-  (:require [om.core :as om]
-            [om-tools.core :refer-macros [defcomponent]]
-            [om-tools.dom :as dom]
+  (:require [om-tools.core :refer-macros [defcomponent]]
             [markdown.core :refer [md->html]]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
@@ -16,10 +14,10 @@
       (when markdown-body
         (.-innerHTML markdown-body)))))
 
-(defn process-data [id url response]
+(defn process-response [id url response]
   (perform! :update-tab-cache id (if (:success response)
-                                (extract-content (:body response))
-                                (str "Unable to load <a href='" url "'>board content</a>"))))
+                                   (extract-content (:body response))
+                                   (str "Unable to load <a href='" url "'>board content</a>"))))
 
 (defcomponent inkpad-component [data _ _]
   (render [_]
@@ -28,4 +26,4 @@
     (when (nil? (:cache data))
       (let [{:keys [id content]} data]
         (let [url (str inkpad-api-endpoint (:inkpad-id content))]
-          (perform! :fetch-data url #(process-data id url %)))))))
+          (perform! :fetch-content url #(process-response id url %)))))))

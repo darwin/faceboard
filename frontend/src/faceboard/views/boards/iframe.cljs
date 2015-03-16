@@ -8,4 +8,4 @@
     (let [{:keys [content]} data]
       (dom/div {}
         (dom/iframe {:src         (:url content)
-                     :frameBorder 0})))))
+                     :frame-border 0})))))

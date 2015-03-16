@@ -1,27 +1,19 @@
 (ns faceboard.views.boards.webget
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [om.core :as om]
-            [om-tools.core :refer-macros [defcomponent]]
-            [cljs-http.client :as http]
-            [om-tools.dom :as dom]
-            [cljs.core.async :refer [<!]]
+  (:require [om-tools.core :refer-macros [defcomponent]]
+            [faceboard.controller :refer [perform!]]
+            [faceboard.helpers.utils :refer [non-sanitized-div]]
             [faceboard.logging :refer [log, log-err, log-warn]]))
 
-(def ^:dynamic *cached-content*)
+(defn process-response [id url response]
+  (perform! :update-tab-cache id (if (:success response)
+                                   (:body response)
+                                   (str "Unable to load <a href='" url "'>board content</a>"))))
 
-(defn go-get [url update-fn]
-  (log "get" url)
-  (go (let [response (<! (http/get url))]
-        (log "got" response)
-        (set! *cached-content* (if (:success response)
-                                 (set! *cached-content* (:body response))
-                                 (str "Unable to load <a href='" url "'>board content</a>")))
-        (update-fn *cached-content*))))
-
-(defcomponent webget-component [data owner _]
+(defcomponent webget-component [data _ _]
   (render [_]
-    (dom/div {:ref                     "content"
-              :dangerouslySetInnerHTML #js {:__html (:content *cached-content*)}}))
+    (non-sanitized-div (:content (:cache data))))
   (did-mount [_]
-    (let [{:keys [content]} data]
-      (go-get (:url content) #(aset (om/get-node owner "content") "innerHTML" %)))))
+    (when (nil? (:cache data))
+      (let [{:keys [id content]} data
+            url (:url content)]
+        (perform! :fetch-content url #(process-response id url %))))))

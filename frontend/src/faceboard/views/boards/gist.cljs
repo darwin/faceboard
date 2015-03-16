@@ -1,15 +1,10 @@
 (ns faceboard.views.boards.gist
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [om.core :as om]
-            [om-tools.core :refer-macros [defcomponent]]
-            [cljs-http.client :as http]
-            [om-tools.dom :as dom]
+  (:require [om-tools.core :refer-macros [defcomponent]]
             [cuerdas.core :as str]
             [markdown.core :refer [md->html]]
-            [cljs.core.async :refer [<!]]
+            [faceboard.controller :refer [perform!]]
+            [faceboard.helpers.utils :refer [non-sanitized-div]]
             [faceboard.logging :refer [log, log-err, log-warn]]))
-
-(def ^:dynamic *cached-content*)
 
 (def gists-api-endpoint "https://api.github.com/gists/")
 
@@ -28,22 +23,16 @@
 (defn extract-content [data]
   (str/join (build-chunks (seq (:files data)))))
 
-(defn go-get [url update-fn]
-  (go (let [opts {:with-credentials? false}                 ; http://stackoverflow.com/a/24443043/84283
-            response (<! (http/get url opts))]
-        (set! *cached-content* (if (:success response)
-                                 (extract-content (:body response))
-                                 (str "Unable to load <a href='" url "'>board content</a>")))
-        (update-fn *cached-content*))))
+(defn process-response [id url response]
+  (perform! :update-tab-cache id (if (:success response)
+                                   (extract-content (:body response))
+                                   (str "Unable to load <a href='" url "'>board content</a>"))))
 
-(defn read-gist [gist-id update-fn]
-  (let [url (str gists-api-endpoint gist-id)]
-    (go-get url update-fn)))
-
-(defcomponent gist-component [data owner _]
+(defcomponent gist-component [data _ _]
   (render [_]
-    (dom/div {:ref                     "content"
-              :dangerouslySetInnerHTML #js {:__html (:content *cached-content*)}}))
+    (non-sanitized-div (:content (:cache data))))
   (did-mount [_]
-    (let [{:keys [content]} data]
-      (read-gist (:gist-id content) #(aset (om/get-node owner "content") "innerHTML" %)))))
+    (when (nil? (:cache data))
+      (let [{:keys [id content]} data
+            url (str gists-api-endpoint (:gist-id content))]
+        (perform! :fetch-content url #(process-response id url %))))))

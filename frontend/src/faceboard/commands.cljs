@@ -11,8 +11,7 @@
             [faceboard.data.initial_board :refer [initial-board]]
             [faceboard.shared.anims :as anims]
             [faceboard.animator :refer [animate invalidate-animations]]
-            [faceboard.helpers.utils :refer [json->model]])
-  )
+            [faceboard.helpers.utils :refer [json->model]]))
 
 (defmulti handle-command (fn [command & _] command))
 
@@ -68,7 +67,8 @@
     (model/set [:ui :view] :loading)
     (model/inc [:ui :loading?])
     (model/set [:ui :view-params] {:message "Loading the board..."}))
-  (db/connect-board board-id))
+  (db/connect-board board-id {:on-connect #(transform-app-state
+                                            (model/dec [:ui :loading?]))}))
 
 (defmethod handle-command :create-board [_ board-id]
   (transform-app-state
@@ -77,6 +77,7 @@
     (model/set [:ui :view-params] {:message "Creating a new board..."}))
   (let [init-and-navigate (fn [_]
                             (transform-app-state
+                              (model/dec [:ui :loading?])
                               (model/set [:model] initial-board))
                             (router/navigate! (router/board-route {:id board-id})))]
     (db/connect-board board-id {:on-connect init-and-navigate})))
@@ -95,12 +96,13 @@
 
 (defmethod handle-command :update-tab-cache [_ tab-id content]
   (transform-app-state
-    (model/set [:cache :tabs tab-id] {:content content})
-    (model/dec [:ui :loading?])))
+    (model/set [:cache :tabs tab-id] {:content content})))
 
-(defmethod handle-command :fetch-data [_ url fn]
+(defmethod handle-command :fetch-content [_ url fn]         ; url must be CORS-enabled
   (transform-app-state
     (model/inc [:ui :loading?]))
   (go (let [opts {:with-credentials? false}                 ; http://stackoverflow.com/a/24443043/84283
             response (<! (http/get url opts))]
+        (transform-app-state
+          (model/dec [:ui :loading?]))
         (when fn (fn response)))))
