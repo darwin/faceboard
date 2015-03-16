@@ -14,6 +14,7 @@
                  [cljs-uuid "0.0.4"]
                  [cljs-http "0.1.25"]
                  [cuerdas "0.3.0"]
+                 [markdown-clj "0.9.64"]
                  [garden "1.2.5"]
                  [figwheel "0.2.3-SNAPSHOT"]
                  [com.cemerick/pprng "0.0.3"]

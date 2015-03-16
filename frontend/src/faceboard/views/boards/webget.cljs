@@ -13,9 +13,9 @@
   (log "get" url)
   (go (let [response (<! (http/get url))]
         (log "got" response)
-        (if-not (:success response)
-          (set! *cached-content* (str "Unable to load <a href='" url "'>board content</a>"))
-          (set! *cached-content* (:body response)))
+        (set! *cached-content* (if (:success response)
+                                 (set! *cached-content* (:body response))
+                                 (str "Unable to load <a href='" url "'>board content</a>")))
         (update-fn *cached-content*))))
 
 (defcomponent webget-component [data owner _]
