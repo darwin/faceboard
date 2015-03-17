@@ -28,8 +28,9 @@
   nil)
 
 (defn upgrade-schema-if-needed [model]
-  (let [model-version (get model :version 1)]
-    (cond
-      (> model-version current-version) (present-error model-version)
-      (< model-version current-version) (evolve-model-schema model (range model-version current-version))
-      :else model)))
+  (when model
+    (let [model-version (get model :version 1)]
+      (cond
+        (> model-version current-version) (present-error model-version)
+        (< model-version current-version) (evolve-model-schema model (range model-version current-version))
+        :else model))))

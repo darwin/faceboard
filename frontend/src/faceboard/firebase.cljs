@@ -40,7 +40,7 @@
       (add-watch app-state :model-watcher model-watcher)
       (let [[msg chan] (alts! [board-chan control-chan])]
         (when (= chan board-chan)
-          (let [[id model] msg]
+          (let [[id model] msg]                             ; model can be null during board creation, see :create-board command
             (log (str "firebase: #" request-number) id ">>" model)
             (let [upgraded-model (schema/upgrade-schema-if-needed model)]
               (when upgraded-model                          ; warning: upgrade can fail
@@ -49,9 +49,9 @@
                   (model/set [:ui :view] :board)
                   (model/dec-clamp-zero [:ui :loading?])    ; not all incoming messages were initiated by ***
                   (model/set [:model] upgraded-model))
-                (add-watch app-state :model-watcher model-watcher)
-                (when (and (zero? request-number) (fn? on-connect) (on-connect upgraded-model)))
-                (when (fn? on-message) (on-message upgraded-model))))
+                (add-watch app-state :model-watcher model-watcher))
+              (when (and (zero? request-number) (fn? on-connect) (on-connect upgraded-model)))
+              (when (fn? on-message) (on-message upgraded-model)))
             (recur (inc request-number))))
         (remove-watch app-state :model-watcher)
         (when (fn? on-disconnect) (on-disconnect))
