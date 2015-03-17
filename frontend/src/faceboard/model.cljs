@@ -35,3 +35,12 @@
 (defn dec
   ([state path] (update state path cljs.core/dec))
   ([path] (update @app-state path cljs.core/dec)))
+
+(defn- dec-if-pos [n]
+  (if (pos? n)
+    (dec n)
+    n))
+
+(defn dec-clamp-zero
+  ([state path] (update state path dec-if-pos))
+  ([path] (update @app-state path dec-if-pos)))

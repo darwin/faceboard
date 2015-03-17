@@ -33,7 +33,7 @@
                             (log "app model changed")
                             (log "firebase:" board-id "<<" new-model)
                             (transform-app-state
-                              (model/inc [:ui :loading?]))
+                              (model/inc [:ui :loading?]))  ; ***
                             (p/reset! board-ref new-model))))]
     (log "firebase: connecting board " board-id)
     (go-loop [request-number 0]
@@ -47,7 +47,7 @@
                 (remove-watch app-state :model-watcher)
                 (transform-app-state
                   (model/set [:ui :view] :board)
-                  (model/dec [:ui :loading?])
+                  (model/dec-clamp-zero [:ui :loading?])    ; not all incoming messages were initiated by ***
                   (model/set [:model] upgraded-model))
                 (add-watch app-state :model-watcher model-watcher)
                 (when (and (zero? request-number) (fn? on-connect) (on-connect upgraded-model)))
