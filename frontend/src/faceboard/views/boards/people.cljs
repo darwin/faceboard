@@ -60,7 +60,8 @@
           (dom/div {:class "left-part"}
             (dom/div {:class "photo"}
               (dom/img {:src (or (get-in bio [:photo :url] nil) "/images/unknown.jpg")}))
-            (dom/div {:class "name f16"}
+            (dom/div {:class "name f16"
+                      :title (:full-name bio)}
               (:name bio)
               (when-not (nil? flag-code)
                 (dom/div {:class (str "flag " flag-code)}))))
