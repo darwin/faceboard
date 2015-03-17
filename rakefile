@@ -74,10 +74,11 @@ end
 
 def patch_build!
   chdir(".build") do
-    sys("mv _generated/prod/faceboard.js _generated")
-    sys("rm -rf _generated/prod")
     sys("rm -rf css")
+    sys("mkdir css && mv _generated/faceboard.css css")
     sys("rm -rf js")
+    sys("mkdir js && mv _generated/prod/faceboard.js js")
+    sys("rm -rf _generated")
     sys("rm -rf codemirror")
     sys("mv index-production.html index.html")
     patch("index.html", [["window.faceboard_env = {}", 
