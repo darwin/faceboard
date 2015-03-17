@@ -6,6 +6,7 @@
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.env :as env]
             [faceboard.model :as model]
+            [faceboard.schema :as schema]
             [matchbox.core :as p]
             [matchbox.async :as pa]))
 
@@ -35,27 +36,29 @@
                               (model/inc [:ui :loading?]))
                             (p/reset! board-ref new-model))))]
     (log "firebase: connecting board " board-id)
-    (go-loop [counter 0]
+    (go-loop [request-number 0]
       (add-watch app-state :model-watcher model-watcher)
       (let [[msg chan] (alts! [board-chan control-chan])]
         (when (= chan board-chan)
-          (let [[id value] msg]
-            (log (str "firebase: #" counter) id ">>" value)
-            (remove-watch app-state :model-watcher)
-            (transform-app-state
-              (model/set [:ui :view] :board)
-              (model/dec [:ui :loading?])
-              (model/set [:model] value))
-            (add-watch app-state :model-watcher model-watcher)
-            (when (and (= counter 0) (fn? on-connect) (on-connect value)))
-            (when (fn? on-message) (on-message value))
-            (recur (inc counter))))
+          (let [[id model] msg]
+            (log (str "firebase: #" request-number) id ">>" model)
+            (let [upgraded-model (schema/upgrade-schema-if-needed model)]
+              (when upgraded-model                          ; warning: upgrade can fail
+                (remove-watch app-state :model-watcher)
+                (transform-app-state
+                  (model/set [:ui :view] :board)
+                  (model/dec [:ui :loading?])
+                  (model/set [:model] upgraded-model))
+                (add-watch app-state :model-watcher model-watcher)
+                (when (and (zero? request-number) (fn? on-connect) (on-connect upgraded-model)))
+                (when (fn? on-message) (on-message upgraded-model))))
+            (recur (inc request-number))))
         (remove-watch app-state :model-watcher)
         (when (fn? on-disconnect) (on-disconnect))
         (log "firebase: disconnected board " board-id)))))
 
 (defn cancel-previous-connection [fn]
-  (put! control-chan :cancel fn false)) ; execute fn after disconnection
+  (put! control-chan :cancel fn false))                     ; execute fn after disconnection
 
 (defn connect-board [& params]
   (cancel-previous-connection #(apply connect-board-worker params)))

@@ -3,6 +3,7 @@
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :refer [perform!]]
             [faceboard.env :refer [local?]]
+            [faceboard.state :refer [app-state]]
             [goog.events])
   (:import goog.History
            goog.history.EventType)

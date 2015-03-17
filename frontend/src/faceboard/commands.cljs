@@ -57,10 +57,16 @@
   (transform-app-state
     (model/set [:ui :selected-tab-id] new-id)))
 
+(defn stuck-on-error? []
+  (= :error (get-in @app-state [:ui :view])))
+
 (defmethod handle-command :switch-view [_ new-view params]
-  (transform-app-state
-    (model/set [:ui :view] new-view)
-    (model/set [:ui :view-params] params)))
+  (if (stuck-on-error?)
+    ; if error do not allow dispatch, the only way out is a full page refresh
+    (log-warn "Switch view command cancelled because of previous error(s).")
+    (transform-app-state
+      (model/set [:ui :view] new-view)
+      (model/set [:ui :view-params] params))))
 
 (defmethod handle-command :switch-board [_ board-id]
   (transform-app-state

@@ -1,4 +1,5 @@
-(ns faceboard.data.sample_board)
+(ns faceboard.data.sample_board
+  (:require [faceboard.schema :as schema]))
 
 ; just some sample data until we get editing working...
 
@@ -54,7 +55,9 @@
     :description "Best burgers in the town"}])
 
 (def sample-board
-  {:board {:name "hacker paradise"}
+  (schema/upgrade-schema-if-needed
+  {:version 2
+   :board {:name "hacker paradise"}
    :tabs  [{:id      "people"
             :label   "People"
             :kind    "people"
@@ -85,4 +88,4 @@
            {:id      "more"
             :label   "More"
             :kind    "webget"
-            :content {:url "https://www.dropbox.com/"}}]})
+            :content {:url "https://www.dropbox.com/"}}]}))
