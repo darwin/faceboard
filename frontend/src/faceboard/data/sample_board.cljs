@@ -71,7 +71,7 @@
            {:id      "calendar"
             :label   "Calendar"
             :kind    "iframe"
-            :content {:url "https://www.google.com/calendar/embed?showTitle=0&showPrint=0&showTabs=0&showTz=0&height=750&wkst=2&bgcolor=%23eee&src=uomn8jge32pvacda11fsrqgqqs%40group.calendar.google.com&ctz=Asia/Saigon"}}
+            :content {:url "https://www.google.com/calendar/embed?mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showTz=0&height=750&wkst=2&bgcolor=%23eee&src=uomn8jge32pvacda11fsrqgqqs%40group.calendar.google.com&ctz=Asia/Saigon"}}
            {:id "sample-gist"
             :label "Gist"
             :kind "gist"
