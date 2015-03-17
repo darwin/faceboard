@@ -11,7 +11,7 @@
              :photo     {:url "https://media.licdn.com/mpr/mpr/shrink_200_200/p/3/000/000/340/25abdea.jpg"}
              :full-name "Antonin Hildebrand"
              :email     "antonin@hildebrand.cz"
-             :phone     "?"
+             :phone     "+84 0935 765830"
              :country   "cz"}
     :tags   ["objective-c"
              "c++"

@@ -47,12 +47,28 @@
       (non-sanitized-div (:about data))
       (dom/div {:class "clear"}))))
 
+(defcomponent contact-section-component [data _ _]
+  (render [_]
+    (let [{:keys [phone email]} data]
+      (dom/div {:class "extended-info-section contact"}
+        (dom/div {:class "info-title"} "contact")
+        (when email
+          (dom/div {:class "email"}
+            (dom/a {:href (str "mailto:" email)} email)))
+        (when phone
+          (dom/div {:class "phone"}
+            (dom/span {} "phone: ")
+            (dom/span {:class "number"} phone)))
+        (dom/div {:class "clear"})))))
+
 (defcomponent person-extended-info-component [data _ _]
   (render [_]
     (let [{:keys [bio social tags]} data]
       (dom/div {:class "person-extended-info"}
         (when (:about bio)
           (om/build about-section-component bio))
+        (when (or (:email bio) (:phone bio))
+          (om/build contact-section-component bio))
         (when (and social (> (count social) 0))
           (om/build social-section-component social))
         (when (and tags (> (count tags) 0))
