@@ -6,6 +6,7 @@
             [faceboard.controller :refer [perform!]]
             [faceboard.shared.anims :as anims]
             [faceboard.helpers.social :refer [parse-social social-info]]
+            [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [cemerick.pprng]))
 
@@ -53,7 +54,8 @@
           extended? (:extended? data)
           random-generator (cemerick.pprng/rng (hash id))
           angle (- (cemerick.pprng/int random-generator 20) 10)
-          flag-code (:country bio)]
+          country-code (:country bio)
+          country-name (lookup-country-name country-code)]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
                   :style {:transform (str "rotate(" angle "deg)")}}
@@ -63,8 +65,9 @@
             (dom/div {:class "name f16"
                       :title (:full-name bio)}
               (:name bio)
-              (when-not (nil? flag-code)
-                (dom/div {:class (str "flag " flag-code)}))))
+              (when-not (nil? country-code)
+                (dom/div {:class (str "flag " country-code)
+                          :title country-name}))))
           (when extended?
             (dom/div {:class "right-part"}
               (om/build person-extended-info-component person)))
