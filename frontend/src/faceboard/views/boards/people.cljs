@@ -7,6 +7,7 @@
             [faceboard.shared.anims :as anims]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
+            [faceboard.helpers.utils :refer [non-sanitized-div]]
             [faceboard.logging :refer [log, log-err, log-warn]]
             [cemerick.pprng]))
 
@@ -39,10 +40,19 @@
       (om/build-all tags-section-item-component data)
       (dom/div {:class "clear"}))))
 
+(defcomponent about-section-component [data _ _]
+  (render [_]
+    (dom/div {:class "extended-info-section about"}
+      (dom/div {:class "info-title"} "about")
+      (non-sanitized-div (:about data))
+      (dom/div {:class "clear"}))))
+
 (defcomponent person-extended-info-component [data _ _]
   (render [_]
-    (let [{:keys [social tags]} data]
+    (let [{:keys [bio social tags]} data]
       (dom/div {:class "person-extended-info"}
+        (when (:about bio)
+          (om/build about-section-component bio))
         (when (and social (> (count social) 0))
           (om/build social-section-component social))
         (when (and tags (> (count tags) 0))

@@ -105,18 +105,25 @@
         :margin-left (px 10)
         :line-height (px 16)
         :font-size (px 12)]
+       (>> :a
+         [:color signature-color
+          :text-decoration :none]
+         (>> &:hover
+           [:text-decoration :underline]))
        (>> extended-info-section
          [:clear :both
-          :color social-badge-text-color
           :margin-bottom (px 20)]
+         (>> &.about
+           [:max-width (px 300)
+            :white-space :normal])
          (>> &.tags
            [:margin-bottom (px 0)
+            :color social-badge-text-color
             :max-width (px 300)
             :line-height (px 18)
             :white-space :normal])
          (>> info-title
-           [:color "#aaa"
-            :font-weight :bold
+           [:color "#bbb"
             :line-height (px 10)
             :margin-bottom (px 6)
             :border-bottom "2px solid #eee"]))
@@ -134,17 +141,14 @@
          (>> icon
            [:font-size (px 20)
             :color social-badge-background-color])
-         (>> :a
-           [:font-weight :bold
-            :color signature-color
-            :text-decoration :none])
          (>> &.link
            [:clear :both
             :margin (px 0)]
            (>> content
              [:display :inline])
            (>> icon
-             [:font-size (px 14)])))
+             [:display :none
+              :font-size (px 14)])))
        (>> tags-item
          [:float :left
           :margin-bottom (px 3)

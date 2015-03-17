@@ -7,9 +7,11 @@
 (def hackerparadise-people
   [{:id     "tony"
     :bio    {:name      "Tony"
+             :about     "I'm a developer. I hack Mac apps in <a href='http://binaryage.com'>binaryage</a> for living. I do web development and other experiments for fun. I consider myself being a <a href='http://www.startupsfortherestofus.com/'>micropreneur</a>. And I'm a passionate bitcoiner."
              :photo     {:url "https://media.licdn.com/mpr/mpr/shrink_200_200/p/3/000/000/340/25abdea.jpg"}
              :full-name "Antonin Hildebrand"
              :email     "antonin@hildebrand.cz"
+             :phone     "?"
              :country   "cz"}
     :tags   ["objective-c"
              "c++"
