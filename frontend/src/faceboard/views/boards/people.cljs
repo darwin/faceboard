@@ -13,17 +13,18 @@
 (defcomponent social-section-item-component [data _ _]
   (render [_]
     (let [{:keys [type label content icon url]} (social-info data)]
-      (dom/div {:class "social-item"}
-        (when icon (dom/i {:class (str "icon fa " icon)}))
-        (dom/a {:href url} (str " " content))
-        (when type
-          (dom/span {:class "social-type"} " on " label))))))
+      (dom/div {:class (str "social-item" (if type (str " " type) " link"))}
+        (dom/a {:href url}
+          (dom/i {:class (str "icon fa " icon)
+                  :title (when type (str content " @ " label))})
+          (dom/span {:class "content"} (str " " content)))))))
 
 (defcomponent social-section-component [data _ _]
   (render [_]
     (dom/div {:class "extended-info-section social"}
       (dom/div {:class "info-title"} "social")
-      (om/build-all social-section-item-component data))))
+      (om/build-all social-section-item-component data)
+      (dom/div {:class "clear"}))))
 
 (defcomponent tags-section-item-component [data _ _]
   (render [_]
@@ -35,16 +36,17 @@
   (render [_]
     (dom/div {:class "extended-info-section tags"}
       (dom/div {:class "info-title"} "tags")
-      (om/build-all tags-section-item-component data))))
+      (om/build-all tags-section-item-component data)
+      (dom/div {:class "clear"}))))
 
 (defcomponent person-extended-info-component [data _ _]
   (render [_]
     (let [{:keys [social tags]} data]
-    (dom/div {:class "person-extended-info"}
-      (when (and social (> (count social) 0))
-        (om/build social-section-component social))
-      (when (and tags (> (count tags) 0))
-        (om/build tags-section-component tags))))))
+      (dom/div {:class "person-extended-info"}
+        (when (and social (> (count social) 0))
+          (om/build social-section-component social))
+        (when (and tags (> (count tags) 0))
+          (om/build tags-section-component tags))))))
 
 (defcomponent person-info-component [data _ _]
   (render [_]

@@ -106,7 +106,9 @@
         :line-height (px 16)
         :font-size (px 12)]
        (>> extended-info-section
-         [:margin-bottom (px 20)]
+         [:clear :both
+          :color social-badge-text-color
+          :margin-bottom (px 20)]
          (>> &.tags
            [:margin-bottom (px 0)
             :max-width (px 300)
@@ -119,17 +121,30 @@
             :margin-bottom (px 6)
             :border-bottom "2px solid #eee"]))
        (>> social-item
+         [:float :left
+          :margin-bottom (px 3)
+          :margin-right (px 3)
+          :white-space :nowrap
+          :border-radius (px 2)]
+         (>> &:hover
+           (>> icon
+             [:color social-badge-background-hovered-color]))
+         (>> content
+           [:display :none])
          (>> icon
-           [:font-size (px 16)
-            :position :relative
-            :top (px 1)
-            :color "#ddd"])
-         (>> social-type
-           [:color "#999"])
+           [:font-size (px 20)
+            :color social-badge-background-color])
          (>> :a
            [:font-weight :bold
             :color signature-color
-            :text-decoration :none]))
+            :text-decoration :none])
+         (>> &.link
+           [:clear :both
+            :margin (px 0)]
+           (>> content
+             [:display :inline])
+           (>> icon
+             [:font-size (px 14)])))
        (>> tags-item
          [:float :left
           :margin-bottom (px 3)
@@ -137,4 +152,6 @@
           :margin-right (px 3)
           :white-space :nowrap
           :border-radius (px 2)
-          :background-color "#ddd"])))])
+          :background-color social-badge-background-color]
+         (>> &:hover
+           [:background-color social-badge-background-hovered-color]))))])

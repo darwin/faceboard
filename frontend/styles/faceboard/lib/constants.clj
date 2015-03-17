@@ -15,3 +15,7 @@
 (def pressed-menu-button-background-color "#000")
 (def menu-button-text-color "white")
 (def pressed-menu-button-text-color "yellow")
+
+(def social-badge-background-color "#aaa")
+(def social-badge-text-color "#fff")
+(def social-badge-background-hovered-color signature-color)

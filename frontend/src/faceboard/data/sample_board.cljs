@@ -27,8 +27,8 @@
              "hacker-news|dr_win"
              "flickr|woid"
              "lastfm|woid"
-             "web|http://about.me/darwin"
-             "binaryage|http://www.binaryage.com"]}
+             "http://about.me/darwin"
+             "http://www.binaryage.com"]}
    {:id   "alexey"
     :bio  {:name      "Alexey"
            :full-name "Alexey Komissarouk"
