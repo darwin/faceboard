@@ -1,6 +1,5 @@
 (ns faceboard.views.boards.inkpad
   (:require [om-tools.core :refer-macros [defcomponent]]
-            [markdown.core :refer [md->html]]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
             [faceboard.logging :refer [log, log-err, log-warn]]))
