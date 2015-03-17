@@ -4,7 +4,7 @@
 
 (defonce app-state
   (atom
-    {:model sample-board
+    {:model {}
      :ui    {:view            :blank
              :view-params     nil
              :editing?        false

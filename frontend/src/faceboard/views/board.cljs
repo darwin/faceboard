@@ -45,7 +45,7 @@
       (let [{:keys [tabs selected-tab]} data]
         (for [tab tabs]
           (dom/div {:class    (str "tab" (when (= tab selected-tab) " selected"))
-                    :on-click #(perform! :switch-tab (:id tab))}
+                    :on-click #(router/update-params! {:tab (:id tab)})}
             (:label tab)))))))
 
 (defcomponent board-content-component [data _ _]

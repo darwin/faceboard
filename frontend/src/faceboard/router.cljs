@@ -3,6 +3,7 @@
             [faceboard.logging :refer [log, log-err, log-warn]]
             [faceboard.controller :refer [perform!]]
             [faceboard.env :refer [local?]]
+            [faceboard.firebase :as db]
             [faceboard.state :refer [app-state]]
             [goog.events])
   (:import goog.History
@@ -28,6 +29,13 @@
 (defn navigate! [& route]
   (set! js/window.location.hash (apply str route)))
 
+(defn update-params! [params]
+  (let [info (current-route-info)
+        route (:route info)
+        params (merge (:params info) params)]
+    (when-not (nil? route)
+      (navigate! (route params)))))
+
 (defn dispatch! [& args]
   (secretary/dispatch! (apply str args)))
 
@@ -37,8 +45,11 @@
 
 (defn define-routes! []
   (defroute-with-info home-route "/" [] (perform! :switch-view :welcome))
-  (defroute-with-info local-route "/sample" [] (perform! :switch-view :board))
-  (defroute-with-info board-route "/board/:id" [id] (perform! :switch-board id))
+  (defroute-with-info board-tab-route "/board/:id/:tab" [id tab] (do
+                                                                            (when-not (db/is-board-connected? id)
+                                                                              (perform! :switch-board id))
+                                                                            (perform! :switch-tab tab)))
+  (defroute-with-info board-route "/board/:id" [id] (navigate! (board-tab-route {:id id :tab "people"})))
   (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-test-routes! []

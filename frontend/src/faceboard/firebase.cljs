@@ -7,8 +7,11 @@
             [faceboard.env :as env]
             [faceboard.model :as model]
             [faceboard.schema :as schema]
+            [faceboard.data.sample_board :refer [sample-board]]
             [matchbox.core :as p]
             [matchbox.async :as pa]))
+
+(def ^:dynamic *current-board-id*)
 
 (def firebase-db-url (str "https://" env/firebase-db ".firebaseio.com/"))
 
@@ -22,8 +25,8 @@
 (defn firebase-board-url [board-id]
   (str firebase-db-url "boards/" board-id))
 
-(defn connect-board-worker [board-id & opts]
-  (let [[{:keys [on-connect on-disconnect on-message]}] opts
+(defn connect-board-worker [board-id opts]
+  (let [{:keys [on-connect on-disconnect on-message]} opts
         board-ref (p/connect (firebase-board-url board-id))
         board-chan (pa/listen-to< board-ref :value)
         model-watcher (fn [_ _ old new]
@@ -42,16 +45,15 @@
         (when (= chan board-chan)
           (let [[id model] msg]                             ; model can be null during board creation, see :create-board command
             (log (str "firebase: #" request-number) id ">>" model)
+            (remove-watch app-state :model-watcher)
+            (when (and (zero? request-number) (fn? on-connect) (on-connect model)))
             (let [upgraded-model (schema/upgrade-schema-if-needed model)]
               (when upgraded-model                          ; warning: upgrade can fail
-                (remove-watch app-state :model-watcher)
                 (transform-app-state
-                  (model/set [:ui :view] :board)
                   (model/dec-clamp-zero [:ui :loading?])    ; not all incoming messages were initiated by ***
-                  (model/set [:model] upgraded-model))
-                (add-watch app-state :model-watcher model-watcher))
-              (when (and (zero? request-number) (fn? on-connect) (on-connect upgraded-model)))
-              (when (fn? on-message) (on-message upgraded-model)))
+                  (model/set [:model] upgraded-model)))
+              (when (fn? on-message) (on-message upgraded-model))
+              (add-watch app-state :model-watcher model-watcher))
             (recur (inc request-number))))
         (remove-watch app-state :model-watcher)
         (when (fn? on-disconnect) (on-disconnect))
@@ -60,5 +62,15 @@
 (defn cancel-previous-connection [fn]
   (put! control-chan :cancel fn false))                     ; execute fn after disconnection
 
-(defn connect-board [& params]
-  (cancel-previous-connection #(apply connect-board-worker params)))
+(defn is-board-connected? [board-id]
+  (= board-id *current-board-id*))
+
+(defn connect-board [board-id opts]
+  (when-not (is-board-connected? board-id)
+    (set! *current-board-id* board-id)
+    (if (= board-id "sample")                               ; short-circuit sample board without firebase
+      (let [{:keys [on-connect]} opts]
+        (when (fn? on-connect) (on-connect nil))
+        (transform-app-state
+          (model/set [:model] sample-board)))
+      (cancel-previous-connection #(connect-board-worker board-id opts)))))

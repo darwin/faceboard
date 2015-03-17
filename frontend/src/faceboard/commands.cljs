@@ -8,6 +8,7 @@
             [faceboard.model :as model]
             [faceboard.router :as router]
             [faceboard.firebase :as db]
+            [faceboard.controller :refer [perform!]]
             [faceboard.data.initial_board :refer [initial-board]]
             [faceboard.shared.anims :as anims]
             [faceboard.animator :refer [animate invalidate-animations]]
@@ -69,12 +70,15 @@
       (model/set [:ui :view-params] params))))
 
 (defmethod handle-command :switch-board [_ board-id]
-  (transform-app-state
-    (model/set [:ui :view] :loading)
-    (model/inc [:ui :loading?])
-    (model/set [:ui :view-params] {:message "Loading the board..."}))
-  (db/connect-board board-id {:on-connect #(transform-app-state
-                                            (model/dec [:ui :loading?]))}))
+  (when-not (db/is-board-connected? board-id)
+    (do
+      (transform-app-state
+        (model/set [:ui :view] :loading)
+        (model/inc [:ui :loading?])
+        (model/set [:ui :view-params] {:message "Loading the board..."}))
+      (db/connect-board board-id {:on-connect #(transform-app-state
+                                                (model/dec [:ui :loading?])
+                                                (model/set [:ui :view] :board))}))))
 
 (defmethod handle-command :create-board [_ board-id]
   (transform-app-state
@@ -84,8 +88,9 @@
   (let [init-and-navigate (fn [_]
                             (transform-app-state
                               (model/dec [:ui :loading?])
-                              (model/set [:model] initial-board))
-                            (router/navigate! (router/board-route {:id board-id})))]
+                              (model/set [:model] initial-board)
+                              (model/set [:ui :view] :board))
+                            (router/navigate! (router/board-tab-route {:id board-id :tab "people"})))]
     (db/connect-board board-id {:on-connect init-and-navigate})))
 
 (defmethod handle-command :start-anim [_ anim-path]
