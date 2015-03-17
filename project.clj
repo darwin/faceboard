@@ -66,7 +66,7 @@
                                        :pretty-print  false
                                        :output-to     "resources/public/_generated/prod/faceboard.js"
                                        :output-dir    "resources/public/_generated/prod"
-                                       :source-map    "resources/public/_generated/prod/faceboard.js.map"
+                                       ;:source-map    "resources/public/_generated/prod/faceboard.js.map"
                                        :preamble      ["public/js/platform.js"
                                                        "public/codemirror/codemirror.js"
                                                        "public/codemirror/addon/edit/matchbrackets.js"

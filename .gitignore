@@ -15,4 +15,5 @@ pom.xml
 .lein-*
 .env
 .repl
+.build
 resources/public/css/garden.css

@@ -29,12 +29,86 @@ def dirty_repo_warning()
   puts "Repository is not clean! You should commit all changes before releasing.".red unless is_cwd_clean?
 end
 
+def patch(path, replacers)
+  puts "Patching #{path.blue}"
+  lines = []
+  File.open(path, "r") do |f|
+  f.each do |line|
+    replacers.each do |r|
+    line.gsub!(r[0], r[1])
+    end
+    lines << line
+  end
+  end
+  File.open(path, "w") do |f|
+    f << lines.join
+  end
+end
+
 desc "deploy to heroku"
 task :deploy do
   dirty_repo_warning()
   revision()
   sys("git push heroku master:master")
   sys("heroku config:set HEROKU=1 PRODUCTION=1 GIT_REVISION=#{$revision}")
+end
+
+def build!
+  sys("lein clean")
+  sys("lein garden once")
+  sys("rm -rf resources/public/_generated")
+  sys("lein cljsbuild once production")
+  sys("lein aggravate")
+end
+
+def reset_build_dir!
+  chdir(".build") do
+    sys("git reset --hard HEAD")
+    sys("git clean -f -d")
+  end
+end
+
+def copy_build!
+  sys("cp -r resources/public/* .build")
+end
+
+def patch_build!
+  chdir(".build") do
+    sys("mv _generated/prod/faceboard.js _generated")
+    sys("rm -rf _generated/prod")
+    sys("rm -rf css")
+    sys("rm -rf js")
+    sys("rm -rf codemirror")
+    sys("mv index-production.html index.html")
+    patch("index.html", [["window.faceboard_env = {}", 
+      "window.faceboard_env = {
+        \"production\": true, 
+        \"github-pages\": true, 
+        \"git-revision\": \"#{$revision}\"
+      }"]])
+    sys('echo "fb.binaryage.com" > CNAME') # TODO: support hacker paradise
+  end
+end
+
+desc "init build dir"
+task :initbuild do
+  sys("rm -rf .build")
+  sys("git clone git@github.com:darwin/faceboard.git .build")
+  chdir(".build") do
+    sys("git checkout gh-pages")
+  end
+end
+
+desc "deploy to github pages"
+task :d do
+  skip_build = ENV["skipbuild"] || false
+  dirty_repo_warning()
+  revision()
+
+  reset_build_dir!
+  build! unless skip_build
+  copy_build!
+  patch_build!
 end
 
 desc "serve"
