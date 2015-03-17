@@ -76,9 +76,12 @@
         (model/set [:ui :view] :loading)
         (model/inc [:ui :loading?])
         (model/set [:ui :view-params] {:message "Loading the board..."}))
-      (db/connect-board board-id {:on-connect #(transform-app-state
-                                                (model/dec [:ui :loading?])
-                                                (model/set [:ui :view] :board))}))))
+      (db/connect-board board-id {:on-connect (fn [model]
+                                                (if model
+                                                  (transform-app-state
+                                                    (model/dec [:ui :loading?])
+                                                    (model/set [:ui :view] :board))
+                                                  (perform! :switch-view :error {:message (str "Board " board-id " does not exist.")})))}))))
 
 (defmethod handle-command :create-board [_ board-id]
   (transform-app-state

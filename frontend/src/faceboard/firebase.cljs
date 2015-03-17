@@ -45,15 +45,15 @@
         (when (= chan board-chan)
           (let [[id model] msg]                             ; model can be null during board creation, see :create-board command
             (log (str "firebase: #" request-number) id ">>" model)
-            (remove-watch app-state :model-watcher)
-            (when (and (zero? request-number) (fn? on-connect) (on-connect model)))
             (let [upgraded-model (schema/upgrade-schema-if-needed model)]
               (when upgraded-model                          ; warning: upgrade can fail
+                (remove-watch app-state :model-watcher)
                 (transform-app-state
                   (model/dec-clamp-zero [:ui :loading?])    ; not all incoming messages were initiated by ***
-                  (model/set [:model] upgraded-model)))
-              (when (fn? on-message) (on-message upgraded-model))
-              (add-watch app-state :model-watcher model-watcher))
+                  (model/set [:model] upgraded-model))
+                (add-watch app-state :model-watcher model-watcher))
+              (when (and (zero? request-number) (fn? on-connect) (on-connect upgraded-model)))
+              (when (fn? on-message) (on-message upgraded-model)))
             (recur (inc request-number))))
         (remove-watch app-state :model-watcher)
         (when (fn? on-disconnect) (on-disconnect))
@@ -68,9 +68,11 @@
 (defn connect-board [board-id opts]
   (when-not (is-board-connected? board-id)
     (set! *current-board-id* board-id)
-    (if (= board-id "sample")                               ; short-circuit sample board without firebase
-      (let [{:keys [on-connect]} opts]
-        (when (fn? on-connect) (on-connect nil))
-        (transform-app-state
-          (model/set [:model] sample-board)))
+    (if (= board-id "sample")                               ; short-circuit sample board and skip firebase machinery
+      (do
+        (log "initializing sample board")
+        (let [{:keys [on-connect]} opts]
+          (when (fn? on-connect) (on-connect sample-board))
+          (transform-app-state
+            (model/set [:model] sample-board))))
       (cancel-previous-connection #(connect-board-worker board-id opts)))))
