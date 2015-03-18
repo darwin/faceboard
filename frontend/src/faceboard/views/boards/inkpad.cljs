@@ -9,9 +9,8 @@
 (defn extract-content [html]
   (let [frame (.createElement js/document "div")]
     (set! (.-innerHTML frame) html)
-    (let [markdown-body (aget (.querySelectorAll frame ".markdown-body") 0)]
-      (when markdown-body
-        (.-innerHTML markdown-body)))))
+    (if-let [markdown-body (aget (.querySelectorAll frame ".markdown-body") 0)]
+      (.-innerHTML markdown-body))))
 
 (defn process-response [id url response]
   (perform! :update-tab-cache id (if (:success response)
