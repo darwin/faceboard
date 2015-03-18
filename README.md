@@ -2,32 +2,33 @@
 
 Facebook killer. Or not.
 
+### [Live demo](http://fb.binaryage.com)
+
 ## Overview
 
-This ↓↓↓ but in the cloud!<br>
-<a href="https://thesacredprofession.files.wordpress.com/2012/08/abby-with-faceboard1.jpg"><img src="https://thesacredprofession.files.wordpress.com/2012/08/abby-with-faceboard1.jpg" style="max-width:900px"></a>
-
-## Local server
-
-To run local web server with development build ([localhost:3000](localhost:3000)):
-
-    lein ring server
+<a href="http://fb.binaryage.com"><img src="https://dl.dropboxusercontent.com/u/559047/faceboard-intro.png" style="max-width:900px"></a>
 
 ## Development
 
-Automatic code rebuilding via figwheel ([localhost:3000](localhost:3000)):
+In terminal run figwheel (automatic code rebuilding), server should start at [localhost:3000](localhost:3000):
 
     lein figwheel
 
-### Optional
+In a separate terminal session run garden (automatic css regeneration): 
 
-Automatic code rebuilding in background:
+    lein garden auto
 
-    lein cljsbuild auto
+## Deployment
 
-Clean project specific out:
+#### Heroku
 
-     lein clean
+    rake deploy_heroku
+
+#### GitHub Pages
+
+First you have to setup your [gh-pages branch](https://help.github.com/articles/creating-project-pages-manually) and clone it into .build sub-directory. See rakefile's init_build task for inspiration.
+
+    rake deploy_github
 
 ## License
 
