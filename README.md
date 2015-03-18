@@ -10,4 +10,4 @@ Faceboard is supposed to act as an online hub for content relevant to a group of
 
 ---
 
-## License [MIT](http://opensource.org/licenses/MIT)
+#### License [MIT](http://opensource.org/licenses/MIT)
