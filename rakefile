@@ -58,6 +58,7 @@ def reset_build_dir!
     sys("git reset --hard HEAD")
     sys("git clean -f -d")
   end
+  sys("rm -rf .build/*")
 end
 
 def copy_build!
