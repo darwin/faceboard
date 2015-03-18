@@ -130,10 +130,11 @@
   (render [_]
     (let [{:keys [ui anims]} data
           people (:content data)
+          sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
           extended-set (:extended-set ui)]
       (dom/div {}
-        (for [i (range (count people))]
-          (let [person (nth people i)
+        (for [i (range (count sorted-people))]
+          (let [person (nth sorted-people i)
                 data {:person    person
                       :extended? (contains? extended-set i)
                       :anim      (:person anims)
