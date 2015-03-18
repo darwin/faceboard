@@ -1,7 +1,7 @@
 (ns faceboard.controller
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :as async :refer [>!]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def command-chan (async/chan))
 

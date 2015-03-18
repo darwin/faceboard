@@ -8,7 +8,7 @@
             [faceboard.helpers.utils :refer [model->json]]
             [phalanges.core :as phalanges]
             [faceboard.env :refer [mac?]]
-            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]))
 
 (def ^:dynamic *codemirror*)

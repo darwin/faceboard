@@ -1,6 +1,6 @@
 (ns faceboard.schema
   (:require [faceboard.controller :refer [perform!]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def current-version 2)
 

@@ -3,7 +3,7 @@
                    [faceboard.macros.model :refer [transform-app-state]])
   (:require [cljs.core.async :refer [<! >! chan put!]]
             [faceboard.state :refer [app-state]]
-            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.env :as env]
             [faceboard.model :as model]
             [faceboard.schema :as schema]

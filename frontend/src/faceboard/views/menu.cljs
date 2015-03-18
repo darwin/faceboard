@@ -3,7 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.controller :refer [perform!]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defcomponent menu-button-component [data _ _]
   (render [_]

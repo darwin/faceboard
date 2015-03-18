@@ -1,7 +1,7 @@
 (ns faceboard.model
   (:refer-clojure :exclude [get set update inc dec])
   (:require [faceboard.state :refer [app-state]]
-            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.helpers.utils :refer [json->model]]))
 
 (defn update

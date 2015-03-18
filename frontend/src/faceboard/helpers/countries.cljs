@@ -1,5 +1,5 @@
 (ns faceboard.helpers.countries
-  (:require [faceboard.logging :refer [log, log-err, log-warn]]))
+  (:require [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def country-names
   {"nl" ["Netherlands"]

@@ -2,7 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.page :as page]
             [faceboard.views.logo :as logo]))
 

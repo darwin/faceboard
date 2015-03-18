@@ -4,7 +4,7 @@
             [markdown.core :refer [md->html]]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def gists-api-endpoint "https://api.github.com/gists/")
 

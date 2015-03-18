@@ -1,7 +1,7 @@
 (ns faceboard.views.banner
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defcomponent banner-component [data _ _]
   (render [_]

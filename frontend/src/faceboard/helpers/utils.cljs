@@ -10,3 +10,6 @@
 
 (defn non-sanitized-div [content]
   (dom/div {:dangerouslySetInnerHTML #js {:__html content}}))
+
+(defn find-first [f coll]
+  (first (filter f coll)))

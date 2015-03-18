@@ -1,5 +1,5 @@
 (ns faceboard.env
-  (:require [faceboard.logging :refer [log, log-err, log-warn]]
+  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.devtools :as devtools]
             [faceboard.figwheel :as figwheel]))
 
@@ -13,6 +13,7 @@
 (def git-revision (:git-revision env))
 (def local? (not (defined? (:production env))))
 (def firebase-db (get env :firebase-db "blinding-heat-4410"))
+(def domain (.-host js/location))
 
 (defn init! []
   (enable-console-print!)

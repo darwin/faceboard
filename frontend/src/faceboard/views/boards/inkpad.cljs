@@ -2,7 +2,7 @@
   (:require [om-tools.core :refer-macros [defcomponent]]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def inkpad-api-endpoint "https://www.inkpad.io/")
 

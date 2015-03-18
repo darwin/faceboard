@@ -1,5 +1,5 @@
 (ns faceboard.state
-  (:require [faceboard.logging :refer [log, log-err, log-warn]]
+  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.data.sample_board :refer [sample-board]]))
 
 (defonce app-state

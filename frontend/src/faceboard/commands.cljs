@@ -4,7 +4,7 @@
   (:require [clojure.set :refer [difference]]
             [cljs-http.client :as http]
             [faceboard.state :refer [app-state]]
-            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.model :as model]
             [faceboard.router :as router]
             [faceboard.firebase :as db]

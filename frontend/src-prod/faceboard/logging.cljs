@@ -5,6 +5,9 @@
 
 (defn log [& _]) ; no-op in production mode
 
+(defn log-info [& args]
+  (apply log-method (cons "log" args)))
+
 (defn log-err [& args]
   (apply log-method (cons "error" args)))
 

@@ -2,7 +2,7 @@
   (:require [cljs.core.async :refer [<! >! timeout]]
             [faceboard.model :as model]
             [faceboard.controller :refer [perform! command-chan]]
-            [faceboard.logging :refer [log, log-err, log-warn]])
+            [faceboard.logging :refer [log log-err log-warn log-info]])
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]))
 
 (defonce ^:dynamic *anim-generations* #js {})

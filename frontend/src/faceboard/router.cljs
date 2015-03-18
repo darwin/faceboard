@@ -1,9 +1,10 @@
 (ns faceboard.router
   (:require [secretary.core :as secretary :refer-macros [defroute]]
-            [faceboard.logging :refer [log, log-err, log-warn]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
             [faceboard.env :refer [local?]]
             [faceboard.firebase :as db]
+            [faceboard.whitelabel :refer [whitelabel-board]]
             [faceboard.state :refer [app-state]]
             [goog.events])
   (:import goog.History
@@ -43,14 +44,27 @@
   (goog.events/listen history EventType.NAVIGATE #(dispatch! (.-token %)))
   (.setEnabled history true))
 
-(defn define-routes! []
+(defn- switch-board-and-tab [id tab]
+  (when-not (db/is-board-connected? id)
+    (perform! :switch-board id))
+  (perform! :switch-tab tab))
+
+(defn define-normal-routes! []
   (defroute-with-info home-route "/" [] (perform! :switch-view :welcome))
-  (defroute-with-info board-tab-route "/board/:id/:tab" [id tab] (do
-                                                                            (when-not (db/is-board-connected? id)
-                                                                              (perform! :switch-board id))
-                                                                            (perform! :switch-tab tab)))
+  (defroute-with-info board-tab-route "/board/:id/:tab" [id tab] (switch-board-and-tab id tab))
   (defroute-with-info board-route "/board/:id" [id] (navigate! (board-tab-route {:id id :tab "people"})))
   (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
+
+(defn define-whitelabel-routes! [id]
+  (log-info (str "Detected white-label site: implicit board-id is '" id "'"))
+  (defroute-with-info whitelabel-board-tab-route "/:tab" [tab] (switch-board-and-tab id tab))
+  (defroute-with-info whitelabel-board-route "/" [] (navigate! (whitelabel-board-tab-route {:id id :tab "people"})))
+  (defroute-with-info whitelabel-catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
+
+(defn define-routes! []
+  (if-let [whitelabel-board-id (whitelabel-board)]
+    (define-whitelabel-routes! whitelabel-board-id)
+    (define-normal-routes!)))
 
 (defn define-test-routes! []
   (defroute-with-info test-route "/test" [] (perform! :switch-view :test))

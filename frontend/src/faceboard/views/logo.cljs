@@ -1,7 +1,7 @@
 (ns faceboard.views.logo
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.logging :refer [log, log-err, log-warn]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defcomponent small-logo-component [_ _ _]
   (render [_]
