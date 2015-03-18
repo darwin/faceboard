@@ -36,7 +36,7 @@
 (defn build-known-url [type id]
   ; TODO: add more services
   (condp #(str/starts-with? %2 %1) type                     ; recognized urls from id
-    "facebook" (str "https://github.com/" id)
+    "facebook" (str "https://www.facebook.com/" id)
     "twitter" (str "https://twitter.com/" id)
     "github" (str "https://github.com/" id)
     "linkedin" (str "https://www.linkedin.com/in/" id)
