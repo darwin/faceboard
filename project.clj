@@ -16,7 +16,7 @@
                  [cuerdas "0.3.0"]
                  [markdown-clj "0.9.64"]
                  [garden "1.2.5"]
-                 [figwheel "0.2.3-SNAPSHOT"]
+                 [figwheel "0.2.5"]
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "4.6"]
                  [compojure "1.3.2"]
