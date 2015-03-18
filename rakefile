@@ -45,14 +45,6 @@ def patch(path, replacers)
   end
 end
 
-desc "deploy to heroku"
-task :deploy do
-  dirty_repo_warning()
-  revision()
-  sys("git push heroku master:master")
-  sys("heroku config:set HEROKU=1 PRODUCTION=1 GIT_REVISION=#{$revision}")
-end
-
 def build!
   sys("lein clean")
   sys("lein garden once")
@@ -91,8 +83,8 @@ def patch_build!
   end
 end
 
-desc "init build dir"
-task :initbuild do
+desc "init build dir for github pages"
+task :init_build do
   sys("rm -rf .build")
   sys("git clone git@github.com:darwin/faceboard.git .build")
   chdir(".build") do
@@ -100,8 +92,8 @@ task :initbuild do
   end
 end
 
-desc "deploy to github pages"
-task :d do
+desc "prepare build for github pages"
+task :prepare_build do
   skip_build = ENV["skipbuild"] || false
   dirty_repo_warning()
   revision()
@@ -110,6 +102,22 @@ task :d do
   build! unless skip_build
   copy_build!
   patch_build!
+end
+
+desc "deploy to heroku"
+task :deploy_heroku do
+  dirty_repo_warning()
+  revision()
+  sys("git push heroku master:master")
+  sys("heroku config:set HEROKU=1 PRODUCTION=1 GIT_REVISION=#{$revision}")
+end
+
+desc "deploy to github pages"
+task :deploy_github => [:prepare_build] do
+  chdir(".build") do
+    sys("git add --all && git commit -m \"Deploy #{$revision}\"")
+    sys("git push origin gh-pages")
+  end
 end
 
 desc "serve"
