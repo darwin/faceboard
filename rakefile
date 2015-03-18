@@ -115,7 +115,7 @@ end
 desc "deploy to github pages"
 task :deploy_github => [:prepare_build] do
   chdir(".build") do
-    sys("git add --all && git commit -m \"Deploy #{$revision}\"")
+    sys("git add --all && git commit -m \"Deploy darwin/faceboard@#{$short_revision}\"")
     sys("git push origin gh-pages")
   end
 end
