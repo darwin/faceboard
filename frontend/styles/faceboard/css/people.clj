@@ -112,6 +112,7 @@
         :padding-bottom (px 4)
         :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"
         :cursor :pointer
+        :transition "opacity .3s ease-in-out"
         :opacity 0.8
         :white-space :nowrap]
        (>> &:hover

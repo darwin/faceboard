@@ -82,12 +82,16 @@
           id (:id data)
           extended? (:extended? data)
           random-generator (cemerick.pprng/rng (hash id))
-          angle (- (cemerick.pprng/int random-generator 20) 10)
+          angle (or (get-in bio [:photo :angle]) (- (cemerick.pprng/int random-generator 20) 10))
           country-code (:country bio)
-          country-name (lookup-country-name country-code)]
+          country-name (lookup-country-name country-code)
+          photo-rotation (str "rotate(" angle "deg)")]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
-                  :style {:transform (str "rotate(" angle "deg)")}}
+                  :style {:transform         photo-rotation
+                          :-webkit-transform photo-rotation ; TODO: solve this prefixing hell somehow
+                          :-moz-transform    photo-rotation
+                          :-ms-transform     photo-rotation}}
           (dom/div {:class "left-part"}
             (dom/div {:class "photo"}
               (dom/img {:src (or (get-in bio [:photo :url] nil) "/images/unknown.jpg")}))

@@ -68,6 +68,7 @@
                                        :output-dir    "resources/public/_generated/prod"
                                        ;:source-map    "resources/public/_generated/prod/faceboard.js.map"
                                        :preamble      ["public/js/platform.js"
+                                                       "public/js/prefixfree.min.js"
                                                        "public/codemirror/codemirror.js"
                                                        "public/codemirror/addon/edit/matchbrackets.js"
                                                        "public/codemirror/addon/edit/closebrackets.js"
@@ -84,8 +85,15 @@
                      :stylesheet faceboard.garden/garden
                      :compiler {:output-to "resources/public/css/garden.css"
                                 :pretty-print? true
-                                :vendors ["webkit"]
-                                :auto-prefix #{:border-radius}}}]}
+                                ;:vendors ["webkit" "ms" "moz"]
+                                ;:auto-prefix #{:transform
+                                ;               :transform-style
+                                ;               :transform-origin
+                                ;               :border-radius
+                                ;               :perspective
+                                ;               :perspective-origin
+                                ;              :transition
+                                }}]}
 
   :aggravate-files [{:input      ["resources/public/css/garden.css" ; must go first
                                   "resources/public/css/font-awesome.css"
