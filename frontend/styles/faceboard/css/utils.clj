@@ -5,6 +5,12 @@
 (def styles
   [(>> clear
      [:clear :both])
+   (>> clearfix:after
+     [:content "\".\""
+      :visibility :hidden
+      :display :block
+      :height 0
+      :clear :both])
    (>> hide
      [:visibility :hidden])
    (>> no-select

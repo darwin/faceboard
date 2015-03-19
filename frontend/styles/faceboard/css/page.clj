@@ -29,9 +29,10 @@
      (>> banner
        [:position :fixed
         :bottom (px 0)
+        :right (px 0)
         :color "#888"
         :font-size (px 10)
-        :background-color "#ddd"
+        :background-color "#fff64c"
         :opacity 0.5
         :padding (px 1 10)]
        (>> :a

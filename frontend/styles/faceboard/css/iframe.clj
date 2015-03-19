@@ -4,7 +4,10 @@
 
 (def styles
   [(>> iframe-board
-     [:margin (px 0)]
+     [:padding (px 0)
+      :height "100%"]
+     (>> [> *]
+       [:height "100%"])
      (>> :iframe
        [:width "100%"
         :height "100%"

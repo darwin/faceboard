@@ -5,8 +5,20 @@
 
 (def styles
   [(>> people-board
-     [:height "100%"
-      :perspective (px 800)]
+     [:padding (px 0)
+      :padding-right (px 280) ; leave room for expanded cards
+      :perspective (px 1000)
+      :perspective-origin "50% 50%"
+      :background-color "#ddd"]
+     (>> people-desk
+       [:background-color selected-tab-color])
+     (>> people-filters
+       [:position :absolute
+        :right (px 0)
+        :width (px 240)
+        ;:background-color "red"
+        :height "100%"
+        :padding (px 10) (px 20)])
      (>> person-box
        [:position :relative
         :float :left
