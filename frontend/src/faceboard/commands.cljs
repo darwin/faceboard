@@ -108,6 +108,14 @@
   (transform-app-state
     (model/inc anim-path)))
 
+(defmethod handle-command :inc-loading-counter [_]
+  (transform-app-state
+    (model/inc [:ui :loading?])))
+
+(defmethod handle-command :dec-loading-counter [_]
+  (transform-app-state
+    (model/dec-clamp-zero [:ui :loading?])))
+
 (defmethod handle-command :update-tab-cache [_ tab-id content]
   (transform-app-state
     (model/set [:cache :tabs tab-id] {:content content})))
