@@ -79,7 +79,7 @@
       (db/connect-board board-id {:on-connect (fn [model]
                                                 (if model
                                                   (transform-app-state
-                                                    (model/dec [:ui :loading?])
+                                                    (model/dec-clamp-zero [:ui :loading?])
                                                     (model/set [:ui :view] :board))
                                                   (perform! :switch-view :error {:message (str "Board " board-id " does not exist.")})))}))))
 
@@ -90,7 +90,7 @@
     (model/set [:ui :view-params] {:message "Creating a new board..."}))
   (let [init-and-navigate (fn [_]
                             (transform-app-state
-                              (model/dec [:ui :loading?])
+                              (model/dec-clamp-zero [:ui :loading?])
                               (model/set [:model] initial-board)
                               (model/set [:ui :view] :board))
                             (router/navigate! (router/board-tab-route {:id board-id :tab "people"})))]
@@ -118,5 +118,5 @@
   (go (let [opts {:with-credentials? false}                 ; http://stackoverflow.com/a/24443043/84283
             response (<! (http/get url opts))]
         (transform-app-state
-          (model/dec [:ui :loading?]))
+          (model/dec-clamp-zero [:ui :loading?]))
         (when fn (fn response)))))

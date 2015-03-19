@@ -74,7 +74,8 @@
           {:keys [selected-tab-id loading?]} ui
           selected-tab (lookup-tab selected-tab-id tabs)]
       (page/page-skeleton
-        (dom/div {:class (str "loading-indicator" (when (> loading? 0) " visible"))}
+        (dom/div {:class (str "loading-indicator" (when (> loading? 0) " visible"))
+                  :title "Waiting for network response..."}
           (dom/i {:class "fa fa-refresh fa-spin"}))
         (dom/div {:class "top-bar no-select"}
           (om/build small-logo-component {})

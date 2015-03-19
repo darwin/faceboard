@@ -30,11 +30,14 @@
 
 (defn inc
   ([state path] (update state path cljs.core/inc))
-  ([path] (update @app-state path cljs.core/inc)))
+  ([path] (inc @app-state path)))
 
 (defn dec
-  ([state path] (update state path cljs.core/dec))
-  ([path] (update @app-state path cljs.core/dec)))
+  ([state path]
+   (when (zero? (get-in state path))
+     (log-err (str "Counter underflow " path)))
+   (update state path cljs.core/dec))
+  ([path] (dec @app-state path)))
 
 (defn dec-if-pos [n]
   (if (pos? n)
