@@ -37,7 +37,7 @@
 (defcomponent tags-section-component [data _ _]
   (render [_]
     (dom/div {:class "extended-info-section tags"}
-      (dom/div {:class "info-title"} "tags")
+      (dom/div {:class "info-title"} "interests")
       (om/build-all tags-section-item-component data)
       (dom/div {:class "clear"}))))
 
