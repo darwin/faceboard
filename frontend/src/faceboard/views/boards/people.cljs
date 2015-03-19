@@ -8,6 +8,7 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
+            [faceboard.helpers.filters :refer [build-countries-tally]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cemerick.pprng]))
 
@@ -126,6 +127,39 @@
                                            :id     id
                                            :person person}))))))
 
+(defcomponent countries-filter-item-component [data _ _]
+  (render [_]
+    (let [{:keys [country-code report]} data
+          country-name (lookup-country-name country-code)
+          count (:count report)]
+      (dom/div {:class "countries-filter-item f16"}
+        (when-not (nil? country-code)
+          (dom/span {:class (str "flag " country-code) :title country-name}))
+        (dom/span {:class "country"} country-name)
+        (dom/span {:class "count"} (str "(" count "x)"))))))
+
+(defcomponent countries-filter-component [data _ _]
+  (render [_]
+    (let [people (:content data)
+          countries-tally (build-countries-tally people)
+          sorted-countries (:countries-by-size countries-tally)]
+      (dom/div {:class "countries-filter-wrapper"}
+        (when (> (count sorted-countries) 1)
+          (dom/div {:class "countries-filter filter-section"}
+            (dom/div {:class "filter-section-label"}
+              "countries"
+              (dom/span {:class "fa fa-filter"}))
+            (dom/div {:class "filter-section-body"}
+              (for [country-code sorted-countries]
+                (let [report (get-in countries-tally [:tally country-code])]
+                  (om/build countries-filter-item-component {:country-code country-code
+                                                             :report       report}))))))))))
+
+(defcomponent filters-component [data _ _]
+  (render [_]
+    (dom/div {:class "people-filters"}
+      (om/build countries-filter-component data))))
+
 (defcomponent people-component [data _ _]
   (render [_]
     (let [{:keys [ui anims]} data
@@ -133,8 +167,7 @@
           sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
           extended-set (:extended-set ui)]
       (dom/div {:class "clearfix"}
-        (dom/div {:class "people-filters"}
-          "Countries")
+        (om/build filters-component data)
         (dom/div {:class "people-desk clearfix"}
           (for [i (range (count sorted-people))]
             (let [person (nth sorted-people i)

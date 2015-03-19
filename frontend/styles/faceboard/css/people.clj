@@ -13,12 +13,37 @@
      (>> people-desk
        [:background-color selected-tab-color])
      (>> people-filters
-       [:position :absolute
+       [:font-size (px 12)
+        :position :absolute
         :right (px 0)
-        :width (px 240)
+        :width (px 260)
         ;:background-color "red"
         :height "100%"
-        :padding (px 10) (px 20)])
+        :padding (px 10) (px 20)]
+       (>> filter-section
+         [:margin-bottom (px 30)]
+         (>> filter-section-label
+           [:border-bottom "2px solid #aaa"
+            :font-weight :bold
+            :color "#999"]
+           (>> fa-filter
+             [:margin-left (px 4)
+              :color "#ccc"]))
+         (>> filter-section-body
+           [:padding-left (px 10)
+            :margin-top (px 6)]))
+       (>> countries-filter-item
+         (>> flag
+           [:height "14px !important"
+            :margin-right (px 6)
+            :position :relative
+            :top (px 2)])
+         (>> label
+           [])
+         (>> count
+           [:font-size (px 10)
+            :margin-left (px 6)
+            :color "#aaa"])))
      (>> person-box
        [:position :relative
         :float :left
