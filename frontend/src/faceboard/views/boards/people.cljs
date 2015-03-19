@@ -8,7 +8,7 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.helpers.filters :refer [build-countries-tally]]
+            [faceboard.helpers.filters :refer [build-countries-tally build-tags-tally]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cemerick.pprng]))
 
@@ -133,10 +133,11 @@
           country-name (lookup-country-name country-code)
           count (:count report)]
       (dom/div {:class "countries-filter-item f16"}
-        (when-not (nil? country-code)
-          (dom/span {:class (str "flag " country-code) :title country-name}))
-        (dom/span {:class "country"} country-name)
-        (dom/span {:class "count"} (str "(" count "x)"))))))
+        (dom/div {:class "countries-filter-item-body"}
+          (when-not (nil? country-code)
+            (dom/span {:class (str "flag " country-code) :title country-name}))
+          (dom/span {:class "country"} country-name)
+          (dom/span {:class "count"} (str "(" count "x)")))))))
 
 (defcomponent countries-filter-component [data _ _]
   (render [_]
@@ -146,7 +147,8 @@
       (dom/div {:class "countries-filter-wrapper"}
         (when (> (count sorted-countries) 1)
           (dom/div {:class "countries-filter filter-section"}
-            (dom/div {:class "filter-section-label"}
+            (dom/div {:class "filter-section-label"
+                      :title "filtering by country"}
               "countries"
               (dom/span {:class "fa fa-filter"}))
             (dom/div {:class "filter-section-body"}
@@ -155,10 +157,37 @@
                   (om/build countries-filter-item-component {:country-code country-code
                                                              :report       report}))))))))))
 
+(defcomponent tags-filter-item-component [data _ _]
+  (render [_]
+    (let [{:keys [tag report]} data
+          count (:count report)]
+      (dom/div {:class "tags-filter-item f16"}
+        (dom/span {:class "tag"
+                   :title (str "(" count "x)")} tag)))))
+
+(defcomponent tags-filter-component [data _ _]
+  (render [_]
+    (let [people (:content data)
+          tags-tally (build-tags-tally people)
+          sorted-tags (:tags-by-size tags-tally)]
+      (dom/div {:class "tags-filter-wrapper"}
+        (when (> (count sorted-tags) 0)
+          (dom/div {:class "tags-filter filter-section"}
+            (dom/div {:class "filter-section-label"
+                      :title "filtering by interest"}
+              "interests"
+              (dom/span {:class "fa fa-filter"}))
+            (dom/div {:class "filter-section-body"}
+              (for [tag sorted-tags]
+                (let [report (get-in tags-tally [:tally tag])]
+                  (om/build tags-filter-item-component {:tag    tag
+                                                        :report report}))))))))))
+
 (defcomponent filters-component [data _ _]
   (render [_]
-    (dom/div {:class "people-filters"}
-      (om/build countries-filter-component data))))
+    (dom/div {:class "people-filters no-select"}
+      (om/build countries-filter-component data)
+      (om/build tags-filter-component data))))
 
 (defcomponent people-component [data _ _]
   (render [_]
@@ -166,7 +195,7 @@
           people (:content data)
           sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
           extended-set (:extended-set ui)]
-      (dom/div {:class "clearfix"}
+      (dom/div {:class "clearfix no-select"}
         (om/build filters-component data)
         (dom/div {:class "people-desk clearfix"}
           (for [i (range (count sorted-people))]

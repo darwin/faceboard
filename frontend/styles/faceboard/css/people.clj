@@ -6,7 +6,7 @@
 (def styles
   [(>> people-board
      [:padding (px 0)
-      :padding-right (px 280) ; leave room for expanded cards
+      :padding-right (px 280)                               ; leave room for expanded cards
       :perspective (px 1000)
       :perspective-origin "50% 50%"
       :background-color "#ddd"]
@@ -21,9 +21,9 @@
         :height "100%"
         :padding (px 10) (px 20)]
        (>> filter-section
-         [:margin-bottom (px 30)]
+         [:margin-bottom (px 20)]
          (>> filter-section-label
-           [:border-bottom "2px solid #aaa"
+           [:border-bottom "2px solid #ccc"
             :font-weight :bold
             :color "#999"]
            (>> fa-filter
@@ -31,19 +31,39 @@
               :color "#ccc"]))
          (>> filter-section-body
            [:padding-left (px 10)
-            :margin-top (px 6)]))
+            :margin-top (px 10)]))
        (>> countries-filter-item
+         (>> countries-filter-item-body
+           [:cursor :pointer
+            :display :inline-block
+            :padding (px 0 4)
+            :border-radius (px 2)]
+           (>> &:hover
+             [:background-color filter-item-background-hovered-color]))
          (>> flag
            [:height "14px !important"
             :margin-right (px 6)
             :position :relative
             :top (px 2)])
-         (>> label
-           [])
          (>> count
            [:font-size (px 10)
-            :margin-left (px 6)
-            :color "#aaa"])))
+            :margin-left (px 4)
+            :color "#aaa"]))
+       (>> tags-filter-item
+         [:float :left
+          :padding (px 1 4)
+          :background-color "#bbb"
+          :margin-bottom (px 2)
+          :margin-right (px 2)
+          :border-radius (px 2)
+          :cursor :pointer]
+         (>> count
+           [:display :none
+            :font-size (px 10)
+            :margin-left (px 4)
+            :color "#aaa"])
+         (>> &:hover
+           [:background-color filter-item-background-hovered-color])))
      (>> person-box
        [:position :relative
         :float :left
