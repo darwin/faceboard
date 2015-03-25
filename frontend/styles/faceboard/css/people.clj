@@ -21,21 +21,33 @@
         :height "100%"
         :padding (px 10) (px 20)]
        (>> filter-section
-         [:margin-bottom (px 20)]
+         [:margin-bottom (px 0)]
          (>> filter-section-label
-           [:border-bottom "2px solid #ccc"
+           [:cursor :pointer
             :font-weight :bold
             :color "#999"]
+           (>> :span
+             [:margin-right (px 4)])
            (>> fa-filter
-             [:margin-left (px 4)
-              :color "#ccc"]))
+             [:color "#ccc"]))
          (>> filter-section-body
-           [:padding-left (px 10)
-            :margin-top (px 10)]))
+           [:margin-left (px 14)
+            :border-top "2px solid transparent"
+            :padding-left (px 10)
+            :transition "height 1s ease-in-out"
+            :height 0
+            :overflow :hidden]
+           (>> &.expanded
+             [:height :auto
+              :padding-bottom (px 20)
+              :padding-top (px 6)
+              :border-top "2px solid #ccc"])))
        (>> countries-filter-item
          (>> countries-filter-item-body
            [:cursor :pointer
             :display :inline-block
+            :position :relative
+            :left (px -4)
             :padding (px 0 4)
             :border-radius (px 2)]
            (>> &:hover

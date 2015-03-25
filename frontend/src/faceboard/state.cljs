@@ -10,6 +10,7 @@
              :editing?        false
              :model-editing?  false
              :loading?        0
-             :extended-set    #{}}
+             :extended-set    #{}
+             :filters {:expanded-set #{}}}
      :anims {}
      :cache {:tabs {}}}))

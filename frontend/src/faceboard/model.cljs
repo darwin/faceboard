@@ -12,6 +12,14 @@
   ([state path] (update-in state path #(not %)))
   ([path] (toggle @app-state path)))
 
+(defn toggle-set
+  ([state path key] (update-in state path (fn [set]
+                                            ;{:pre [(= (type set) "set")]}
+                                            (if (contains? set key)
+                                              (disj set key)
+                                              (conj set key)))))
+  ([path key] (toggle-set @app-state path key)))
+
 (defn disable
   ([state path] (assoc-in state path false))
   ([path] (disable @app-state path)))

@@ -131,6 +131,16 @@
                                            :id     id
                                            :person person}))))))
 
+(defcomponent filter-section-label-component [data _ _]
+  (render [_]
+    (let [{:keys [expanded? key label title]} data]
+      (dom/div {:class (str "filter-section-label " (name key) "-filter-section-label")
+                :title (or title (str "filtering by " label))
+                :on-click #(perform! :toggle-filter-expansion key)}
+        (dom/span {:class (str "fa " (if expanded? "fa-arrow-circle-down" "fa-arrow-circle-right"))})
+        (dom/span label)
+        (dom/span {:class "fa fa-filter"})))))
+
 (defcomponent countries-filter-item-component [data _ _]
   (render [_]
     (let [{:keys [country-code report]} data
@@ -146,16 +156,16 @@
 (defcomponent countries-filter-component [data _ _]
   (render [_]
     (let [people (:content data)
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :countries)
           countries-tally (build-countries-tally people)
           sorted-countries (:countries-by-size countries-tally)]
       (dom/div {:class "countries-filter-wrapper"}
         (when (> (count sorted-countries) 1)
           (dom/div {:class "countries-filter filter-section"}
-            (dom/div {:class "filter-section-label"
-                      :title "filtering by country"}
-              "countries"
-              (dom/span {:class "fa fa-filter"}))
-            (dom/div {:class "filter-section-body"}
+            (om/build filter-section-label-component {:key :countries
+                                                      :expanded? expanded?
+                                                      :label "countries"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [country-code sorted-countries]
                 (let [report (get-in countries-tally [:tally country-code])]
                   (om/build countries-filter-item-component {:country-code country-code
@@ -172,16 +182,16 @@
 (defcomponent tags-filter-component [data _ _]
   (render [_]
     (let [people (:content data)
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :interests)
           tags-tally (build-tags-tally people)
           sorted-tags (:tags-by-size tags-tally)]
       (dom/div {:class "tags-filter-wrapper"}
         (when (> (count sorted-tags) 0)
           (dom/div {:class "tags-filter filter-section"}
-            (dom/div {:class "filter-section-label"
-                      :title "filtering by interest"}
-              "interests"
-              (dom/span {:class "fa fa-filter"}))
-            (dom/div {:class "filter-section-body"}
+            (om/build filter-section-label-component {:key :interests
+                                                      :expanded? expanded?
+                                                      :label "interests"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [tag sorted-tags]
                 (let [report (get-in tags-tally [:tally tag])]
                   (om/build tags-filter-item-component {:tag    tag

@@ -128,3 +128,7 @@
         (transform-app-state
           (model/dec-clamp-zero [:ui :loading?]))
         (when fn (fn response)))))
+
+(defmethod handle-command :toggle-filter-expansion [_ filter-name]
+  (transform-app-state
+    (model/toggle-set [:ui :filters :expanded-set] filter-name)))
