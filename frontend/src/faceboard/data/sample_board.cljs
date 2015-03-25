@@ -81,6 +81,12 @@
             :label "Gist"
             :kind "gist"
             :content {:gist-id "e04bd2ed2da938a2ff48"}}
+           {:id "styled-tab"
+            :label "Styled"
+            :style { :background-color "darkred" }
+            :selected-style { :background-color "yellow" }
+            :kind "gist"
+            :content {:gist-id "e04bd2ed2da938a2ff48"}}
            {:id "sample-inkpad"
             :label "Inkpad"
             :kind "inkpad"

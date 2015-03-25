@@ -43,10 +43,13 @@
   (render [_]
     (dom/div {:class "tab-area"}
       (let [{:keys [tabs selected-tab]} data]
-        (for [tab tabs]
-          (dom/div {:class    (str "tab" (when (= tab selected-tab) " selected"))
-                    :on-click #(router/update-params! {:tab (:id tab)})}
-            (:label tab)))))))
+        (for [tab tabs
+              :let [selected? (= tab selected-tab)
+                    {:keys [label id style selected-style]} tab]]
+          (dom/div {:class    (str "tab" (when selected? " selected"))
+                    :style    (if selected? selected-style style)
+                    :on-click #(router/update-params! {:tab id})}
+            label))))))
 
 (defcomponent board-content-component [data _ _]
   (render [_]
