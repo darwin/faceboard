@@ -21,12 +21,12 @@
 (defn- set-codemirror-value! [value]
   (when-not (nil? *codemirror*)
     (.call (aget *codemirror* "setValue") *codemirror* value)
-    (.markClean *codemirror*)))
+    (.call (aget *codemirror* "markClean") *codemirror*)))
 
 (defn- apply-changes [event]
   (.preventDefault event)
   (perform! :apply-json *path* (codemirror-value))
-  (.markClean *codemirror*))
+  (.call (aget *codemirror* "markClean") *codemirror*))
 
 (def action-table
   [[#{:meta :s} #{:ctrl :s} apply-changes]                  ; CMD+S on Mac, CTRL+S elsewhere
@@ -43,7 +43,7 @@
 
 (defn has-unsaved-data? []
   (when *codemirror*
-    (not (.isClean *codemirror*))))
+    (not (.call (aget *codemirror* "isClean") *codemirror*))))
 
 (defcomponent editor-component [data owner]
   (render [_]
@@ -83,7 +83,7 @@
         (when unsaved?
           (dom/div {:class    "button discard-switch"
                     :title    "You have switched underlying path but previous edits were not saved."
-                    :on-click (fn [e] (.markClean *codemirror*) (om/refresh! owner))}
+                    :on-click (fn [e] (.call (aget *codemirror* "markClean") *codemirror*) (om/refresh! owner))}
             "discard & switch"))
         (when not-in-sync?
           (dom/div {:class    "button refresh"
