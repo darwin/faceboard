@@ -73,6 +73,8 @@
           :margin-right (px 2)
           :border-radius (px 2)
           :cursor :pointer]
+         (>> &.selected
+           [:background-color filter-item-background-selected-color])
          (>> count
            [:display :none
             :font-size (px 10)
@@ -88,6 +90,10 @@
         :transform-style :preserve-3d
         :transition (str "transform 0.5s " ease-out-back)
         :transform "translateZ(-100px)"]
+       (>> &.filtered
+         [:opacity 0.2])
+       (>> &.expandable
+         [:cursor :pointer])
        ; zoom-in animation
        (>> &.extended
          [:z-index 100
@@ -127,7 +133,6 @@
         :padding (px 10 8)
         :padding-bottom (px 4)
         :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"
-        :cursor :pointer
         :transition "opacity .3s ease-in-out"
         :opacity 0.8
         :white-space :nowrap]

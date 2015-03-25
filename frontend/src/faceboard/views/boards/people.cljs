@@ -8,7 +8,8 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.helpers.filters :refer [build-countries-tally build-tags-tally]]
+            [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]
+            [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cemerick.pprng]))
 
@@ -77,10 +78,8 @@
 
 (defcomponent person-info-component [data _ _]
   (render [_]
-    (let [person (:person data)
+    (let [{:keys [person id extended?]} data
           bio (:bio person)
-          id (:id data)
-          extended? (:extended? data)
           random-generator (cemerick.pprng/rng (hash id))
           angle (or (get-in bio [:photo :angle]) (- (cemerick.pprng/int random-generator 20) 10))
           country-code (:country bio)
@@ -108,19 +107,21 @@
 
 (defcomponent person-component [data _ _]
   (render [_]
-    (let [person (:person data)
-          index (:index data)
+    (let [{:keys [person filtered?]} data
           id (:id person)
-          expansion-anim (anims/person-expanding index)
-          shrinking-anim (anims/person-shrinking index)
-          extended? (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1))]
+          expansion-anim (anims/person-expanding id)
+          shrinking-anim (anims/person-shrinking id)
+          extended? (and
+                      (not filtered?)
+                      (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1)))]
       (dom/div {:class    (str "person-box"
                             (anim-class expansion-anim " expanding")
                             (anim-class shrinking-anim " shrinking")
-                            (when extended? " extended"))
+                            (when extended? " extended")
+                            (if filtered? " filtered" " expandable"))
                 :on-click (fn [e]
                             (.stopPropagation e)
-                            (perform! :change-extended-set (if-not extended? (set [index]) #{})))}
+                            (perform! :change-extended-set (if-not extended? #{id} #{})))}
         (dom/div {:class "person-extended-wrapper"}
           (om/build person-info-component {:hide?     (not extended?)
                                            :extended? extended?
@@ -147,7 +148,7 @@
           country-name (lookup-country-name country-code)
           count (:count report)]
       (dom/div {:class    (str "countries-filter-item f16" (when selected? " selected"))
-                :on-click #(perform! (if (.-shiftKey %) :toggle-filter-selected-country :switch-filter-selected-country) country-code)}
+                :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-country :filter-select-country) country-code)}
         (dom/div {:class "countries-filter-item-body"}
           (when-not (nil? country-code)
             (dom/span {:class (str "flag " country-code) :title country-name}))
@@ -156,9 +157,10 @@
 
 (defcomponent tags-filter-item-component [data _ _]
   (render [_]
-    (let [{:keys [tag report]} data
+    (let [{:keys [tag report selected?]} data
           count (:count report)]
-      (dom/div {:class "tags-filter-item f16"}
+      (dom/div {:class    (str "tags-filter-item f16" (when selected? " selected"))
+                :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-tag :filter-select-tag) tag)}
         (dom/span {:class "tag"
                    :title (str "(" count "x)")} tag)))))
 
@@ -188,6 +190,7 @@
     (let [people (:content data)
           expanded? (contains? (get-in data [:ui :filters :expanded-set]) :interests)
           tags-tally (build-tags-tally people)
+          selected-tags (get-in data [:ui :filters :active :tags])
           sorted-tags (:tags-by-size tags-tally)]
       (dom/div {:class "tags-filter-wrapper"}
         (when (> (count sorted-tags) 0)
@@ -197,9 +200,11 @@
                                                       :label     "interests"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [tag sorted-tags]
-                (let [report (get-in tags-tally [:tally tag])]
-                  (om/build tags-filter-item-component {:tag    tag
-                                                        :report report}))))))))))
+                (let [report (get-in tags-tally [:tally tag])
+                      selected? (contains? selected-tags tag)]
+                  (om/build tags-filter-item-component {:tag       tag
+                                                        :selected? selected?
+                                                        :report    report}))))))))))
 
 (defcomponent filters-component [data _ _]
   (render [_]
@@ -208,19 +213,38 @@
       (om/build countries-filter-component data)
       (om/build tags-filter-component data))))
 
+(defn build-countries-filter-predicate [active-filters]
+  (if-let [active-countries (:countries active-filters)]
+    (when-not (empty? active-countries)
+      (partial countries-filter-predicate active-countries))))
+
+(defn build-tags-filter-predicate [active-filters]
+  (if-let [active-tags (:tags active-filters)]
+    (when-not (empty? active-tags)
+      (partial tags-filter-predicate active-tags))))
+
+(defn build-filter-predicates [active-filters]
+  (let [predicates [(build-countries-filter-predicate active-filters)
+                    (build-tags-filter-predicate active-filters)]]
+    (remove nil? predicates)))
+
 (defcomponent people-component [data _ _]
   (render [_]
     (let [{:keys [ui anims]} data
           people (:content data)
           sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
-          extended-set (:extended-set ui)]
+          extended-set (:extended-set ui)
+          active-filters (get-in ui [:filters :active])
+          filter-predicates (build-filter-predicates active-filters)
+          sorted-people-with-filter-status (map (fn [person] (hash-map :person person :filtered? (not (every? true? (map #(% person) filter-predicates))))) sorted-people)
+          sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
       (dom/div {:class "clearfix no-select"}
         (om/build filters-component data)
         (dom/div {:class "people-desk clearfix"}
-          (for [i (range (count sorted-people))]
-            (let [person (nth sorted-people i)
+          (for [item sorted-people-ordered-by-filter]
+            (let [person (:person item)
                   data {:person    person
-                        :extended? (contains? extended-set i)
-                        :anim      (:person anims)
-                        :index     i}]
+                        :extended? (contains? extended-set (:id person))
+                        :filtered? (:filtered? item)
+                        :anim      (:person anims)}]
               (om/build person-component data))))))))

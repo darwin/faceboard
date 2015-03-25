@@ -5,13 +5,14 @@
 (defonce app-state
   (atom
     {:model {}
-     :ui    {:view            :blank
-             :view-params     nil
-             :editing?        false
-             :model-editing?  false
-             :loading?        0
-             :extended-set    #{}
-             :filters {:expanded-set #{}
-                       :active {:countries #{}}}}
+     :ui    {:view           :blank
+             :view-params    nil
+             :editing?       false
+             :model-editing? false
+             :loading?       0
+             :extended-set   #{}
+             :filters        {:expanded-set #{}
+                              :active       {:countries #{}
+                                             :tags      #{}}}}
      :anims {}
      :cache {:tabs {}}}))
