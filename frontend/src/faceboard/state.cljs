@@ -11,6 +11,7 @@
              :model-editing?  false
              :loading?        0
              :extended-set    #{}
-             :filters {:expanded-set #{}}}
+             :filters {:expanded-set #{}
+                       :active {:countries #{}}}}
      :anims {}
      :cache {:tabs {}}}))

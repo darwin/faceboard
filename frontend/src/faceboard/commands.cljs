@@ -132,3 +132,11 @@
 (defmethod handle-command :toggle-filter-expansion [_ filter-name]
   (transform-app-state
     (model/toggle-set [:ui :filters :expanded-set] filter-name)))
+
+(defmethod handle-command :toggle-filter-selected-country [_ country-code]
+  (transform-app-state
+    (model/toggle-set [:ui :filters :active :countries] country-code)))
+
+(defmethod handle-command :switch-filter-selected-country [_ country-code]
+  (transform-app-state
+    (model/set [:ui :filters :active :countries] #{country-code})))

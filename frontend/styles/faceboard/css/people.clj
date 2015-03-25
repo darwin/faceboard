@@ -43,11 +43,15 @@
               :padding-top (px 6)
               :border-top "2px solid #ccc"])))
        (>> countries-filter-item
+         (>> &.selected
+           (>> countries-filter-item-body
+             [:background-color filter-item-background-selected-color]))
          (>> countries-filter-item-body
            [:cursor :pointer
             :display :inline-block
             :position :relative
             :left (px -4)
+            :margin-top (px 1)
             :padding (px 0 4)
             :border-radius (px 2)]
            (>> &:hover

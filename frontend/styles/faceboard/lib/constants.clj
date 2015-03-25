@@ -21,3 +21,4 @@
 (def social-badge-background-hovered-color signature-color)
 
 (def filter-item-background-hovered-color "#fff64c")
+(def filter-item-background-selected-color "#fffbb3")
