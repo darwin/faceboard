@@ -54,7 +54,7 @@
 (defcomponent board-content-component [data _ _]
   (render [_]
     (let [{:keys [ui anims model selected-tab]} data
-          {:keys [model-editing?]} ui]
+          {:keys [model-editing? editor-path]} ui]
       (dom/div {:class    (str "tab-view" (when model-editing? " dual-mode"))
                 :on-click #(perform! :change-extended-set #{})}
         (dom/div {:class "left-side"}
@@ -68,7 +68,8 @@
                                                        :cache   (get-in data [:cache :tabs id])}))))
         (when model-editing?
           (dom/div {:class "right-side"}
-            (om/build editor-component model)))))))
+            (om/build editor-component {:editor-path editor-path
+                                        :editor-content  (get-in data editor-path)})))))))
 
 (defcomponent board-component [data _ _]
   (render [_]

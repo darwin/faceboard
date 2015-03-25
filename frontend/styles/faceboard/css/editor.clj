@@ -5,13 +5,25 @@
 (def styles
   [(>> editor
      [:position :relative]
+     (>> info
+       [:font-size (px 10)
+        :margin-left (px 10)]
+       (>> path
+         [:padding (px 0 4)
+          :background-color "#dfd"]))
+     (>> &.unsaved
+       (>> CodeMirror
+         [:background-color "#eef"]))
+     (>> &.danger
+       (>> CodeMirror
+         [:background-color "#fee"]))
      (>> CodeMirror
        [:height :auto])
      (>> editor-host
        [:border-left "1px dashed #eee"
         :height "100%"
         :font-size (px 10)])
-     (>> hint refresh
+     (>> button
        [:z-index 100
         :font-family editor-font
         :position :absolute
@@ -22,6 +34,10 @@
         :background-color "#ddd"
         :cursor :pointer])
      (>> hint
-       [:top (px 10)])
+       [:top (px 4)])
      (>> refresh
-       [:top (px 33)]))])
+       [:top (px 33)])
+     (>> save-switch
+       [:top (px 56)])
+     (>> discard-switch
+       [:top (px 79)]))])

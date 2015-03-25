@@ -12,6 +12,7 @@
             [faceboard.controller :refer [perform!]]))
 
 (def ^:dynamic *codemirror*)
+(def ^:dynamic *path*)
 
 (defn- codemirror-value []
   (when-not (nil? *codemirror*)
@@ -19,14 +20,16 @@
 
 (defn- set-codemirror-value! [value]
   (when-not (nil? *codemirror*)
-    (.call (aget *codemirror* "setValue") *codemirror* value)))
+    (.call (aget *codemirror* "setValue") *codemirror* value)
+    (.markClean *codemirror*)))
 
-(defn- apply-model [event]
-  (perform! :apply-model (codemirror-value))
-  (.preventDefault event))
+(defn- apply-changes [event]
+  (.preventDefault event)
+  (perform! :apply-json *path* (codemirror-value))
+  (.markClean *codemirror*))
 
 (def action-table
-  [[#{:meta :s} #{:ctrl :s} apply-model]                    ; CMD+S on Mac, CTRL+S elsewhere
+  [[#{:meta :s} #{:ctrl :s} apply-changes]                  ; CMD+S on Mac, CTRL+S elsewhere
    ])
 
 (defn dispatch-action [keyset event]
@@ -38,34 +41,59 @@
 (defn handle-codemirror-key [event]
   (dispatch-action (phalanges/key-set event) event))
 
+(defn has-unsaved-data? []
+  (when *codemirror*
+    (not (.isClean *codemirror*))))
+
 (defcomponent editor-component [data owner]
   (render [_]
-    (let [new-value (model->json data)
+    (let [content (:editor-content data)
+          path (:editor-path data)
+          new-value (model->json content)
           old-value (if (nil? *codemirror*) new-value (codemirror-value))
-          not-in-sync (not (= old-value new-value))]
-      (dom/div {:class    "editor"
+          not-in-sync? (and (not (= old-value new-value)) (= *path* path))
+          unsaved? (has-unsaved-data?)]
+      (when (and (not= *path* path) (not (or unsaved? not-in-sync?)))
+        (set-codemirror-value! new-value))
+      (when-not unsaved?
+        (set! *path* path))
+      (dom/div {:class    (str "editor" (when not-in-sync? " danger") (when unsaved? " unsaved"))
                 :on-click #(.stopPropagation %)}
-        (dom/div {:class       "editor-host"
-                  :ref         "host"
+        (dom/div {:class "info"}
+          (dom/div {:class "docs"}
+            "Format docs: " (dom/a {:target "_blank" :href "https://github.com/darwin/faceboard/wiki/format"} "https://github.com/darwin/faceboard/wiki/format"))
+          (dom/div {:class "path-row"}
+            "Editor path: " (dom/span {:class "path"} (apply str (interpose "/" (map #(clj->js %) *path*))))))
+        (dom/div {:ref         "host"
+                  :class       "editor-host"
                   :on-key-down #(handle-codemirror-key %)})
-        (dom/div {:class    "hint"
-                  :title    "Save model and update the app."
-                  :on-click (fn [e] (if not-in-sync
-                                      (when (js/confirm "Really overwrite external changes?")
-                                        (apply-model e))
-                                      (apply-model e)))}
-          (if mac? "CMD+S to save" "CTRL+S to save"))
-        (when not-in-sync
-          (dom/div {:class    "refresh"
+        (when-not unsaved?
+          (dom/div {:class    "button hint"
+                    :title    "Save model and update the app."
+                    :on-click (fn [e] (if not-in-sync?
+                                        (when (js/confirm "Really overwrite external changes?")
+                                          (apply-changes e))
+                                        (apply-changes e)))}
+            (if mac? "CMD+S to save" "CTRL+S to save")))
+        (when unsaved?
+          (dom/div {:class    "button save-switch"
+                    :title    "You have switched underlying path but previous edits were not saved."
+                    :on-click (fn [e] (apply-changes e) (om/refresh! owner))}
+            "save & switch"))
+        (when unsaved?
+          (dom/div {:class    "button discard-switch"
+                    :title    "You have switched underlying path but previous edits were not saved."
+                    :on-click (fn [e] (.markClean *codemirror*) (om/refresh! owner))}
+            "discard & switch"))
+        (when not-in-sync?
+          (dom/div {:class    "button refresh"
                     :title    "The model has been modified by someone else. You are editing old data."
-                    :on-click (fn [_]
-                                (set-codemirror-value! new-value)
-                                (om/refresh! owner))}
+                    :on-click (fn [_] (set-codemirror-value! new-value) (om/refresh! owner))}
             "discard & reload")))))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner "host")
                          #js {:mode              #js {:name "javascript" :json true}
-                              :value             (model->json data)
+                              :value             (model->json (:editor-content data))
                               :matchBrackets     true
                               :autoCloseBrackets true
                               :styleActiveLine   true

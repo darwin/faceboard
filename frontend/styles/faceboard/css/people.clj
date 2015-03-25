@@ -4,7 +4,11 @@
   (:require [faceboard.lib.helpers :refer [>> mv px ms]]))
 
 (def styles
-  [(>> people-board
+  [(>> [dual-mode people-board person-box.extended]
+     #_[:position :fixed
+      :top (px 0)
+      :left (px 10)])
+   (>> people-board
      [:padding (px 0)
       :padding-right (px 280)                               ; leave room for expanded cards
       :perspective (px 1000)
@@ -17,7 +21,6 @@
         :position :absolute
         :right (px 0)
         :width (px 260)
-        ;:background-color "red"
         :height "100%"
         :padding (px 10) (px 20)]
        (>> filter-section
@@ -174,6 +177,12 @@
         :opacity 1
         :box-shadow "0px 0px 20px -1px rgba(0,0,0,0.2)"])
      (>> person
+       (>> person-edit-button
+         [:position :absolute
+          :bottom (px 0)
+          :right (px 4)
+          :z-index 10
+          :color "#999"])
        (>> left-part
          [:display :inline-block
           :vertical-align :top])
