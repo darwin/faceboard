@@ -24,8 +24,7 @@
         :color "#fff"]
        (>> &.selected
          [:color "#000"
-          :background selected-tab-color
-          :border-bottom (str "1px solid " selected-tab-color)])))
+          :background selected-tab-color])))
    (>> tab-contents
      [:position :relative
       :z-index 0
