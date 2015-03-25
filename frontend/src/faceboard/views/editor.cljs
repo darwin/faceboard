@@ -100,4 +100,5 @@
                               :lint              true
                               :smartIndent       true
                               :lineNumbers       true
+                              :lineWrapping      true
                               :viewportMargin:   Infinity}))))
