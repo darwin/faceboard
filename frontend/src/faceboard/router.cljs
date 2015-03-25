@@ -52,13 +52,13 @@
 (defn define-normal-routes! []
   (defroute-with-info home-route "/" [] (perform! :switch-view :welcome))
   (defroute-with-info board-tab-route "/board/:id/:tab" [id tab] (switch-board-and-tab id tab))
-  (defroute-with-info board-route "/board/:id" [id] (navigate! (board-tab-route {:id id :tab "people"})))
+  (defroute-with-info board-route "/board/:id" [id] (switch-board-and-tab id nil))
   (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-whitelabel-routes! [id]
   (log-info (str "Detected white-label site: implicit board-id is '" id "'"))
   (defroute-with-info whitelabel-board-tab-route "/:tab" [tab] (switch-board-and-tab id tab))
-  (defroute-with-info whitelabel-board-route "/" [] (navigate! (whitelabel-board-tab-route {:id id :tab "people"})))
+  (defroute-with-info whitelabel-board-route "/" [] (switch-board-and-tab id nil))
   (defroute-with-info whitelabel-catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-routes! []
