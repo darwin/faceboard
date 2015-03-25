@@ -13,14 +13,18 @@
 
 (defonce history (History.))
 
-(def ^:dynamic *current-route-info*)                        ; see defroute-with-info macro
+(defonce ^:dynamic *routes* {})                             ; see defroute-with-info macro
+(defonce ^:dynamic *current-route-info* {})                 ; see defroute-with-info macro
+
+(defn route [name]
+  (name *routes*))
 
 (defn setup! []
   (secretary/set-config! :prefix "#"))
 
 (defn current-route-info [] *current-route-info*)
 
-(defn current-route []
+(defn current-url []
   (let [info (current-route-info)
         route (:route info)
         params (:params info)]
@@ -30,12 +34,11 @@
 (defn navigate! [& route]
   (set! js/window.location.hash (apply str route)))
 
-(defn update-params! [params]
-  (let [info (current-route-info)
-        route (:route info)
-        params (merge (:params info) params)]
-    (when-not (nil? route)
-      (navigate! (route params)))))
+(defn update-params!
+  ([params] (update-params! [params (:route (current-route-info))]))
+  ([params route] (let [params (merge (:params (current-route-info)) params)]
+                    (when-not (nil? route)
+                      (navigate! (route params))))))
 
 (defn dispatch! [& args]
   (secretary/dispatch! (apply str args)))
@@ -44,22 +47,25 @@
   (goog.events/listen history EventType.NAVIGATE #(dispatch! (.-token %)))
   (.setEnabled history true))
 
-(defn- switch-board-and-tab [id tab]
+(defn switch-board-and-tab [id tab]
   (when-not (db/is-board-connected? id)
     (perform! :switch-board id))
   (perform! :switch-tab tab))
 
+(defn switch-tab [tab]
+  (update-params! {:tab tab} (route :board-tab)))
+
 (defn define-normal-routes! []
-  (defroute-with-info home-route "/" [] (perform! :switch-view :welcome))
-  (defroute-with-info board-tab-route "/board/:id/:tab" [id tab] (switch-board-and-tab id tab))
-  (defroute-with-info board-route "/board/:id" [id] (switch-board-and-tab id nil))
-  (defroute-with-info catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
+  (defroute-with-info :home "/" [] (perform! :switch-view :welcome))
+  (defroute-with-info :board-tab "/board/:id/:tab" [id tab] (switch-board-and-tab id tab))
+  (defroute-with-info :board "/board/:id" [id] (switch-board-and-tab id nil))
+  (defroute-with-info :catch "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-whitelabel-routes! [id]
   (log-info (str "Detected white-label site: implicit board-id is '" id "'"))
-  (defroute-with-info whitelabel-board-tab-route "/:tab" [tab] (switch-board-and-tab id tab))
-  (defroute-with-info whitelabel-board-route "/" [] (switch-board-and-tab id nil))
-  (defroute-with-info whitelabel-catch-route "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
+  (defroute-with-info :board-tab "/:tab" [tab] (switch-board-and-tab id tab))
+  (defroute-with-info :board "/" [] (switch-board-and-tab id nil))
+  (defroute-with-info :catch "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-routes! []
   (if-let [whitelabel-board-id (whitelabel-board)]
@@ -67,9 +73,9 @@
     (define-normal-routes!)))
 
 (defn define-test-routes! []
-  (defroute-with-info test-route "/test" [] (perform! :switch-view :test))
-  (defroute-with-info test-error-route "/test/error" [] (perform! :switch-view :error {:message "This is a sample error message xxxx this is a sample error message this is a sample error message this is a sample error message."}))
-  (defroute-with-info test-loading-route "/test/loading" [] (perform! :switch-view :loading {:message "This is a sample loading message."})))
+  (defroute-with-info :test "/test" [] (perform! :switch-view :test))
+  (defroute-with-info :test-error "/test/error" [] (perform! :switch-view :error {:message "This is a sample error message xxxx this is a sample error message this is a sample error message this is a sample error message."}))
+  (defroute-with-info :test-loading "/test/loading" [] (perform! :switch-view :loading {:message "This is a sample loading message."})))
 
 (defn init! []
   (setup!)

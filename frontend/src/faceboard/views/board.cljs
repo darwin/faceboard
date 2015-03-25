@@ -48,7 +48,7 @@
                     {:keys [label id style selected-style]} tab]]
           (dom/div {:class    (str "tab" (when selected? " selected"))
                     :style    (if selected? selected-style style)
-                    :on-click #(router/update-params! {:tab id})}
+                    :on-click #(router/switch-tab id)}
             label))))))
 
 (defcomponent board-content-component [data _ _]
@@ -83,7 +83,7 @@
         (dom/div {:class "top-bar no-select"}
           (om/build small-logo-component {})
           (om/build board-label-component {:board-label (get-in model [:board :name] "")
-                                           :board-url   (router/current-route)})
+                                           :board-url   (router/current-url)})
           (om/build board-tabs-component {:tabs tabs :selected-tab selected-tab})
           (om/build menu-component ui))
         (dom/div {:class "tab-contents"}

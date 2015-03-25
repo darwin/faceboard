@@ -65,6 +65,9 @@
 (defn is-board-connected? [board-id]
   (= board-id *current-board-id*))
 
+(defn current-board-id []
+  *current-board-id*)
+
 (defn connect-board [board-id opts]
   (when-not (is-board-connected? board-id)
     (set! *current-board-id* board-id)
