@@ -43,7 +43,7 @@
     (let [new-value (model->json data)
           old-value (if (nil? *codemirror*) new-value (codemirror-value))
           not-in-sync (not (= old-value new-value))]
-      (dom/div {:class "editor"
+      (dom/div {:class    "editor"
                 :on-click #(.stopPropagation %)}
         (dom/div {:class       "editor-host"
                   :ref         "host"

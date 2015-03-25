@@ -1,6 +1,5 @@
 (ns faceboard.views.test
-  (:require [om.core :as om]
-            [om-tools.core :refer-macros [defcomponent]]
+  (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.page :as page]))

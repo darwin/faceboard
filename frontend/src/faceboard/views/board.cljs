@@ -62,7 +62,7 @@
                                                        :ui      ui
                                                        :id      id
                                                        :content (:content selected-tab)
-                                                       :cache (get-in data [:cache :tabs id])}))))
+                                                       :cache   (get-in data [:cache :tabs id])}))))
         (when model-editing?
           (dom/div {:class "right-side"}
             (om/build editor-component model)))))))
