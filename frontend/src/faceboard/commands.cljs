@@ -16,16 +16,12 @@
 
 (defmulti handle-command (fn [command & _] command))
 
-(defmethod handle-command :default [command & _]
+(defmethod handle-command :default [command]
   (log-err (str "Invalid command '" command "'")))
 
-(defmethod handle-command :toggle-edit [_ & _]
+(defmethod handle-command :toggle-model [_ root-path]
   (transform-app-state
-    (model/toggle [:ui :editing?])
-    (model/disable [:ui :model-editing?])))
-
-(defmethod handle-command :toggle-model [_ & _]
-  (transform-app-state
+    (model/set [:ui :editor-path] root-path)
     (model/toggle [:ui :model-editing?])
     (model/disable [:ui :editing?])))
 
@@ -108,11 +104,11 @@
   (transform-app-state
     (model/inc anim-path)))
 
-(defmethod handle-command :inc-loading-counter [_]
+(defmethod handle-command :inc-loading-counter []
   (transform-app-state
     (model/inc [:ui :loading?])))
 
-(defmethod handle-command :dec-loading-counter [_]
+(defmethod handle-command :dec-loading-counter []
   (transform-app-state
     (model/dec-clamp-zero [:ui :loading?])))
 

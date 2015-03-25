@@ -9,6 +9,7 @@
              :view-params    nil
              :editing?       false
              :model-editing? false
+             :editor-path    nil
              :loading?       0
              :extended-set   #{}
              :filters        {:expanded-set #{}

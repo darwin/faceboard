@@ -18,11 +18,7 @@
 
 (defcomponent menu-component [data _ _]
   (render [_]
-    (let [buttons [{:label   "edit"
-                    :class   "edit-button"
-                    :active? (:editing? data)
-                    :handler #(perform! :toggle-edit)}
-                   {:icon    "cogs"
+    (let [buttons [{:icon    "cogs"
                     :title   "edit source data"
                     :class   "model-button"
                     :active? (:model-editing? data)
