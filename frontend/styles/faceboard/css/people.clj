@@ -86,17 +86,21 @@
        [:position :relative
         :float :left
         :margin (px 20 20)
-        :z-index 0
+        :z-index 10
+        :transition "opacity .3s ease-in-out"
+        :opacity 1
         :transform-style :preserve-3d
         :transition (str "transform 0.5s " ease-out-back)
         :transform "translateZ(-100px)"]
        (>> &.filtered
-         [:opacity 0.2])
+         [:opacity 0.2
+          :z-index 0
+          :transform "translateZ(-300px)"])
        (>> &.expandable
          [:cursor :pointer])
        ; zoom-in animation
        (>> &.extended
-         [:z-index 100
+         [:z-index 20
           :transform "translateZ(0px)"])
        ; expanding animation
        (>> &.expanding
@@ -133,7 +137,7 @@
         :padding (px 10 8)
         :padding-bottom (px 4)
         :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"
-        :transition "opacity .3s ease-in-out"
+        :transition "all .3s ease-in-out"
         :opacity 0.8
         :white-space :nowrap]
        (>> &:hover
