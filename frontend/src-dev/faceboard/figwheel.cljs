@@ -6,4 +6,6 @@
 ; this is our workaround to include it only in dev builds
 
 (defn start []
-  (fw/start {:on-jsload (fn [] (. js/window faceboard_reloader))}))
+  (fw/start
+    {:on-jsload    (fn [] (. js/window faceboard_reloader))
+     :url-rewriter (fn [url] (clojure.string/replace url "resources/public/" ""))}))
