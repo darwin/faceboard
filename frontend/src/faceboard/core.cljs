@@ -7,3 +7,4 @@
 (env/init!)
 (router/init!)
 (app/init!)
+(app/mount!)

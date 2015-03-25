@@ -93,7 +93,7 @@
                               (model/dec-clamp-zero [:ui :loading?])
                               (model/set [:model] initial-board)
                               (model/set [:ui :view] :board))
-                            (router/navigate! (router/board-tab-route {:id board-id :tab "people"})))]
+                            (router/navigate! ((router/route :board-tab) {:id board-id :tab "people"})))]
     (db/connect-board board-id {:on-connect init-and-navigate})))
 
 (defmethod handle-command :start-anim [_ anim-path]
