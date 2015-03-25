@@ -21,6 +21,8 @@
         :background-color menu-button-background-color
         :border-radius (px 2)
         :font-weight :bold]
+       (>> label
+         [:margin-left (px 6)])
        (>> &.active
          [:background-color pressed-menu-button-background-color
           :color pressed-menu-button-text-color])))])

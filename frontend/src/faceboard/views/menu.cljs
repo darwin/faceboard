@@ -7,9 +7,14 @@
 
 (defcomponent menu-button-component [data _ _]
   (render [_]
-    (dom/div {:class    (str "menu-button" (when (:active? data) " active") (when (:class data) (str " " (:class data))))
-              :on-click (:handler data)}
-      (:label data))))
+    (let [{:keys [label title icon active? class handler]} data]
+      (dom/div {:class    (str "menu-button" (when active? " active") (when class (str " " class)))
+                :title    title
+                :on-click handler}
+        (when icon
+          (dom/i {:class (str "fa fa-" icon)}))
+        (when label
+          (dom/span {:class "label"} label))))))
 
 (defcomponent menu-component [data _ _]
   (render [_]
@@ -17,7 +22,8 @@
                     :class   "edit-button"
                     :active? (:editing? data)
                     :handler #(perform! :toggle-edit)}
-                   {:label   "model"
+                   {:icon    "cogs"
+                    :title   "edit source data"
                     :class   "model-button"
                     :active? (:model-editing? data)
                     :handler #(perform! :toggle-model)}]]
