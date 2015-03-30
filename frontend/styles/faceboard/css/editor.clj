@@ -4,13 +4,27 @@
 
 (def styles
   [(>> editor
-     [:position :relative]
+     [:font-size (px 10)]
      (>> info
-       [:font-size (px 10)
-        :margin-left (px 10)]
+       [:position :fixed
+        :top (px 2)
+        :left (px 6)
+        :right (px 6)
+        :font-family editor-font]
        (>> path
-         [:padding (px 0 4)
+         [:padding (px 1 4)
           :background-color "#dfd"]))
+     (>> footer
+       [:position :fixed
+        :top (px 2)
+        :right (px 6)
+        :color "#999"]
+       (>> :a
+         [:color "#999"]))
+     (>> buttons
+       [:position :fixed
+        :bottom (px 2)
+        :right (px 6)])
      (>> &.unsaved
        (>> CodeMirror
          [:background-color "#eef"]))
@@ -18,26 +32,24 @@
        (>> CodeMirror
          [:background-color "#fee"]))
      (>> CodeMirror
-       [:height :auto])
+       [:height "100%"
+        :border "1px solid #aaa"])
      (>> editor-host
-       [:border-left "1px dashed #eee"
-        :height "100%"
-        :font-size (px 10)])
+       [:position :fixed
+        :left (px 6)
+        :right (px 6)
+        :top (px 18)
+        :bottom (px 28)])
      (>> button
        [:z-index 100
         :font-family editor-font
-        :position :absolute
+        :display :inline-block
+        :min-width (px 80)
         :right (px 20)
         :font-size (px 12)
         :padding (px 2 6)
+        :margin-left (px 10)
         :border-radius (px 2)
+        :border "1px solid #999"
         :background-color "#ddd"
-        :cursor :pointer])
-     (>> hint
-       [:top (px 4)])
-     (>> refresh
-       [:top (px 33)])
-     (>> save-switch
-       [:top (px 56)])
-     (>> discard-switch
-       [:top (px 79)]))])
+        :cursor :pointer]))])

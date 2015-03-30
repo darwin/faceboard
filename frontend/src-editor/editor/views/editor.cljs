@@ -64,36 +64,38 @@
       (dom/div {:class    (str "editor" (when not-in-sync? " danger") (when unsaved? " unsaved"))
                 :on-click #(.stopPropagation %)}
         (dom/div {:class "info"}
-          (dom/div {:class "docs"}
-            "Format docs: " (dom/a {:target "_blank" :href "https://github.com/darwin/faceboard/wiki/format"} "https://github.com/darwin/faceboard/wiki/format"))
           (dom/div {:class "path-row"}
-            "Editor path: " (dom/span {:class "path"} (apply str (interpose "/" (map #(clj->js %) *path*))))))
+            "JSON PATH: " (dom/span {:class "path"} (apply str (interpose "/" (map #(clj->js %) *path*))))))
         (dom/div {:ref         "host"
                   :class       "editor-host"
                   :on-key-down #(handle-codemirror-key %)})
-        (when-not unsaved?
-          (dom/div {:class    "button hint"
-                    :title    "Save model and update the app."
-                    :on-click (fn [e] (if not-in-sync?
-                                        (when (js/confirm "Really overwrite external changes?")
-                                          (apply-changes e))
-                                        (apply-changes e)))}
-            (if mac? "CMD+S to save" "CTRL+S to save")))
-        (when unsaved?
-          (dom/div {:class    "button save-switch"
-                    :title    "You have switched underlying path but previous edits were not saved."
-                    :on-click (fn [e] (apply-changes e) (om/refresh! owner))}
-            "save & switch"))
-        (when unsaved?
-          (dom/div {:class    "button discard-switch"
-                    :title    "You have switched underlying path but previous edits were not saved."
-                    :on-click (fn [e] (.call (aget *codemirror* "markClean") *codemirror*) (om/refresh! owner))}
-            "discard & switch"))
-        (when not-in-sync?
-          (dom/div {:class    "button refresh"
-                    :title    "The model has been modified by someone else. You are editing old data."
-                    :on-click (fn [_] (set-codemirror-value! new-value) (om/refresh! owner))}
-            "discard & reload")))))
+        (dom/div {:class "footer"}
+          (dom/div {:class "docs"}
+            "docs: " (dom/a {:target "_blank" :href "https://github.com/darwin/faceboard/wiki/format"} "https://github.com/darwin/faceboard/wiki/format")))
+        (dom/div {:class "buttons"}
+          (when-not unsaved?
+            (dom/div {:class    "button hint"
+                      :title    "Save model and update the app."
+                      :on-click (fn [e] (if not-in-sync?
+                                          (when (js/confirm "Really overwrite external changes?")
+                                            (apply-changes e))
+                                          (apply-changes e)))}
+              (if mac? "CMD+S to save" "CTRL+S to save")))
+          (when unsaved?
+            (dom/div {:class    "button save-switch"
+                      :title    "You have switched underlying path but previous edits were not saved."
+                      :on-click (fn [e] (apply-changes e) (om/refresh! owner))}
+              "save & switch"))
+          (when unsaved?
+            (dom/div {:class    "button discard-switch"
+                      :title    "You have switched underlying path but previous edits were not saved."
+                      :on-click (fn [e] (.call (aget *codemirror* "markClean") *codemirror*) (om/refresh! owner))}
+              "discard & switch"))
+          (when not-in-sync?
+            (dom/div {:class    "button refresh"
+                      :title    "The model has been modified by someone else. You are editing old data."
+                      :on-click (fn [_] (set-codemirror-value! new-value) (om/refresh! owner))}
+              "discard & reload"))))))
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner "host")
                          #js {:mode              #js {:name "javascript" :json true}

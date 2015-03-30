@@ -68,13 +68,22 @@
                                        :output-dir    "resources/public/_generated/dev/editor"
                                        :source-map    true}}
 
-                       :production
+                       :production-faceboard
                        {:source-paths ["frontend/src", "frontend/src-prod"]
                         :compiler     {:optimizations :advanced
                                        :pretty-print  false
-                                       :output-to     "resources/public/_generated/prod/faceboard.js"
-                                       :output-dir    "resources/public/_generated/prod"
-                                       ;:source-map    "resources/public/_generated/prod/faceboard.js.map"
+                                       :output-to     "resources/public/_generated/prod/faceboard/faceboard.js"
+                                       :output-dir    "resources/public/_generated/prod/faceboard/"
+                                       :preamble      ["public/js/platform.js"
+                                                       "public/js/prefixfree.min.js"
+                                                       ]}}
+
+                       :production-editor
+                       {:source-paths ["frontend/src-editor", "frontend/src-prod"]
+                        :compiler     {:optimizations :advanced
+                                       :pretty-print  false
+                                       :output-to     "resources/public/_generated/prod/editor/editor.js"
+                                       :output-dir    "resources/public/_generated/prod/editor/"
                                        :preamble      ["public/js/platform.js"
                                                        "public/js/prefixfree.min.js"
                                                        "public/codemirror/codemirror.js"
