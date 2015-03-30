@@ -61,9 +61,10 @@
   (update-params! {:tab tab} (route :board-tab)))
 
 (defn switch-person [person]
+  ; TODO: do not hardcode people here
   (if person
-    (update-params! {:person person} (route :board-people-person))
-    (update-params! {} (route :board-tab))))
+    (update-params! {:tab "people" :person person} (route :board-people-person))
+    (update-params! {:tab "people"} (route :board-tab))))
 
 (defn define-normal-routes! []
   (defroute-with-info :home "/" [] (perform! :switch-view :welcome))
