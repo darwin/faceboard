@@ -53,7 +53,18 @@
          [:background-color "#fee"]))
      (>> CodeMirror
        [:height "100%"
-        :border "1px solid #aaa"])
+        :color "#aaa"
+        :font-size (px 10)
+        :line-height (px 10)
+        :border "1px solid #aaa"]
+       (>> cm-string
+         [:color "#666"])
+       (>> cm-property
+         [:color :purple])
+       (>> CodeMirror-matchingbracket
+         [:color :black
+          :background-color :yellow
+          :font-weight :bold]))
      (>> editor-host
        [:position :fixed
         :left (px 6)
