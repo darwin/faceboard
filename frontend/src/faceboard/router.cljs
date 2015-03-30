@@ -47,24 +47,36 @@
   (goog.events/listen history EventType.NAVIGATE #(dispatch! (.-token %)))
   (.setEnabled history true))
 
-(defn switch-board-and-tab [id tab]
+(defn switch-board-tab [id tab]
   (when-not (db/is-board-connected? id)
     (perform! :switch-board id))
-  (perform! :switch-tab tab))
+  (perform! :switch-tab tab)
+  (perform! :change-extended-set #{}))
+
+(defn switch-board-tab-person [id tab person]
+  (switch-board-tab id tab)
+  (perform! :change-extended-set #{person}))
 
 (defn switch-tab [tab]
   (update-params! {:tab tab} (route :board-tab)))
 
+(defn switch-person [person]
+  (if person
+    (update-params! {:person person} (route :board-people-person))
+    (update-params! {} (route :board-tab))))
+
 (defn define-normal-routes! []
   (defroute-with-info :home "/" [] (perform! :switch-view :welcome))
-  (defroute-with-info :board-tab "/board/:id/:tab" [id tab] (switch-board-and-tab id tab))
-  (defroute-with-info :board "/board/:id" [id] (switch-board-and-tab id nil))
+  (defroute-with-info :board-people-person "/board/:id/:tab/:person" [id tab person] (switch-board-tab-person id tab person))
+  (defroute-with-info :board-tab "/board/:id/:tab" [id tab] (switch-board-tab id tab))
+  (defroute-with-info :board "/board/:id" [id] (switch-board-tab id nil))
   (defroute-with-info :catch "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-whitelabel-routes! [id]
   (log-info (str "Detected white-label site: implicit board-id is '" id "'"))
-  (defroute-with-info :board-tab "/:tab" [tab] (switch-board-and-tab id tab))
-  (defroute-with-info :board "/" [] (switch-board-and-tab id nil))
+  (defroute-with-info :board-people-person "/:tab/:person" [tab person] (switch-board-tab-person id tab person))
+  (defroute-with-info :board-tab "/:tab" [tab] (switch-board-tab id tab))
+  (defroute-with-info :board "/" [] (switch-board-tab id nil))
   (defroute-with-info :catch "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-routes! []

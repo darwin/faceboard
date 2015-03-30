@@ -5,6 +5,7 @@
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
             [faceboard.shared.anims :as anims]
+            [faceboard.router :as router]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
@@ -126,7 +127,7 @@
                             (if filtered? " filtered" " expandable"))
                 :on-click (fn [e]
                             (.stopPropagation e)
-                            (perform! :change-extended-set (if-not extended? #{id} #{})))}
+                            (router/switch-person (if-not extended? id nil)))}
         (dom/div {:class "person-extended-wrapper"}
           (om/build person-info-component {:hide?     (not extended?)
                                            :extended? extended?

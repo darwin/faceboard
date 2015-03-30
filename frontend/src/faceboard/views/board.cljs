@@ -56,7 +56,7 @@
     (let [{:keys [ui anims model selected-tab]} data
           {:keys [model-editing? editor-path]} ui]
       (dom/div {:class    (str "tab-view" (when model-editing? " dual-mode"))
-                :on-click #(perform! :change-extended-set #{})}
+                :on-click #(router/switch-person nil)}
         (dom/div {:class "left-side"}
           (let [kind (or (:kind selected-tab) "generic")
                 id (:id selected-tab)]
