@@ -58,7 +58,7 @@ def build!
   sys("lein clean")
   sys("lein garden once")
   sys("rm -rf resources/public/_generated")
-  sys("lein cljsbuild once production")
+  sys("lein cljsbuild once production-editor production-faceboard")
   sys("lein aggravate")
 end
 
@@ -79,16 +79,21 @@ def patch_build!
     sys("rm -rf css")
     sys("mkdir css && mv _generated/faceboard.css css")
     sys("rm -rf js")
-    sys("mkdir js && mv _generated/prod/faceboard.js js")
+    sys("mkdir js")
+    sys("mv _generated/prod/faceboard/faceboard.js js")
+    sys("mv _generated/prod/editor/editor.js js")
     sys("rm -rf _generated")
     sys("rm -rf codemirror")
     sys("mv index-production.html index.html")
-    patch("index.html", [["window.faceboard_env = {}", 
+    sys("mv editor-production.html editor.html")
+    env = [["window.faceboard_env = {}", 
       "window.faceboard_env = {
         \"production\": true, 
         \"github-pages\": true, 
         \"git-revision\": \"#{$revision}\"
-      }"]])
+      }"]]
+    patch("index.html", env)
+    patch("editor.html", env)
     sys('echo "fb.binaryage.com" > CNAME') # TODO: support hacker paradise
   end
 end
