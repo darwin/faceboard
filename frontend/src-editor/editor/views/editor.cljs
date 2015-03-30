@@ -39,8 +39,11 @@
 
 (defn set-codemirror-value! [value]
   (when-not (nil? *codemirror*)
-    (.call (aget *codemirror* "setValue") *codemirror* value)
-    (.call (aget *codemirror* "markClean") *codemirror*)))
+    (let [cursor (.call (aget *codemirror* "getCursor") *codemirror*)]
+      (.call (aget *codemirror* "setValue") *codemirror* value)
+      (when cursor
+        (.call (aget *codemirror* "setCursor") *codemirror* cursor))
+      (.call (aget *codemirror* "markClean") *codemirror*))))
 
 (defn apply-changes []
   (perform! *path* (codemirror-value)))
