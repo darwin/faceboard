@@ -115,16 +115,8 @@ task :prepare_build do
   patch_build!
 end
 
-desc "deploy to heroku"
-task :deploy_heroku do
-  dirty_repo_warning()
-  revision()
-  sys("git push heroku master:master")
-  sys("heroku config:set HEROKU=1 PRODUCTION=1 GIT_REVISION=#{$revision}")
-end
-
 desc "deploy to github pages"
-task :deploy_github => [:prepare_build] do
+task :deploy => [:prepare_build] do
   nopush = ENV["nopush"] || false
   nocommit = ENV["nocommit"] || false
   chdir(".build") do
