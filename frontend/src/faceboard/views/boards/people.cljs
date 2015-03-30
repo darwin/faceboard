@@ -72,10 +72,10 @@
           (om/build about-section-component bio))
         (when (or (:email bio) (:phone bio))
           (om/build contact-section-component bio))
-        (when (and social (> (count social) 0))
-          (om/build social-section-component social))
         (when (and tags (> (count tags) 0))
-          (om/build tags-section-component tags))))))
+          (om/build tags-section-component tags))
+        (when (and social (> (count social) 0))
+          (om/build social-section-component social))))))
 
 (defcomponent person-info-component [data _ _]
   (render [_]

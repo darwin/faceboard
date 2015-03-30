@@ -205,12 +205,13 @@
        (>> extended-info-section
          [:clear :both
           :margin-bottom (px 20)]
+         (>> &:last-child
+           [:margin-bottom (px 0)])
          (>> &.about
            [:max-width (px 300)
             :white-space :normal])
          (>> &.tags
-           [:margin-bottom (px 0)
-            :color social-badge-text-color
+           [:color social-badge-text-color
             :max-width (px 300)
             :line-height (px 18)
             :white-space :normal])
