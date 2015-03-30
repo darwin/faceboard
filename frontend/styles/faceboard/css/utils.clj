@@ -6,10 +6,10 @@
   [(>> clear
      [:clear :both])
    (>> clearfix:after
-     [:content "\".\""
-      :visibility :hidden
-      :display :block
-      :height 0
+     [:content "\"\""
+      :display :table
+      :height (px 0)
+      :line-height (px 0)
       :clear :both])
    (>> hide
      [:visibility :hidden])

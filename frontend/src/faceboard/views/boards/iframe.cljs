@@ -30,5 +30,5 @@
 (defcomponent iframe-component [data owner _]
   (render [_]
     (let [{:keys [content]} data]
-      (dom/div {}
+      (dom/div {:class "iframe-parent"}
         (om/build iframe-element-component (:url content))))))

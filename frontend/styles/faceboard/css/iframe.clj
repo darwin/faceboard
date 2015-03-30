@@ -4,12 +4,15 @@
 
 (def styles
   [(>> iframe-board
-     [:padding (px 0)
-      :height "100%"]
-     (>> [> *]
-       [:height "100%"])
+     [:padding (px 0)]
+     (>> iframe-parent
+       [:position :absolute
+        :top (px 0)
+        :left (px 0)
+        :right (px 0)
+        :bottom (px 0)])
      (>> :iframe
-       [:width "100%"
+       [:position :absolute
         :height "100%"
-        :border :none
-        :frameborder 0]))])
+        :width "100%"
+        :border :none]))])

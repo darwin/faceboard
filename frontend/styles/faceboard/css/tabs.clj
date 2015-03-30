@@ -26,18 +26,10 @@
          [:color "#000"
           :background selected-tab-color])))
    (>> tab-contents
-     [:position :relative
-      :z-index 0
-      :height "100%"]
-     (>> tab-view
-       [:height "100%"]
-       (>> [> *]
-         [:height "100%"])
-       (>> &.dual-mode
-         (>> [> *]
-           [:width "50%"
-            :display :inline-block])
-         (>> left-side
-           [:float :left])
-         (>> right-side
-           [:float :right]))))])
+     [:z-index 0
+      :overflow :scroll
+      :position :absolute
+      :top header-height
+      :left (px 0)
+      :right (px 0)
+      :bottom (px 0)])])

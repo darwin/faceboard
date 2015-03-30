@@ -5,8 +5,11 @@
 (def styles
   [(>> top-bar
      [:z-index 10
-      :position :relative
-      :min-height (px 22)
+      :position :fixed
+      :top (px 0)
+      :left (px 0)
+      :right (px 0)
+      :height header-height
       :line-height (px 18)
       :background-color signature-color
       :font-size (px 12)]

@@ -52,18 +52,17 @@
 
 (defcomponent board-content-component [data _ _]
   (render [_]
-    (let [{:keys [ui anims model selected-tab]} data]
+    (let [{:keys [ui anims selected-tab]} data]
       (dom/div {:class    "tab-view"
                 :on-click #(router/switch-person nil)}
-        (dom/div {:class "left-side"}
-          (let [kind (or (:kind selected-tab) "generic")
-                id (:id selected-tab)]
-            (dom/div {:class (str "board " kind "-board " (when id (str "id-" (:id selected-tab))))}
-              (om/build (tab->component selected-tab) {:anims   anims
-                                                       :ui      ui
-                                                       :id      id
-                                                       :content (:content selected-tab)
-                                                       :cache   (get-in data [:cache :tabs id])}))))))))
+        (let [kind (or (:kind selected-tab) "generic")
+              id (:id selected-tab)]
+          (dom/div {:class (str "board " kind "-board " (when id (str "id-" (:id selected-tab))))}
+            (om/build (tab->component selected-tab) {:anims   anims
+                                                     :ui      ui
+                                                     :id      id
+                                                     :content (:content selected-tab)
+                                                     :cache   (get-in data [:cache :tabs id])})))))))
 
 (defcomponent board-component [data _ _]
   (render [_]

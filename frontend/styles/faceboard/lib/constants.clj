@@ -1,5 +1,8 @@
 (ns faceboard.lib.constants
-  (:require [garden.units :as units]))
+  (:require [garden.units :as units]
+            [faceboard.lib.helpers :refer [>> mv px]]))
+
+(def header-height (px 22))
 
 (def base-font "'Lucida Sans Unicode', 'Lucida Grande', Verdana, sans-serif")
 (def board-font "'Kalam', cursive")

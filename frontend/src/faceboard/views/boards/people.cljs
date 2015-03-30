@@ -244,7 +244,7 @@
           filter-predicates (build-filter-predicates active-filters)
           sorted-people-with-filter-status (map (fn [person] (hash-map :person person :filtered? (not (every? true? (map #(% person) filter-predicates))))) sorted-people)
           sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
-      (dom/div {:class "clearfix no-select"}
+      (dom/div {:class "no-select"}
         (om/build filters-component data)
         (dom/div {:class "people-desk clearfix"}
           (for [item sorted-people-ordered-by-filter]

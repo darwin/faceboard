@@ -6,7 +6,7 @@
   [(>> :body
      [:margin (px 0)
       :padding (px 0)])
-   (>> :html :body :#app main-box page [page page-content]
+   #_(>> :html :body :#app main-box page [page page-content]
      [:height "100%"])
    (>> :body
      [:font-size (px 14)
