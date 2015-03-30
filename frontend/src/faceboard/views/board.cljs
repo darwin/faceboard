@@ -8,7 +8,6 @@
             [faceboard.page :as page]
             [faceboard.views.logo :refer [small-logo-component]]
             [faceboard.views.menu :refer [menu-component]]
-            [faceboard.views.editor :refer [editor-component]]
             [faceboard.views.boards.people :refer [people-component]]
             [faceboard.views.boards.places :refer [places-component]]
             [faceboard.views.boards.iframe :refer [iframe-component]]
@@ -53,9 +52,8 @@
 
 (defcomponent board-content-component [data _ _]
   (render [_]
-    (let [{:keys [ui anims model selected-tab]} data
-          {:keys [model-editing? editor-path]} ui]
-      (dom/div {:class    (str "tab-view" (when model-editing? " dual-mode"))
+    (let [{:keys [ui anims model selected-tab]} data]
+      (dom/div {:class    "tab-view"
                 :on-click #(router/switch-person nil)}
         (dom/div {:class "left-side"}
           (let [kind (or (:kind selected-tab) "generic")
@@ -65,11 +63,7 @@
                                                        :ui      ui
                                                        :id      id
                                                        :content (:content selected-tab)
-                                                       :cache   (get-in data [:cache :tabs id])}))))
-        (when model-editing?
-          (dom/div {:class "right-side"}
-            (om/build editor-component {:editor-path editor-path
-                                        :editor-content  (get-in data editor-path)})))))))
+                                                       :cache   (get-in data [:cache :tabs id])}))))))))
 
 (defcomponent board-component [data _ _]
   (render [_]

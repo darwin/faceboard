@@ -21,16 +21,6 @@
 (defmethod handle-command :default [command]
   (log-err (str "Invalid command '" command "'")))
 
-(defmethod handle-command :toggle-edit-model [_ path]
-  (transform-app-state
-    (model/set [:ui :editor-path] path)
-    (model/toggle [:ui :model-editing?])))
-
-(defmethod handle-command :switch-edit-model [_ path]
-  (transform-app-state
-    (model/set [:ui :editor-path] path)
-    (model/enable [:ui :model-editing?])))
-
 (defmethod handle-command :apply-json [_ path json]
   (try                                                      ; json is provided by user, can be broken
     (transform-app-state
