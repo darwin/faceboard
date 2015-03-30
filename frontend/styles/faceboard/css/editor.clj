@@ -14,13 +14,20 @@
        (>> path
          [:padding (px 1 4)
           :background-color "#dfd"]))
-     (>> footer
+     (>> docs
        [:position :fixed
         :top (px 2)
         :right (px 6)
         :color "#999"]
        (>> :a
          [:color "#999"]))
+     (>> status
+       [:position :fixed
+        :font-size (px 12)
+        :line-height (px 20)
+        :bottom (px 4)
+        :left (px 6)
+        :color "#000"])
      (>> buttons
        [:position :fixed
         :bottom (px 2)

@@ -4,7 +4,8 @@
             [editor.helpers.utils :refer [json->model]]))
 
 (defn ^:export drive [json]
-  (let [state (json->model json)]
-    (reset! app-state state)))
+  (let [state (json->model json)
+        updated-state (assoc-in @app-state [:editor] state)]
+    (reset! app-state updated-state)))
 
 (aset js/window "drive" drive)

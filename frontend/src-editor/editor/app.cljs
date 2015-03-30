@@ -9,10 +9,6 @@
 (defn- root-app-element []
   (.getElementById js/document "app"))
 
-(defn ^:export drive [json]
-  (let [state (json->model json)]
-    (reset! app-state state)))
-
 (defn init! [])
 
 (defn mount! []
