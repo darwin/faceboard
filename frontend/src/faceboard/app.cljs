@@ -4,6 +4,7 @@
             [faceboard.env :as env]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.state :refer [app-state]]
+            [faceboard.controller :refer [perform!]]
             [faceboard.views.main :refer [main-component]]
             [faceboard.dispatcher :as dispatcher]))
 

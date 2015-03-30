@@ -3,11 +3,13 @@
                    [cljs.core.async.macros :refer [go]])
   (:require [clojure.set :refer [difference]]
             [cljs-http.client :as http]
+            [goog.window]
             [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.model :as model]
             [faceboard.router :as router]
             [faceboard.firebase :as db]
+            [faceboard.editor :as editor]
             [faceboard.controller :refer [perform!]]
             [faceboard.data.initial_board :refer [initial-board]]
             [faceboard.shared.anims :as anims]
@@ -150,3 +152,11 @@
 (defmethod handle-command :filter-shift-select-tag [_ tag]
   (transform-app-state
     (model/toggle-set [:ui :filters :active :tags] tag)))
+
+(defmethod handle-command :open-editor [_ path]
+  (editor/open-editor-window)
+  (transform-app-state
+    (model/set [:ui :editor-path] path)))
+
+(defmethod handle-command :refresh-editor []
+  (editor/refresh-editor))

@@ -22,6 +22,6 @@
                     :title   "edit source data"
                     :class   "model-button"
                     :active? (:model-editing? data)
-                    :handler #(perform! :toggle-edit-model [:model])}]]
+                    :handler #(perform! :open-editor [:model])}]]
       (dom/div {:class "menu"}
         (om/build-all menu-button-component buttons)))))

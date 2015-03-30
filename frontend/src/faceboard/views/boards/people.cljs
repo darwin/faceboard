@@ -106,7 +106,7 @@
               (dom/div {:class    "person-edit-button"
                         :on-click (fn [e]
                                     (.stopPropagation e)
-                                    (perform! :switch-edit-model (om/path person)))}
+                                    (perform! :open-editor (om/path person)))}
                 (dom/i {:class "fa fa-cog"}))
               (om/build person-extended-info-component person)))
           (dom/div {:class "clear"}))))))

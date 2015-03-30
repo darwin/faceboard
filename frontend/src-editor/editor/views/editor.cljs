@@ -1,19 +1,22 @@
-(ns faceboard.views.editor
+(ns editor.views.editor
   (:require-macros [cljs.core.async.macros :refer [go]])
   (:require [cljs.core.async :refer [put! <! chan]]
             [clojure.set :refer [subset?]]
             [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.helpers.utils :refer [model->json]]
+            [editor.helpers.utils :as utils]
             [phalanges.core :as phalanges]
-            [faceboard.env :refer [mac?]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
-            [faceboard.controller :refer [perform!]]))
+            [editor.env :refer [mac?]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def ^:dynamic *codemirror*)
 (def ^:dynamic *path*)
-(def ^:dynamic *editor-window*)
+
+(defn perform! [path value]
+  (let [opener (.-opener js/window)]
+    (if-let [apply-fn (aget opener "faceboardApplyJSON")]
+      (apply-fn (utils/model->json [path value])))))
 
 (defn- codemirror-value []
   (when-not (nil? *codemirror*)
@@ -26,7 +29,7 @@
 
 (defn- apply-changes [event]
   (.preventDefault event)
-  (perform! :apply-json *path* (codemirror-value))
+  (perform! *path* (codemirror-value))
   (.call (aget *codemirror* "markClean") *codemirror*))
 
 (def action-table
@@ -50,7 +53,7 @@
   (render [_]
     (let [content (:editor-content data)
           path (:editor-path data)
-          new-value (model->json content)
+          new-value content
           old-value (if (nil? *codemirror*) new-value (codemirror-value))
           not-in-sync? (and (not (= old-value new-value)) (= *path* path))
           unsaved? (has-unsaved-data?)]
@@ -94,7 +97,7 @@
   (did-mount [_]
     (set! *codemirror* (js/CodeMirror (om/get-node owner "host")
                          #js {:mode              #js {:name "javascript" :json true}
-                              :value             (model->json (:editor-content data))
+                              :value             (:editor-content data)
                               :matchBrackets     true
                               :autoCloseBrackets true
                               :styleActiveLine   true
@@ -103,8 +106,3 @@
                               :lineNumbers       true
                               :lineWrapping      true
                               :viewportMargin:   Infinity}))))
-
-(defcomponent editor-bridge-component [data _]
-  (render [_]
-    (perform! :refresh-editor)
-    (dom/div {:class "editor-bridge"})))

@@ -54,12 +54,20 @@
              :ring-handler     server.core/app}
 
   :cljsbuild {
-              :builds {:dev
+              :builds {:dev-faceboard
                        {:source-paths ["frontend/src", "frontend/src-dev"]
-                        :compiler     {:optimizations  :none
-                                       :output-to      "resources/public/_generated/dev/faceboard.js"
-                                       :output-dir     "resources/public/_generated/dev"
-                                       :source-map     true}}
+                        :compiler     {:optimizations :none
+                                       :output-to     "resources/public/_generated/dev/faceboard/faceboard.js"
+                                       :output-dir    "resources/public/_generated/dev/faceboard"
+                                       :source-map    true}}
+
+                       :dev-editor
+                       {:source-paths ["frontend/src-editor", "frontend/src-dev"]
+                        :compiler     {:optimizations :none
+                                       :output-to     "resources/public/_generated/dev/editor/editor.js"
+                                       :output-dir    "resources/public/_generated/dev/editor"
+                                       :source-map    true}}
+
                        :production
                        {:source-paths ["frontend/src", "frontend/src-prod"]
                         :compiler     {:optimizations :advanced
@@ -82,18 +90,18 @@
   :profiles {:production {:env {:production true}}}
 
   :garden {:builds [{:source-paths ["frontend/styles"]
-                     :stylesheet faceboard.garden/garden
-                     :compiler {:output-to "resources/public/css/garden.css"
-                                :pretty-print? true
-                                ;:vendors ["webkit" "ms" "moz"]
-                                ;:auto-prefix #{:transform
-                                ;               :transform-style
-                                ;               :transform-origin
-                                ;               :border-radius
-                                ;               :perspective
-                                ;               :perspective-origin
-                                ;              :transition
-                                }}]}
+                     :stylesheet   faceboard.garden/garden
+                     :compiler     {:output-to     "resources/public/css/garden.css"
+                                    :pretty-print? true
+                                    ;:vendors ["webkit" "ms" "moz"]
+                                    ;:auto-prefix #{:transform
+                                    ;               :transform-style
+                                    ;               :transform-origin
+                                    ;               :border-radius
+                                    ;               :perspective
+                                    ;               :perspective-origin
+                                    ;              :transition
+                                    }}]}
 
   :aggravate-files [{:input      ["resources/public/css/garden.css" ; must go first
                                   "resources/public/css/font-awesome.css"

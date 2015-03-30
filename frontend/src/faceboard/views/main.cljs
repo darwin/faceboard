@@ -5,6 +5,7 @@
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.board :refer [board-component]]
+            [faceboard.views.editor :refer [editor-bridge-component]]
             [faceboard.views.welcome :refer [welcome-component]]
             [faceboard.views.loading :refer [loading-component]]
             [faceboard.views.test :refer [test-component]]
@@ -13,6 +14,9 @@
 (defcomponent main-component [data _ _]
   (render [_]
     (dom/div {:class "main-box"}
+      (let [editor-path (get-in data [:ui :editor-path])]
+        (om/build editor-bridge-component {:editor-path    editor-path
+                                           :editor-content (get-in data editor-path)}))
       (let [view (get-in data [:ui :view] :view-key-not-found)
             view-params (get-in data [:ui :view-params] {})]
         (condp = view                                       ; app-level view switching logic
