@@ -3,7 +3,17 @@
   (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
-  [(>> editor
+  [(>> status
+     [:position :fixed
+      :font-size (px 12)
+      :line-height (px 16)
+      :bottom (px 5)
+      :left (px 6)
+      :color "#fff"
+      :border-radius (px 2)
+      :padding (px 0 6)
+      :background-color "red"])
+   (>> editor
      [:font-size (px 10)]
      (>> info
        [:position :fixed
@@ -21,13 +31,6 @@
         :color "#999"]
        (>> :a
          [:color "#999"]))
-     (>> status
-       [:position :fixed
-        :font-size (px 12)
-        :line-height (px 20)
-        :bottom (px 4)
-        :left (px 6)
-        :color "#000"])
      (>> buttons
        [:position :fixed
         :bottom (px 2)
