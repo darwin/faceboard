@@ -12,7 +12,7 @@
              :editor-path    nil
              :loading?       0
              :extended-set   #{}
-             :filters        {:expanded-set #{}
+             :filters        {:expanded-set #{:countries}
                               :active       {:countries #{}
                                              :tags      #{}}}}
      :anims {}
