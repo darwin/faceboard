@@ -125,4 +125,6 @@
                               :smartIndent       true
                               :lineNumbers       true
                               :lineWrapping      true
+                              :foldGutter        true
+                              :gutters           #js ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
                               :viewportMargin:   Infinity}))))

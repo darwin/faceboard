@@ -93,6 +93,9 @@
                                                        "public/codemirror/addon/lint/jsonlint.js"
                                                        "public/codemirror/addon/lint/lint.js"
                                                        "public/codemirror/addon/lint/json-lint.js"
+                                                       "public/codemirror/addon/fold/foldcode.js"
+                                                       "public/codemirror/addon/fold/foldgutter.js"
+                                                       "public/codemirror/addon/fold/brace-fold.js"
                                                        "public/codemirror/javascript.js"
                                                        ]}}}}
 
@@ -101,23 +104,14 @@
   :garden {:builds [{:source-paths ["frontend/styles"]
                      :stylesheet   faceboard.garden/garden
                      :compiler     {:output-to     "resources/public/css/garden.css"
-                                    :pretty-print? true
-                                    ;:vendors ["webkit" "ms" "moz"]
-                                    ;:auto-prefix #{:transform
-                                    ;               :transform-style
-                                    ;               :transform-origin
-                                    ;               :border-radius
-                                    ;               :perspective
-                                    ;               :perspective-origin
-                                    ;              :transition
-                                    }}]}
+                                    :pretty-print? true}}]}
 
   :aggravate-files [{:input      ["resources/public/css/garden.css" ; must go first
                                   "resources/public/css/font-awesome.css"
                                   "resources/public/css/flags.css"
                                   "resources/public/codemirror/codemirror.css"
                                   "resources/public/codemirror/addon/lint/lint.css"
-                                  ]
+                                  "resources/public/codemirror/addon/fold/foldgutter.css"]
                      :output     "resources/public/_generated/faceboard.css"
                      :suffix     "css"
                      :compressor "yui"}]
