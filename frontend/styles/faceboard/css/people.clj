@@ -156,6 +156,10 @@
           :border "2px solid #eee"
           :background-color "white"
           :box-shadow "inset 0px 0px 20px 0px rgba(0,0,0,0.2)"]
+         (>> &.no-frame
+           [:box-shadow :none
+            :background-color "transparent"
+            :border "2px solid transparent"])
          (>> :img
            [:max-width (px 126)]))
        (>> flag

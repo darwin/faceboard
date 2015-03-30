@@ -93,7 +93,7 @@
                           :-moz-transform    photo-rotation
                           :-ms-transform     photo-rotation}}
           (dom/div {:class "left-part"}
-            (dom/div {:class "photo"}
+            (dom/div {:class (str "photo" (when (get-in bio [:photo :no-frame] false) " no-frame"))}
               (dom/img {:src (or (get-in bio [:photo :url] nil) "/images/unknown.jpg")}))
             (dom/div {:class "name f16"
                       :title (:full-name bio)}
