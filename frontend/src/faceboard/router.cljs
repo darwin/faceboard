@@ -16,6 +16,15 @@
 (defonce ^:dynamic *routes* {})                             ; see defroute-with-info macro
 (defonce ^:dynamic *current-route-info* {})                 ; see defroute-with-info macro
 
+(defn lookup-tab [id tabs]
+  (let [result (first (filter #(= id (:id %)) tabs))]
+    (or result (first tabs))))
+
+(defn current-tab []
+  (let [selected-tab-id (get-in @app-state [:ui :selected-tab-id])
+        tabs (get-in @app-state [:model :tabs])]
+    (lookup-tab selected-tab-id tabs)))
+
 (defn route [name]
   (name *routes*))
 
@@ -61,10 +70,10 @@
   (update-params! {:tab tab} (route :board-tab)))
 
 (defn switch-person [person]
-  ; TODO: do not hardcode people here
-  (if person
-    (update-params! {:tab "people" :person person} (route :board-people-person))
-    (update-params! {:tab "people"} (route :board-tab))))
+  (let [current-tab-id (:id (current-tab))]
+    (if person
+      (update-params! {:tab current-tab-id :person person} (route :board-people-person))
+      (update-params! {:tab current-tab-id} (route :board-tab)))))
 
 (defn define-normal-routes! []
   (defroute-with-info :home "/" [] (perform! :switch-view :welcome))

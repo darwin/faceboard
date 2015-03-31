@@ -26,10 +26,6 @@
     "inkpad" inkpad-component
     generic-component))
 
-(defn- lookup-tab [id tabs]
-  (let [result (first (filter #(= id (:id %)) tabs))]
-    (or result (first tabs))))
-
 (defcomponent board-label-component [data _ _]
   (render [_]
     (if-let [board-label (:board-label data)]
@@ -69,7 +65,7 @@
     (let [{:keys [model ui anims cache]} data
           {:keys [tabs]} model
           {:keys [selected-tab-id loading?]} ui
-          selected-tab (lookup-tab selected-tab-id tabs)]
+          selected-tab (router/lookup-tab selected-tab-id tabs)]
       (page/page-skeleton
         (dom/div {:class (str "loading-indicator" (when (> loading? 0) " visible"))
                   :title "Waiting for network response..."}
