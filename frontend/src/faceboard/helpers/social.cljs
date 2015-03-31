@@ -44,6 +44,7 @@
     "lastfm" (str "http://www.last.fm/user/" id)
     "hacker-news" (str "https://news.ycombinator.com/user?id=" id)
     "reddit" (str "http://www.reddit.com/user/" id)
+    "instagram" (str "https://instagram.com/" id)
     nil))
 
 (defn social->url [[type id]]
