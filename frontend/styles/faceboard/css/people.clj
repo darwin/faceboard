@@ -36,7 +36,7 @@
          (>> filter-section-body
            [:margin-left (px 14)
             :border-top "2px solid transparent"
-            :padding-left (px 10)
+            :padding-left (px 2)
             :transition "height 1s ease-in-out"
             :height 0
             :overflow :hidden]
@@ -84,7 +84,18 @@
             :margin-left (px 4)
             :color "#aaa"])
          (>> &:hover
-           [:background-color filter-item-background-hovered-color])))
+           [:background-color filter-item-background-hovered-color]))
+       (>> socials-filter-item
+         [:float :left
+          :font-size (px 20)
+          :margin-bottom (px 4)
+          :margin-right (px 4)
+          :color "#aaa"
+          :cursor :pointer]
+         (>> &.selected
+           [:color signature-color])
+         (>> &:hover
+           [:color :darkblue])))
      (>> person-box
        [:position :relative
         :float :left

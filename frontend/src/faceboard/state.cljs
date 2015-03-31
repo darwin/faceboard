@@ -12,6 +12,7 @@
              :extended-set   #{}
              :filters        {:expanded-set #{:countries}
                               :active       {:countries #{}
-                                             :tags      #{}}}}
+                                             :tags      #{}
+                                             :socials   #{}}}}
      :anims {}
      :cache {:tabs {}}}))

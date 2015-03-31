@@ -147,6 +147,17 @@
   (transform-app-state
     (model/toggle-set [:ui :filters :active :tags] tag)))
 
+(defmethod handle-command :filter-select-social [_ social]
+  (router/switch-person nil)
+  (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :socials]) social)]
+    (transform-app-state
+      (model/set [:ui :filters :active :socials] (if was-selected? #{} #{social})))))
+
+(defmethod handle-command :filter-shift-select-social [_ social]
+  (router/switch-person nil)
+  (transform-app-state
+    (model/toggle-set [:ui :filters :active :socials] social)))
+
 (defmethod handle-command :open-editor [_ path]
   (editor/open-editor-window)
   (transform-app-state

@@ -11,6 +11,7 @@
             [faceboard.helpers.utils :refer [non-sanitized-div]]
             [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]
             [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
+            [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cemerick.pprng]))
 
@@ -165,10 +166,20 @@
   (render [_]
     (let [{:keys [tag report selected?]} data
           count (:count report)]
-      (dom/div {:class    (str "tags-filter-item f16" (when selected? " selected"))
+      (dom/div {:class    (str "tags-filter-item" (when selected? " selected"))
                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-tag :filter-select-tag) tag)}
         (dom/span {:class "tag"
                    :title (str "(" count "x)")} tag)))))
+
+(defcomponent socials-filter-item-component [data _ _]
+  (render [_]
+    (let [{:keys [social report selected?]} data
+          count (:count report)
+          icon (:icon report)]
+      (dom/div {:class    (str "socials-filter-item" (when selected? " selected"))
+                :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-social :filter-select-social) social)}
+        (dom/i {:class (str "icon fa " icon)
+                :title (str social " (" count "x)")})))))
 
 (defcomponent countries-filter-component [data _ _]
   (render [_]
@@ -212,12 +223,35 @@
                                                         :selected? selected?
                                                         :report    report}))))))))))
 
+(defcomponent socials-filter-component [data _ _]
+  (render [_]
+    (let [people (:content data)
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :socials)
+          socials-tally (build-socials-tally people)
+          selected-socials (get-in data [:ui :filters :active :socials])
+          sorted-socials (:socials-by-size socials-tally)]
+      (log "st" socials-tally)
+      (dom/div {:class "socials-filter-wrapper"}
+        (when (> (count sorted-socials) 0)
+          (dom/div {:class "socials-filter filter-section"}
+            (om/build filter-section-label-component {:key       :socials
+                                                      :expanded? expanded?
+                                                      :label     "social"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
+              (for [social sorted-socials]
+                (let [report (get-in socials-tally [:tally social])
+                      selected? (contains? selected-socials social)]
+                  (om/build socials-filter-item-component {:social    social
+                                                           :selected? selected?
+                                                           :report    report}))))))))))
+
 (defcomponent filters-component [data _ _]
   (render [_]
     (dom/div {:class    "people-filters no-select"
               :on-click #(.stopPropagation %)}
       (om/build countries-filter-component data)
-      (om/build tags-filter-component data))))
+      (om/build tags-filter-component data)
+      (om/build socials-filter-component data))))
 
 (defn build-countries-filter-predicate [active-filters]
   (if-let [active-countries (:countries active-filters)]
@@ -229,9 +263,15 @@
     (when-not (empty? active-tags)
       (partial tags-filter-predicate active-tags))))
 
+(defn build-socials-filter-predicate [active-filters]
+  (if-let [active-socials (:socials active-filters)]
+    (when-not (empty? active-socials)
+      (partial socials-filter-predicate active-socials))))
+
 (defn build-filter-predicates [active-filters]
   (let [predicates [(build-countries-filter-predicate active-filters)
-                    (build-tags-filter-predicate active-filters)]]
+                    (build-tags-filter-predicate active-filters)
+                    (build-socials-filter-predicate active-filters)]]
     (remove nil? predicates)))
 
 (defcomponent people-component [data _ _]
