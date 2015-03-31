@@ -126,20 +126,24 @@
     (model/toggle-set [:ui :filters :expanded-set] filter-name)))
 
 (defmethod handle-command :filter-select-country [_ country-code]
+  (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :countries]) country-code)]
     (transform-app-state
       (model/set [:ui :filters :active :countries] (if was-selected? #{} #{country-code})))))
 
 (defmethod handle-command :filter-shift-select-country [_ country-code]
+  (router/switch-person nil)
   (transform-app-state
     (model/toggle-set [:ui :filters :active :countries] country-code)))
 
 (defmethod handle-command :filter-select-tag [_ tag]
+  (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :tags]) tag)]
     (transform-app-state
       (model/set [:ui :filters :active :tags] (if was-selected? #{} #{tag})))))
 
 (defmethod handle-command :filter-shift-select-tag [_ tag]
+  (router/switch-person nil)
   (transform-app-state
     (model/toggle-set [:ui :filters :active :tags] tag)))
 
