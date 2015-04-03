@@ -230,7 +230,6 @@
           socials-tally (build-socials-tally people)
           selected-socials (get-in data [:ui :filters :active :socials])
           sorted-socials (:socials-by-size socials-tally)]
-      (log "st" socials-tally)
       (dom/div {:class "socials-filter-wrapper"}
         (when (> (count sorted-socials) 0)
           (dom/div {:class "socials-filter filter-section"}
