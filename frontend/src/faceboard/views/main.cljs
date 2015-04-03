@@ -14,7 +14,7 @@
 (defcomponent main-component [data _ _]
   (render [_]
     (dom/div {:class "main-box"}
-      (let [editor-path (get-in data [:ui :editor-path])]
+      (if-let [editor-path (get-in data [:ui :editor-path])]
         (om/build editor-bridge-component {:editor-path    editor-path
                                            :editor-content (get-in data editor-path)}))
       (let [view (get-in data [:ui :view] :view-key-not-found)
