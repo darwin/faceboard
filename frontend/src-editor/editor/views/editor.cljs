@@ -115,16 +115,33 @@
                       :on-click (fn [_] (set-codemirror-value! new-value) (om/refresh! owner))}
               "discard my changes"))))))
   (did-mount [_]
-    (set! *codemirror* (js/CodeMirror (om/get-node owner "host")
-                         #js {:mode              #js {:name "javascript" :json true}
-                              :value             (get-in data [:editor :editor-content] "")
-                              :matchBrackets     true
-                              :autoCloseBrackets true
-                              :styleActiveLine   true
-                              :lint              true
-                              :smartIndent       true
-                              :lineNumbers       true
-                              :lineWrapping      true
-                              :foldGutter        true
-                              :gutters           #js ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-                              :viewportMargin:   Infinity}))))
+    (let [editor (js/CodeMirror (om/get-node owner "host")
+                   #js {:mode              #js {:name "javascript" :json true}
+                        :value             (get-in data [:editor :editor-content] "")
+                        :matchBrackets     true
+                        :autoCloseBrackets true
+                        :styleActiveLine   true
+                        :lint              true
+                        :smartIndent       true
+                        :lineNumbers       true
+                        :lineWrapping      true
+                        :foldGutter        true
+                        :gutters           #js ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+                        :viewportMargin:   Infinity})
+          charWidth (.defaultCharWidth editor)
+          basePadding 4]
+      (.on editor "renderLine" (fn [cm, line, elt]
+                                 ; following code implements fancy indentation for wrapping text of json values
+                                 ; see https://codemirror.net/demo/indentwrap.html
+                                 (let [re-length (fn [re s]
+                                                   (let [re (js/RegExp. re "g")]
+                                                     (if-let [m (.exec re s)]
+                                                       (count (aget m 0))
+                                                       0)))
+                                       text (.-text line)
+                                       base-off (* (.countColumn js/CodeMirror text nil (.getOption cm "tabSize")) charWidth)
+                                       val-open-quote-pos (re-length "\".*\"\\: \"" text)
+                                       val-open-quote-offset (+ base-off (* val-open-quote-pos charWidth))]
+                                   (aset elt "style" "textIndent" (str "-" val-open-quote-offset "px"))
+                                   (aset elt "style" "paddingLeft" (str (+ basePadding val-open-quote-offset) "px")))))
+      (set! *codemirror* editor))))
