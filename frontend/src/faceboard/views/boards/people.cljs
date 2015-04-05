@@ -248,8 +248,8 @@
     (dom/div {:class    "people-filters no-select"
               :on-click #(.stopPropagation %)}
       (om/build countries-filter-component data)
-      (om/build tags-filter-component data)
-      (om/build socials-filter-component data))))
+      (om/build socials-filter-component data)
+      (om/build tags-filter-component data))))
 
 (defn build-countries-filter-predicate [active-filters]
   (if-let [active-countries (:countries active-filters)]
