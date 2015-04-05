@@ -48,50 +48,40 @@
            :country "us"}
     :tags ["design"]}])
 
-(def hackerparadise-places
-  [{:name        "An's"
-    :description "Great coffee"}
-   {:name        "Tam's"
-    :description "Best burgers in the town"}])
-
 (def sample-board
   (schema/upgrade-schema-if-needed
-  {:version 2
-   :board {:name "hacker paradise"}
-   :tabs  [{:id      "people"
-            :label   "People"
-            :kind    "people"
-            :content hackerparadise-people}
-           #_{:id      "places"
-            :label   "Places"
-            :kind    "places"
-            :content hackerparadise-places}
-           #_{:id "sample-generic"
-            :label "Generic"
-            :content "<b>hello world</b><br>this is a generic HTML content"}
-           {:id      "docs"
-            :label   "Docs"
-            :kind    "iframe"
-            :content {:url "https://drive.google.com/embeddedfolderview?id=0B008sEIaoPmvfjd6T3RxeUR4My0zOGtVbVNOeG9YcGhWRHl3Qmlia1VLOFdPOGwwQXJIYmc#grid"}}
-           {:id      "calendar"
-            :label   "Calendar"
-            :kind    "iframe"
-            :content {:url "https://www.google.com/calendar/embed?mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showTz=0&height=750&wkst=2&bgcolor=%23eee&src=uomn8jge32pvacda11fsrqgqqs%40group.calendar.google.com&ctz=Asia/Saigon"}}
-           {:id "sample-gist"
-            :label "Gist"
-            :kind "gist"
-            :content {:gist-id "e04bd2ed2da938a2ff48"}}
-           {:id "styled-tab"
-            :label "Styled"
-            :style { :background-color "darkred" }
-            :selected-style { :background-color "yellow" }
-            :kind "gist"
-            :content {:gist-id "e04bd2ed2da938a2ff48"}}
-           {:id "sample-inkpad"
-            :label "Inkpad"
-            :kind "inkpad"
-            :content {:inkpad-id "aqBdkShhea"}}
-           {:id      "more"
-            :label   "More"
-            :kind    "webget"
-            :content {:url "https://www.dropbox.com/"}}]}))
+    {:version 2
+     :board   {:name "hacker paradise"}
+     :tabs    [{:id      "people"
+                :label   "People"
+                :kind    "people"
+                :content hackerparadise-people}
+               {:id      "sample-generic"
+                :label   "Generic"
+                :content "<b>hello world</b><br>this is a generic HTML content"}
+               {:id      "docs"
+                :label   "Docs"
+                :kind    "iframe"
+                :content {:url "https://drive.google.com/embeddedfolderview?id=0B008sEIaoPmvfjd6T3RxeUR4My0zOGtVbVNOeG9YcGhWRHl3Qmlia1VLOFdPOGwwQXJIYmc#grid"}}
+               {:id      "calendar"
+                :label   "Calendar"
+                :kind    "iframe"
+                :content {:url "https://www.google.com/calendar/embed?mode=AGENDA&showTitle=0&showPrint=0&showTabs=0&showTz=0&height=750&wkst=2&bgcolor=%23eee&src=uomn8jge32pvacda11fsrqgqqs%40group.calendar.google.com&ctz=Asia/Saigon"}}
+               {:id      "sample-gist"
+                :label   "Gist"
+                :kind    "gist"
+                :content {:gist-id "e04bd2ed2da938a2ff48"}}
+               {:id             "styled-tab"
+                :label          "Styled"
+                :style          {:background-color "darkred"}
+                :selected-style {:background-color "yellow"}
+                :kind           "gist"
+                :content        {:gist-id "e04bd2ed2da938a2ff48"}}
+               {:id      "sample-inkpad"
+                :label   "Inkpad"
+                :kind    "inkpad"
+                :content {:inkpad-id "aqBdkShhea"}}
+               {:id      "more"
+                :label   "More"
+                :kind    "webget"
+                :content {:url "https://www.dropbox.com/"}}]}))
