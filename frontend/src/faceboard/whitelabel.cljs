@@ -1,5 +1,7 @@
 (ns faceboard.whitelabel
+  (:require-macros [faceboard.macros.model :refer [transform-app-state]])
   (:require [faceboard.env :as env]
+            [faceboard.model :as model]
             [faceboard.helpers.utils :as utils]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
@@ -13,3 +15,16 @@
 
 (defn whitelabel-board []
   (domain->boad-id env/domain))
+
+(defn init-hp! []
+  (transform-app-state
+    (model/set [:ui :filters :active :groups] #{"present"})))
+
+(defn init-test-localhost! []
+  (log "test localhost whitelabel init"))
+
+(defn init! []
+  (condp = (domain->boad-id env/domain)
+    "test-localhost-whitelabel" (init-test-localhost!)
+    "hp" (init-hp!)
+    nil))
