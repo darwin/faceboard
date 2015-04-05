@@ -284,7 +284,7 @@
 (defcomponent people-component [data _ _]
   (render [_]
     (let [{:keys [ui anims]} data
-          people (:content data)
+          people (get-in data [:content :people])
           sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
           extended-set (:extended-set ui)
           active-filters (get-in ui [:filters :active])

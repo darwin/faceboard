@@ -1,8 +1,10 @@
 (ns faceboard.schema
   (:require [faceboard.controller :refer [perform!]]
+            [faceboard.migrations.m001_add_version :refer [add-version]]
+            [faceboard.migrations.m002_people_board_content_object :refer [convert-people-content-to-object]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
-(def current-version 2)
+(def current-version 3)
 
 (defmulti evolve-one-step (fn [_ version] version))
 
@@ -11,7 +13,10 @@
   model)
 
 (defmethod evolve-one-step 1 [model _]
-  (assoc model :version 2))                                 ; introduce version
+  (add-version model))
+
+(defmethod evolve-one-step 2 [model _]
+  (convert-people-content-to-object model))
 
 (defn evolve-model-schema [model range]
   (let [new-version (inc (last range))]
