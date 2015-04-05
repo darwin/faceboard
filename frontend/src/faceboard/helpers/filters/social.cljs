@@ -38,5 +38,4 @@
 
 (defn socials-filter-predicate [selected-socials person]
   (let [person-socials (set (map first (person->socials person)))]
-    (log selected-socials person-socials)
     (subset? selected-socials person-socials)))

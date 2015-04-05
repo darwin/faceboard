@@ -141,13 +141,19 @@
 
 (defcomponent filter-section-label-component [data _ _]
   (render [_]
-    (let [{:keys [expanded? key label title]} data]
-      (dom/div {:class    (str "filter-section-label " (name key) "-filter-section-label")
+    (let [{:keys [expanded? active? key label title]} data]
+      (dom/div {:class    (str "filter-section-label " (name key) "-filter-section-label" (when active? " active-filter"))
                 :title    (or title (str "filtering by " label))
                 :on-click #(perform! :toggle-filter-expansion key)}
-        (dom/span {:class (str "fa " (if expanded? "fa-arrow-circle-down" "fa-arrow-circle-right"))})
+        (dom/span {:class (str "fa" (if expanded? " fa-arrow-circle-down" " fa-arrow-circle-right"))})
         (dom/span label)
-        (dom/span {:class "fa fa-filter"})))))
+        (dom/span {:class "fa fa-filter"})
+        (when active?
+          (dom/span {:class    "filter-clear"
+                     :on-click (fn [e]
+                                 (.stopPropagation e)
+                                 (perform! :clear-filter key))}
+            "clear filter"))))))
 
 (defcomponent countries-filter-item-component [data _ _]
   (render [_]
@@ -192,6 +198,7 @@
         (when (> (count sorted-countries) 1)
           (dom/div {:class "countries-filter filter-section"}
             (om/build filter-section-label-component {:key       :countries
+                                                      :active?   (> (count selected-countries) 0)
                                                       :expanded? expanded?
                                                       :label     "countries"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
@@ -204,14 +211,15 @@
 (defcomponent tags-filter-component [data _ _]
   (render [_]
     (let [people (:content data)
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :interests)
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :tags)
           tags-tally (build-tags-tally people)
           selected-tags (get-in data [:ui :filters :active :tags])
           sorted-tags (:tags-by-size tags-tally)]
       (dom/div {:class "tags-filter-wrapper"}
         (when (> (count sorted-tags) 0)
           (dom/div {:class "tags-filter filter-section"}
-            (om/build filter-section-label-component {:key       :interests
+            (om/build filter-section-label-component {:key       :tags
+                                                      :active?   (> (count selected-tags) 0)
                                                       :expanded? expanded?
                                                       :label     "interests"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
@@ -233,6 +241,7 @@
         (when (> (count sorted-socials) 0)
           (dom/div {:class "socials-filter filter-section"}
             (om/build filter-section-label-component {:key       :socials
+                                                      :active?   (> (count selected-socials) 0)
                                                       :expanded? expanded?
                                                       :label     "social"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}

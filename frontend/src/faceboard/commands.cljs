@@ -158,6 +158,11 @@
   (transform-app-state
     (model/toggle-set [:ui :filters :active :socials] social)))
 
+(defmethod handle-command :clear-filter [_ which]
+  (router/switch-person nil)
+  (transform-app-state
+    (model/set [:ui :filters :active which] #{})))
+
 (defmethod handle-command :open-editor [_ path]
   (editor/open-editor-window)
   (transform-app-state

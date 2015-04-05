@@ -27,7 +27,15 @@
            (>> :span
              [:margin-right (px 4)])
            (>> fa-filter
-             [:color "#ccc"]))
+             [:color "#ccc"])
+           (>> &.active-filter
+             (>> fa-filter
+               [:color filter-item-background-selected-color]))
+           (>> filter-clear
+             [:color filter-item-background-selected-color
+              :font-weight :normal]
+             (>> &:hover
+               [:text-decoration :underline])))
          (>> filter-section-body
            [:margin-left (px 14)
             :border-top "2px solid transparent"
