@@ -10,9 +10,9 @@
              :editor-path    nil
              :loading?       0
              :extended-set   #{}
-             :filters        {:expanded-set #{:countries}
+             :filters        {:expanded-set #{:countries :socials :tags}
                               :active       {:countries #{}
-                                             :tags      #{}
-                                             :socials   #{}}}}
+                                             :socials   #{}
+                                             :tags      #{}}}}
      :anims {}
      :cache {:tabs {}}}))
