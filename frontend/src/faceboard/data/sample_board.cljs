@@ -6,7 +6,17 @@
 ; country codes: http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
 
 (def hackerparadise-people
-  {:people [{:id     "tony"
+  {:groups [{:id    "new"
+             :label "new"
+             :title "new people"
+             :list  ["tony" "nicole"]}
+            {:id    "present"
+             :label "present"
+             :list  ["tony" "nicole" "alexey"]}
+            {:id   "left"
+             :label "left"
+             :list ["casey"]}]
+   :people [{:id     "tony"
              :bio    {:name      "Tony"
                       :about     "I'm a developer. I hack Mac apps in <a href='http://binaryage.com'>binaryage</a> for living. I do web development and other experiments for fun. I consider myself being a <a href='http://www.startupsfortherestofus.com/'>micropreneur</a>. And I'm a passionate bitcoiner."
                       :photo     {:url "https://media.licdn.com/mpr/mpr/shrink_200_200/p/3/000/000/340/25abdea.jpg"}

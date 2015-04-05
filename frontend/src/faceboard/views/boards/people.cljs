@@ -9,6 +9,7 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
+            [faceboard.helpers.filters.groups :refer [build-groups-tally groups-filter-predicate]]
             [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]
             [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
             [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]
@@ -155,6 +156,16 @@
                                  (perform! :clear-filter key))}
             "clear filter"))))))
 
+(defcomponent groups-filter-item-component [data _ _]
+  (render [_]
+    (let [{:keys [group report selected?]} data
+          {:keys [count label title]} report]
+      (dom/div {:class    (str "groups-filter-item" (when selected? " selected"))
+                :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-group :filter-select-group) group)}
+        (dom/span {:class "group"
+                   :title (str (when title (str title " ")) "(" count "x)")}
+          label)))))
+
 (defcomponent countries-filter-item-component [data _ _]
   (render [_]
     (let [{:keys [country-code report selected?]} data
@@ -186,6 +197,28 @@
         (dom/i {:class (str "icon fa " icon)
                 :title (str social " (" count "x)")})))))
 
+(defcomponent groups-filter-component [data _ _]
+  (render [_]
+    (let [people (get-in data [:content :people])
+          groups (get-in data [:content :groups])
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :groups)
+          groups-tally (build-groups-tally people groups)
+          selected-groups (get-in data [:ui :filters :active :groups])
+          sorted-groups (:ordered-groups groups-tally)]
+      (dom/div {:class "groups-filter-wrapper"}
+        (when (> (count sorted-groups) 0)
+          (dom/div {:class "groups-filter filter-section"}
+            (om/build filter-section-label-component {:key       :groups
+                                                      :active?   (> (count selected-groups) 0)
+                                                      :expanded? expanded?
+                                                      :label     "groups"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
+              (for [group sorted-groups]
+                (let [report (get-in groups-tally [:tally group])
+                      selected? (contains? selected-groups group)]
+                  (om/build groups-filter-item-component {:group       group
+                                                        :selected? selected?
+                                                        :report    report}))))))))))
 (defcomponent countries-filter-component [data _ _]
   (render [_]
     (let [people (get-in data [:content :people])
@@ -256,9 +289,15 @@
   (render [_]
     (dom/div {:class    "people-filters no-select"
               :on-click #(.stopPropagation %)}
+      (om/build groups-filter-component data)
       (om/build countries-filter-component data)
       (om/build socials-filter-component data)
       (om/build tags-filter-component data))))
+
+(defn build-groups-filter-predicate [active-filters groups]
+  (if-let [active-groups (:groups active-filters)]
+    (when-not (empty? active-groups)
+      (partial groups-filter-predicate groups active-groups))))
 
 (defn build-countries-filter-predicate [active-filters]
   (if-let [active-countries (:countries active-filters)]
@@ -275,8 +314,9 @@
     (when-not (empty? active-socials)
       (partial socials-filter-predicate active-socials))))
 
-(defn build-filter-predicates [active-filters]
-  (let [predicates [(build-countries-filter-predicate active-filters)
+(defn build-filter-predicates [active-filters data]
+  (let [predicates [(build-groups-filter-predicate active-filters (get-in data [:content :groups]))
+                    (build-countries-filter-predicate active-filters)
                     (build-tags-filter-predicate active-filters)
                     (build-socials-filter-predicate active-filters)]]
     (remove nil? predicates)))
@@ -288,7 +328,7 @@
           sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
           extended-set (:extended-set ui)
           active-filters (get-in ui [:filters :active])
-          filter-predicates (build-filter-predicates active-filters)
+          filter-predicates (build-filter-predicates active-filters data)
           sorted-people-with-filter-status (map (fn [person] (hash-map :person person :filtered? (not (every? true? (map #(% person) filter-predicates))))) sorted-people)
           sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
       (dom/div {:class "no-select"}

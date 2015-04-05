@@ -125,6 +125,17 @@
   (transform-app-state
     (model/toggle-set [:ui :filters :expanded-set] filter-name)))
 
+(defmethod handle-command :filter-select-group [_ group]
+  (router/switch-person nil)
+  (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :groups]) group)]
+    (transform-app-state
+      (model/set [:ui :filters :active :groups] (if was-selected? #{} #{group})))))
+
+(defmethod handle-command :filter-shift-select-group [_ group]
+  (router/switch-person nil)
+  (transform-app-state
+    (model/toggle-set [:ui :filters :active :groups] group)))
+
 (defmethod handle-command :filter-select-country [_ country-code]
   (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :countries]) country-code)]

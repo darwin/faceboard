@@ -48,6 +48,19 @@
               :padding-bottom (px 20)
               :padding-top (px 6)
               :border-top "2px solid #ccc"])))
+       (>> groups-filter-item
+         [:float :left
+          :padding (px 1 4)
+          :background-color filter-item-background-normal-color
+          :color people-desk-background-color
+          :margin-bottom (px 2)
+          :margin-right (px 2)
+          :border-radius (px 2)
+          :cursor :pointer]
+         (>> &.selected
+           [:background-color filter-item-background-selected-color])
+         (>> &:hover
+           [:background-color filter-item-background-hovered-color]))
        (>> countries-filter-item
          [:color people-desk-background-color
           :margin-bottom (px 2)
