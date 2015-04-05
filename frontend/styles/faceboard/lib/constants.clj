@@ -23,5 +23,8 @@
 (def social-badge-text-color "#fff")
 (def social-badge-background-hovered-color signature-color)
 
-(def filter-item-background-hovered-color "#fff64c")
-(def filter-item-background-selected-color "#fffbb3")
+(def filter-item-background-normal-color "#aaa")
+(def filter-item-background-hovered-color signature-color)
+(def filter-item-background-selected-color signature-color)
+
+(def people-desk-background-color selected-tab-color)

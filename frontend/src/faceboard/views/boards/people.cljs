@@ -156,11 +156,10 @@
           count (:count report)]
       (dom/div {:class    (str "countries-filter-item f16" (when selected? " selected"))
                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-country :filter-select-country) country-code)}
-        (dom/div {:class "countries-filter-item-body"}
+        (dom/span {:class "countries-filter-item-body"
+                   :title (str country-name " (" count "x)")}
           (when-not (nil? country-code)
-            (dom/span {:class (str "flag " country-code) :title country-name}))
-          (dom/span {:class "country"} country-name)
-          (dom/span {:class "count"} (str "(" count "x)")))))))
+            (dom/span {:class (str "flag " country-code)})))))))
 
 (defcomponent tags-filter-item-component [data _ _]
   (render [_]

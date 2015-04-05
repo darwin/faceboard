@@ -4,18 +4,13 @@
   (:require [faceboard.lib.helpers :refer [>> mv px ms]]))
 
 (def styles
-  [(>> [dual-mode people-board person-box.extended]
-     #_[:position :fixed
-      :top (px 0)
-      :left (px 10)])
-   (>> people-board
+  [(>> people-board
      [:padding (px 0)
       :padding-right (px 280)                               ; leave room for expanded cards
       :perspective (px 1000)
-      :perspective-origin "50% 50%"
-      :background-color "#ddd"]
+      :perspective-origin "50% 50%"]
      (>> people-desk
-       [:background-color selected-tab-color])
+       [:background-color people-desk-background-color])
      (>> people-filters
        [:font-size (px 12)
         :position :absolute
@@ -46,56 +41,53 @@
               :padding-top (px 6)
               :border-top "2px solid #ccc"])))
        (>> countries-filter-item
+         [:background-color filter-item-background-normal-color
+          :color people-desk-background-color
+          :margin-bottom (px 2)
+          :margin-right (px 2)
+          :border-radius (px 2)
+          :cursor :pointer
+          :padding (px 1 3)
+          :height (px 16)
+          :float :left]
          (>> &.selected
-           (>> countries-filter-item-body
-             [:background-color filter-item-background-selected-color]))
-         (>> countries-filter-item-body
-           [:cursor :pointer
-            :display :inline-block
-            :position :relative
-            :left (px -4)
-            :margin-top (px 1)
-            :padding (px 0 4)
-            :border-radius (px 2)]
-           (>> &:hover
-             [:background-color filter-item-background-hovered-color]))
+           [:background-color filter-item-background-selected-color]
+           (>> flag
+             [:opacity 1]))
+         (>> &:hover
+           [:background-color filter-item-background-hovered-color]
+           (>> flag
+             [:opacity 1]))
          (>> flag
-           [:height "14px !important"
-            :margin-right (px 6)
-            :position :relative
-            :top (px 2)])
-         (>> count
-           [:font-size (px 10)
-            :margin-left (px 4)
-            :color "#aaa"]))
+           [:position :relative
+            :opacity 0.7
+            ]))
        (>> tags-filter-item
          [:float :left
           :padding (px 1 4)
-          :background-color "#bbb"
+          :background-color filter-item-background-normal-color
+          :color people-desk-background-color
           :margin-bottom (px 2)
           :margin-right (px 2)
           :border-radius (px 2)
           :cursor :pointer]
          (>> &.selected
            [:background-color filter-item-background-selected-color])
-         (>> count
-           [:display :none
-            :font-size (px 10)
-            :margin-left (px 4)
-            :color "#aaa"])
          (>> &:hover
            [:background-color filter-item-background-hovered-color]))
        (>> socials-filter-item
          [:float :left
           :font-size (px 20)
+          :line-height (px 16)
           :margin-bottom (px 4)
           :margin-right (px 4)
-          :color "#aaa"
+          :color filter-item-background-normal-color
+          :border-radius (px 4)
           :cursor :pointer]
          (>> &.selected
-           [:color signature-color])
+           [:color filter-item-background-selected-color])
          (>> &:hover
-           [:color :darkblue])))
+           [:color filter-item-background-hovered-color])))
      (>> person-box
        [:position :relative
         :float :left
