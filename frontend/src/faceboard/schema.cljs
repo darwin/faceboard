@@ -20,7 +20,7 @@
 
 (defn evolve-model-schema [model range]
   (let [new-version (inc (last range))]
-    (log (str "Evolving model schema from version " (first range) " to " new-version) model)
+    (log-info (str "Evolving model schema from version " (first range) " to " new-version) model)
     (assoc (reduce evolve-one-step model range) :version new-version)))
 
 (defn- the-app-is-old-msg [model-version]

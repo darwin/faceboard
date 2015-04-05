@@ -74,7 +74,8 @@
     (if (= board-id "sample")                               ; short-circuit sample board and skip firebase machinery
       (do
         (log "initializing sample board")
-        (let [{:keys [on-connect]} opts]
+        (let [{:keys [on-connect]} opts
+              sample-board (sample-board)]
           (when (fn? on-connect) (on-connect sample-board))
           (transform-app-state
             (model/set [:model] sample-board))))

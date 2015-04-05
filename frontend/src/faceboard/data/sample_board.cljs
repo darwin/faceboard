@@ -48,7 +48,7 @@
            :country "us"}
     :tags ["design"]}])
 
-(def sample-board
+(defn sample-board []
   (schema/upgrade-schema-if-needed
     {:version 2
      :board   {:name "hacker paradise"}

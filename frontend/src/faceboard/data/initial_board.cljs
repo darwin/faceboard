@@ -13,7 +13,7 @@
   [{:id   :place1
     :name "An's"}])
 
-(def initial-board
+(defn initial-board []
   (schema/upgrade-schema-if-needed
     {:version 2
      :board   {:name "our group"}
