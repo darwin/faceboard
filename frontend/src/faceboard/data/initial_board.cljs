@@ -4,10 +4,10 @@
 ; initial board data when user creates a board from scratch
 
 (def example-people
-  [{:id  "adam"
-    :bio {:name "Adam"}}
-   {:id  "eve"
-    :bio {:name "Eve"}}])
+  {:people [{:id  "adam"
+             :bio {:name "Adam"}}
+            {:id  "eve"
+             :bio {:name "Eve"}}]})
 
 (def example-places
   [{:id   :place1
@@ -15,7 +15,7 @@
 
 (defn initial-board []
   (schema/upgrade-schema-if-needed
-    {:version 2
+    {:version 3
      :board   {:name "our group"}
      :tabs    [{:id      "people"
                 :label   "People"
