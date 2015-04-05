@@ -6,16 +6,16 @@
 
 (def current-version 3)
 
-(defmulti evolve-one-step (fn [_ version] version))
+(defmulti migrate-model (fn [_ version] version))
 
-(defmethod evolve-one-step :default [model version]
+(defmethod migrate-model :default [model version]
   (perform! :switch-view :error {:message (str "Schema version " version " is missing. This is a technical issue.")})
   model)
 
-(defmethod evolve-one-step 1 [model _]
+(defmethod migrate-model 1 [model _]
   (add-version model))
 
-(defmethod evolve-one-step 2 [model _]
+(defmethod migrate-model 2 [model _]
   (convert-people-content-to-object model))
 
 (defn convert-model-to-plain-objects [model]
@@ -27,7 +27,7 @@
 (defn evolve-model-schema [model range]
   (let [new-version (inc (last range))]
     (log-info (str "Evolving model schema from version " (first range) " to " new-version) model)
-    (let [new-model (assoc (reduce evolve-one-step model range) :version new-version)]
+    (let [new-model (assoc (reduce migrate-model model range) :version new-version)]
       (convert-model-to-plain-objects new-model))))
 
 (defn- the-app-is-old-msg [model-version]
