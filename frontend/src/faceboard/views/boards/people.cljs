@@ -188,7 +188,7 @@
 
 (defcomponent countries-filter-component [data _ _]
   (render [_]
-    (let [people (:content data)
+    (let [people (get-in data [:content :people])
           expanded-filters (get-in data [:ui :filters :expanded-set])
           expanded? (contains? expanded-filters :countries)
           selected-countries (get-in data [:ui :filters :active :countries])
@@ -210,7 +210,7 @@
                                                              :report       report}))))))))))
 (defcomponent tags-filter-component [data _ _]
   (render [_]
-    (let [people (:content data)
+    (let [people (get-in data [:content :people])
           expanded? (contains? (get-in data [:ui :filters :expanded-set]) :tags)
           tags-tally (build-tags-tally people)
           selected-tags (get-in data [:ui :filters :active :tags])
@@ -232,7 +232,7 @@
 
 (defcomponent socials-filter-component [data _ _]
   (render [_]
-    (let [people (:content data)
+    (let [people (get-in data [:content :people])
           expanded? (contains? (get-in data [:ui :filters :expanded-set]) :socials)
           socials-tally (build-socials-tally people)
           selected-socials (get-in data [:ui :filters :active :socials])
