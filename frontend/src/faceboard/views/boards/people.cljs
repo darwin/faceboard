@@ -216,9 +216,9 @@
               (for [group sorted-groups]
                 (let [report (get-in groups-tally [:tally group])
                       selected? (contains? selected-groups group)]
-                  (om/build groups-filter-item-component {:group       group
-                                                        :selected? selected?
-                                                        :report    report}))))))))))
+                  (om/build groups-filter-item-component {:group     group
+                                                          :selected? selected?
+                                                          :report    report}))))))))))
 (defcomponent countries-filter-component [data _ _]
   (render [_]
     (let [people (get-in data [:content :people])
@@ -329,7 +329,11 @@
           extended-set (:extended-set ui)
           active-filters (get-in ui [:filters :active])
           filter-predicates (build-filter-predicates active-filters data)
-          sorted-people-with-filter-status (map (fn [person] (hash-map :person person :filtered? (not (every? true? (map #(% person) filter-predicates))))) sorted-people)
+          sorted-people-with-filter-status (map (fn [person]
+                                                  (hash-map
+                                                    :person person
+                                                    :filtered? (not (every? true? (map #(% person) filter-predicates)))))
+                                             sorted-people)
           sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
       (dom/div {:class "no-select"}
         (om/build filters-component data)

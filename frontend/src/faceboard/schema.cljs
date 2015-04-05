@@ -18,10 +18,17 @@
 (defmethod evolve-one-step 2 [model _]
   (convert-people-content-to-object model))
 
+(defn convert-model-to-plain-objects [model]
+  (js->clj (clj->js model) :keywordize-keys true))          ; TODO: there must be a better way
+
+; I encountered a problem when model given as an input was containing Om cursors
+; newly assembled model after migrations applied could contain those Om cursors but with broken paths
+; => this led to cryptic failures later
 (defn evolve-model-schema [model range]
   (let [new-version (inc (last range))]
     (log-info (str "Evolving model schema from version " (first range) " to " new-version) model)
-    (assoc (reduce evolve-one-step model range) :version new-version)))
+    (let [new-model (assoc (reduce evolve-one-step model range) :version new-version)]
+      (convert-model-to-plain-objects new-model))))
 
 (defn- the-app-is-old-msg [model-version]
   (str "This web page is running old code which does not support new data structure yet
