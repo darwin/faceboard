@@ -41,8 +41,7 @@
               :padding-top (px 6)
               :border-top "2px solid #ccc"])))
        (>> countries-filter-item
-         [:background-color filter-item-background-normal-color
-          :color people-desk-background-color
+         [:color people-desk-background-color
           :margin-bottom (px 2)
           :margin-right (px 2)
           :border-radius (px 2)
@@ -51,17 +50,9 @@
           :height (px 16)
           :float :left]
          (>> &.selected
-           [:background-color filter-item-background-selected-color]
-           (>> flag
-             [:opacity 1]))
+           [:background-color filter-item-background-selected-color])
          (>> &:hover
-           [:background-color filter-item-background-hovered-color]
-           (>> flag
-             [:opacity 1]))
-         (>> flag
-           [:position :relative
-            :opacity 0.7
-            ]))
+           [:background-color filter-item-background-hovered-color]))
        (>> tags-filter-item
          [:float :left
           :padding (px 1 4)
