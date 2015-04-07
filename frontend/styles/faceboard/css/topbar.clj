@@ -12,7 +12,8 @@
       :height header-height
       :line-height (px 18)
       :background-color signature-color
-      :font-size (px 12)]
+      :font-size (px 12)
+      :white-space :nowrap]
      (>> [> *]
        [:display :inline-block])
      (>> [logo "a"]
