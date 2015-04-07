@@ -127,9 +127,10 @@
                             (anim-class shrinking-anim " shrinking")
                             (when extended? " extended")
                             (if filtered? " filtered" " expandable"))
-                :on-click (fn [e]
-                            (.stopPropagation e)
-                            (router/switch-person (if-not extended? id nil)))}
+                :on-click (when-not filtered?
+                            (fn [e]
+                              (.stopPropagation e)
+                              (router/switch-person (if-not extended? id nil))))}
         (dom/div {:class "person-extended-wrapper"}
           (om/build person-info-component {:hide?     (not extended?)
                                            :extended? extended?
