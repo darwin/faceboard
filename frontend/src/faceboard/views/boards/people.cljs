@@ -326,7 +326,11 @@
   (render [_]
     (let [{:keys [ui anims]} data
           people (get-in data [:content :people])
-          sorted-people (sort #(compare (get-in %1 [:bio :name]) (get-in %2 [:bio :name])) people)
+          people-comparator (fn [p1 p2]
+                              (let [name1 (str (get-in p1 [:bio :name]))
+                                    name2 (str (get-in p2 [:bio :name]))]
+                                (compare name1 name2)))
+          sorted-people (sort people-comparator people)
           extended-set (:extended-set ui)
           active-filters (get-in ui [:filters :active])
           filter-predicates (build-filter-predicates active-filters data)
