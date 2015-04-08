@@ -100,7 +100,7 @@
            [:color filter-item-background-selected-color])
          (>> &:hover
            [:color filter-item-background-hovered-color])))
-     (>> person-box
+     (>> person-card
        [:position :relative
         :float :left
         :margin (px 20 20)

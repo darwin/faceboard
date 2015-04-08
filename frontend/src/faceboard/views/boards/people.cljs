@@ -122,7 +122,7 @@
           extended? (and
                       (not filtered?)
                       (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1)))]
-      (dom/div {:class    (str "person-box"
+      (dom/div {:class    (str "person-card"
                             (anim-class expansion-anim " expanding")
                             (anim-class shrinking-anim " shrinking")
                             (when extended? " extended")
