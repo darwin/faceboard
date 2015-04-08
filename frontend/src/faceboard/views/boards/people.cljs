@@ -124,7 +124,7 @@
                       (str
                         "translateX(" (:left layout) "px)"
                         "translateY(" (:top layout) "px)"
-                        "translateZ(" (if filtered? -500 -100) "px)"))
+                        "translateZ(" (:z layout) "px)"))
           zoom-transform (when layout
                            (str
                              "translateZ(" (if extended? 100 0) "px)"))]
@@ -339,21 +339,33 @@
   ISeqable
   (-seq [nl] (array-seq nl 0)))
 
-(defn retrieve-card-layout [card]
-  [(.getAttribute card "data-fbid")
-   {:left (.-offsetLeft card)
-    :top  (.-offsetTop card)}])
+(defn is-person-filtered? [person filter-predicates]
+  (not (every? true? (map #(% person) filter-predicates))))
 
-(defn retrieve-cards-layout [cards]
-  (apply hash-map (mapcat #(retrieve-card-layout %) cards)))
+(defn lookup-person [people id]
+  (first (filter #(= id (:id %)) people)))
+
+(defn retrieve-card-layout [people filter-predicates card]
+  (let [person-id (.getAttribute card "data-fbid")
+        person (lookup-person people person-id)]
+    [person-id
+     {:left (.-offsetLeft card)
+      :top  (.-offsetTop card)
+      :z    (if (is-person-filtered? person filter-predicates) -500 -100)}]))
+
+(defn retrieve-cards-layout [people filter-predicates cards]
+  (apply hash-map (mapcat #(retrieve-card-layout people filter-predicates %) cards)))
 
 (defn recompute-layout [data owner]
   (let [node (om/get-node owner "desk")
         cards (.-childNodes node)
+        active-filters (get-in data [:ui :filters :active])
+        filter-predicates (build-filter-predicates active-filters data)
+        people (get-in data [:content :people])
         old-layout (get-in data [:ui :people :layout])
-        layout (retrieve-cards-layout cards)]
+        layout (retrieve-cards-layout people filter-predicates cards)]
     (when-not (= (pr-str old-layout) (pr-str layout))
-      (perform! :people-layout layout))))
+      (.setTimeout js/window #(perform! :people-layout layout) 200))))
 
 (defcomponent people-scaffold-component [data owner _]
   (did-mount [_]
@@ -402,7 +414,7 @@
                   data {:person    person
                         :layout    (get layout person-id)
                         :extended? (contains? extended-set person-id)
-                        :filtered? (not (every? true? (map #(% person) filter-predicates)))
+                        :filtered? (is-person-filtered? person filter-predicates)
                         :anim      (:person anims)}]
               (om/build person-component data {:react-key person-id}))))))))
 
