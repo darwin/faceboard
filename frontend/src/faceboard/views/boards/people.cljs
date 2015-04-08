@@ -371,7 +371,6 @@
                                     name2 (str (get-in p2 [:bio :name]))]
                                 (compare name1 name2)))
           sorted-people (sort people-comparator people)
-          extended-set (:extended-set ui)
           active-filters (get-in ui [:filters :active])
           filter-predicates (build-filter-predicates active-filters data)
           sorted-people-with-filter-status (map (fn [person]
@@ -386,9 +385,9 @@
           (let [person (:person item)
                 person-id (:id person)
                 data {:person    person
-                      :extended? (contains? extended-set person-id)
-                      :filtered? (:filtered? item)
-                      :anim      (:person anims)}]
+                      :extended? false
+                      :filtered? false
+                      :anim      0}]
             (om/build person-component data {:react-key person-id})))))))
 
 (defcomponent people-layout-component [data _ _]
