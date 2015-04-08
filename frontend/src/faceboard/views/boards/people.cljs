@@ -373,14 +373,13 @@
   (did-update [_ _ _]
     (recompute-layout data owner))
   (render [_]
-    (let [{:keys [ui anims]} data
-          people (get-in data [:content :people])
+    (let [people (get-in data [:content :people])
           people-comparator (fn [p1 p2]
                               (let [name1 (str (get-in p1 [:bio :name]))
                                     name2 (str (get-in p2 [:bio :name]))]
                                 (compare name1 name2)))
           sorted-people (sort people-comparator people)
-          active-filters (get-in ui [:filters :active])
+          active-filters (get-in data [:ui :filters :active])
           filter-predicates (build-filter-predicates active-filters data)
           sorted-people-with-filter-status (map (fn [person]
                                                   (hash-map
