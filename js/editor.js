@@ -1134,6 +1134,429 @@
   }
 }.call(this));
 /**
+ * DOM event delegator
+ *
+ * The delegator will listen
+ * for events that bubble up
+ * to the root node.
+ *
+ * @constructor
+ * @param {Node|string} [root] The root node or a selector string matching the root node
+ */
+function Delegate(root) {
+
+  /**
+   * Maintain a map of listener
+   * lists, keyed by event name.
+   *
+   * @type Object
+   */
+  this.listenerMap = [{}, {}];
+  if (root) {
+    this.root(root);
+  }
+
+  /** @type function() */
+  this.handle = Delegate.prototype.handle.bind(this);
+}
+
+/**
+ * Start listening for events
+ * on the provided DOM element
+ *
+ * @param  {Node|string} [root] The root node or a selector string matching the root node
+ * @returns {Delegate} This method is chainable
+ */
+Delegate.prototype.root = function(root) {
+  var listenerMap = this.listenerMap;
+  var eventType;
+
+  // Remove master event listeners
+  if (this.rootElement) {
+    for (eventType in listenerMap[1]) {
+      if (listenerMap[1].hasOwnProperty(eventType)) {
+        this.rootElement.removeEventListener(eventType, this.handle, true);
+      }
+    }
+    for (eventType in listenerMap[0]) {
+      if (listenerMap[0].hasOwnProperty(eventType)) {
+        this.rootElement.removeEventListener(eventType, this.handle, false);
+      }
+    }
+  }
+
+  // If no root or root is not
+  // a dom node, then remove internal
+  // root reference and exit here
+  if (!root || !root.addEventListener) {
+    if (this.rootElement) {
+      delete this.rootElement;
+    }
+    return this;
+  }
+
+  /**
+   * The root node at which
+   * listeners are attached.
+   *
+   * @type Node
+   */
+  this.rootElement = root;
+
+  // Set up master event listeners
+  for (eventType in listenerMap[1]) {
+    if (listenerMap[1].hasOwnProperty(eventType)) {
+      this.rootElement.addEventListener(eventType, this.handle, true);
+    }
+  }
+  for (eventType in listenerMap[0]) {
+    if (listenerMap[0].hasOwnProperty(eventType)) {
+      this.rootElement.addEventListener(eventType, this.handle, false);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * @param {string} eventType
+ * @returns boolean
+ */
+Delegate.prototype.captureForType = function(eventType) {
+  return ['blur', 'error', 'focus', 'load', 'resize', 'scroll'].indexOf(eventType) !== -1;
+};
+
+/**
+ * Attach a handler to one
+ * event for all elements
+ * that match the selector,
+ * now or in the future
+ *
+ * The handler function receives
+ * three arguments: the DOM event
+ * object, the node that matched
+ * the selector while the event
+ * was bubbling and a reference
+ * to itself. Within the handler,
+ * 'this' is equal to the second
+ * argument.
+ *
+ * The node that actually received
+ * the event can be accessed via
+ * 'event.target'.
+ *
+ * @param {string} eventType Listen for these events
+ * @param {string|undefined} selector Only handle events on elements matching this selector, if undefined match root element
+ * @param {function()} handler Handler function - event data passed here will be in event.data
+ * @param {Object} [eventData] Data to pass in event.data
+ * @returns {Delegate} This method is chainable
+ */
+Delegate.prototype.on = function(eventType, selector, handler, useCapture) {
+  var root, listenerMap, matcher, matcherParam;
+
+  if (!eventType) {
+    throw new TypeError('Invalid event type: ' + eventType);
+  }
+
+  // handler can be passed as
+  // the second or third argument
+  if (typeof selector === 'function') {
+    useCapture = handler;
+    handler = selector;
+    selector = null;
+  }
+
+  // Fallback to sensible defaults
+  // if useCapture not set
+  if (useCapture === undefined) {
+    useCapture = this.captureForType(eventType);
+  }
+
+  if (typeof handler !== 'function') {
+    throw new TypeError('Handler must be a type of Function');
+  }
+
+  root = this.rootElement;
+  listenerMap = this.listenerMap[useCapture ? 1 : 0];
+
+  // Add master handler for type if not created yet
+  if (!listenerMap[eventType]) {
+    if (root) {
+      root.addEventListener(eventType, this.handle, useCapture);
+    }
+    listenerMap[eventType] = [];
+  }
+
+  if (!selector) {
+    matcherParam = null;
+
+    // COMPLEX - matchesRoot needs to have access to
+    // this.rootElement, so bind the function to this.
+    matcher = matchesRoot.bind(this);
+
+  // Compile a matcher for the given selector
+  } else if (/^[a-z]+$/i.test(selector)) {
+    matcherParam = selector;
+    matcher = matchesTag;
+  } else if (/^#[a-z0-9\-_]+$/i.test(selector)) {
+    matcherParam = selector.slice(1);
+    matcher = matchesId;
+  } else {
+    matcherParam = selector;
+    matcher = matches;
+  }
+
+  // Add to the list of listeners
+  listenerMap[eventType].push({
+    selector: selector,
+    handler: handler,
+    matcher: matcher,
+    matcherParam: matcherParam
+  });
+
+  return this;
+};
+
+/**
+ * Remove an event handler
+ * for elements that match
+ * the selector, forever
+ *
+ * @param {string} [eventType] Remove handlers for events matching this type, considering the other parameters
+ * @param {string} [selector] If this parameter is omitted, only handlers which match the other two will be removed
+ * @param {function()} [handler] If this parameter is omitted, only handlers which match the previous two will be removed
+ * @returns {Delegate} This method is chainable
+ */
+Delegate.prototype.off = function(eventType, selector, handler, useCapture) {
+  var i, listener, listenerMap, listenerList, singleEventType;
+
+  // Handler can be passed as
+  // the second or third argument
+  if (typeof selector === 'function') {
+    useCapture = handler;
+    handler = selector;
+    selector = null;
+  }
+
+  // If useCapture not set, remove
+  // all event listeners
+  if (useCapture === undefined) {
+    this.off(eventType, selector, handler, true);
+    this.off(eventType, selector, handler, false);
+    return this;
+  }
+
+  listenerMap = this.listenerMap[useCapture ? 1 : 0];
+  if (!eventType) {
+    for (singleEventType in listenerMap) {
+      if (listenerMap.hasOwnProperty(singleEventType)) {
+        this.off(singleEventType, selector, handler);
+      }
+    }
+
+    return this;
+  }
+
+  listenerList = listenerMap[eventType];
+  if (!listenerList || !listenerList.length) {
+    return this;
+  }
+
+  // Remove only parameter matches
+  // if specified
+  for (i = listenerList.length - 1; i >= 0; i--) {
+    listener = listenerList[i];
+
+    if ((!selector || selector === listener.selector) && (!handler || handler === listener.handler)) {
+      listenerList.splice(i, 1);
+    }
+  }
+
+  // All listeners removed
+  if (!listenerList.length) {
+    delete listenerMap[eventType];
+
+    // Remove the main handler
+    if (this.rootElement) {
+      this.rootElement.removeEventListener(eventType, this.handle, useCapture);
+    }
+  }
+
+  return this;
+};
+
+
+/**
+ * Handle an arbitrary event.
+ *
+ * @param {Event} event
+ */
+Delegate.prototype.handle = function(event) {
+  var i, l, type = event.type, root, phase, listener, returned, listenerList = [], target, /** @const */ EVENTIGNORE = 'ftLabsDelegateIgnore';
+
+  if (event[EVENTIGNORE] === true) {
+    return;
+  }
+
+  target = event.target;
+
+  // Hardcode value of Node.TEXT_NODE
+  // as not defined in IE8
+  if (target.nodeType === 3) {
+    target = target.parentNode;
+  }
+
+  root = this.rootElement;
+
+  phase = event.eventPhase || ( event.target !== event.currentTarget ? 3 : 2 );
+  
+  switch (phase) {
+    case 1: //Event.CAPTURING_PHASE:
+      listenerList = this.listenerMap[1][type];
+    break;
+    case 2: //Event.AT_TARGET:
+      if (this.listenerMap[0] && this.listenerMap[0][type]) listenerList = listenerList.concat(this.listenerMap[0][type]);
+      if (this.listenerMap[1] && this.listenerMap[1][type]) listenerList = listenerList.concat(this.listenerMap[1][type]);
+    break;
+    case 3: //Event.BUBBLING_PHASE:
+      listenerList = this.listenerMap[0][type];
+    break;
+  }
+
+  // Need to continuously check
+  // that the specific list is
+  // still populated in case one
+  // of the callbacks actually
+  // causes the list to be destroyed.
+  l = listenerList.length;
+  while (target && l) {
+    for (i = 0; i < l; i++) {
+      listener = listenerList[i];
+
+      // Bail from this loop if
+      // the length changed and
+      // no more listeners are
+      // defined between i and l.
+      if (!listener) {
+        break;
+      }
+
+      // Check for match and fire
+      // the event if there's one
+      //
+      // TODO:MCG:20120117: Need a way
+      // to check if event#stopImmediatePropagation
+      // was called. If so, break both loops.
+      if (listener.matcher.call(target, listener.matcherParam, target)) {
+        returned = this.fire(event, target, listener);
+      }
+
+      // Stop propagation to subsequent
+      // callbacks if the callback returned
+      // false
+      if (returned === false) {
+        event[EVENTIGNORE] = true;
+        event.preventDefault();
+        return;
+      }
+    }
+
+    // TODO:MCG:20120117: Need a way to
+    // check if event#stopPropagation
+    // was called. If so, break looping
+    // through the DOM. Stop if the
+    // delegation root has been reached
+    if (target === root) {
+      break;
+    }
+
+    l = listenerList.length;
+    target = target.parentElement;
+  }
+};
+
+/**
+ * Fire a listener on a target.
+ *
+ * @param {Event} event
+ * @param {Node} target
+ * @param {Object} listener
+ * @returns {boolean}
+ */
+Delegate.prototype.fire = function(event, target, listener) {
+  return listener.handler.call(target, event, target);
+};
+
+/**
+ * Check whether an element
+ * matches a generic selector.
+ *
+ * @type function()
+ * @param {string} selector A CSS selector
+ */
+var matches = (function(el) {
+  if (!el) return;
+  var p = el.prototype;
+  return (p.matches || p.matchesSelector || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || p.oMatchesSelector);
+}(Element));
+
+/**
+ * Check whether an element
+ * matches a tag selector.
+ *
+ * Tags are NOT case-sensitive,
+ * except in XML (and XML-based
+ * languages such as XHTML).
+ *
+ * @param {string} tagName The tag name to test against
+ * @param {Element} element The element to test with
+ * @returns boolean
+ */
+function matchesTag(tagName, element) {
+  return tagName.toLowerCase() === element.tagName.toLowerCase();
+}
+
+/**
+ * Check whether an element
+ * matches the root.
+ *
+ * @param {?String} selector In this case this is always passed through as null and not used
+ * @param {Element} element The element to test with
+ * @returns boolean
+ */
+function matchesRoot(selector, element) {
+  /*jshint validthis:true*/
+  if (this.rootElement === window) return element === document;
+  return this.rootElement === element;
+}
+
+/**
+ * Check whether the ID of
+ * the element in 'this'
+ * matches the given ID.
+ *
+ * IDs are case-sensitive.
+ *
+ * @param {string} id The ID to test against
+ * @param {Element} element The element to test with
+ * @returns boolean
+ */
+function matchesId(id, element) {
+  return id === element.id;
+}
+
+/**
+ * Short hand for off()
+ * and root(), ie both
+ * with no parameters
+ *
+ * @return void
+ */
+Delegate.prototype.destroy = function() {
+  this.off();
+  this.root();
+};
+/**
  * StyleFix 1.0.3 & PrefixFree 1.0.7
  * @author Lea Verou
  * MIT license
@@ -11690,7 +12113,7 @@ h.K=function(b,a){return new il(this.p,a,this.n,this.r)};h.N=function(b,a){retur
 RegExp.prototype.ra=!0;RegExp.prototype.oa=function(){return function(b){return function(a){return"string"!==typeof a?Qk(Lk(b,a,new Cg(function(){return function(){return A(A(J,Ik(a)),new C(null,"string?","string?",-1129175764,null))}}(b),null),null)):Aa(og(b,a))?Qk(Lk(b,a,new Cg(function(b){return function(){return A(A(A(J,Ik(a)),$k(b)),new C(null,"re-find","re-find",1143444147,null))}}(b),null),null)):a}}(this)};RegExp.prototype.ga=function(){return uc.e([y('#"'),y((""+y(this)).slice(1,-1)),y('"')].join(""))};
 hl.e(Ba);var jl=Boolean;hl.c(od,new C(null,"integer?","integer?",1303791671,null));var kl=hl.c(Sd,new C(null,"keyword?","keyword?",1917797069,null));hl.c(sc,new C(null,"symbol?","symbol?",1820680511,null));
 "undefined"===typeof Yk&&(Yk=function(b){this.ud=b;this.C=0;this.o=393216},h=Yk.prototype,h.ra=!0,h.oa=function(){return function(b){return function(a){return a instanceof RegExp?a:Qk(Lk(b,a,new Cg(function(){return function(){return A(A(A(J,Ik(a)),new C("js","RegExp","js/RegExp",1778210562,null)),new C(null,"instance?","instance?",1075939923,null))}}(b),null),null))}}(this)},h.ga=function(){return new C(null,"Regex","Regex",205914413,null)},h.I=function(){return this.ud},h.K=function(b,a){return new Yk(a)},
-Yk.kb=!0,Yk.jb="schema.core/t52633",Yk.xb=function(b,a){return Jb(a,"schema.core/t52633")});function ll(b,a,c,d){this.V=b;this.A=a;this.n=c;this.r=d;this.o=2229667594;this.C=8192}h=ll.prototype;h.H=function(b,a){return $a.h(this,a,null)};h.F=function(b,a,c){switch(a instanceof Y?a.X:null){case "schema":return this.V;default:return U.h(this.n,a,c)}};
+Yk.kb=!0,Yk.jb="schema.core/t52762",Yk.xb=function(b,a){return Jb(a,"schema.core/t52762")});function ll(b,a,c,d){this.V=b;this.A=a;this.n=c;this.r=d;this.o=2229667594;this.C=8192}h=ll.prototype;h.H=function(b,a){return $a.h(this,a,null)};h.F=function(b,a,c){switch(a instanceof Y?a.X:null){case "schema":return this.V;default:return U.h(this.n,a,c)}};
 h.G=function(b,a,c){return pg(a,function(){return function(b){return pg(a,vg,""," ","",c,b)}}(this),"#schema.core.Maybe{",", ","}",c,ge.c(new W(null,1,5,X,[new W(null,2,5,X,[$g,this.V],null)],null),this.n))};h.I=function(){return this.A};h.T=function(){return new ll(this.V,this.A,this.n,this.r)};h.O=function(){return 1+R(this.n)};h.L=function(){var b=this.r;return null!=b?b:this.r=b=Jd(this)};h.D=function(b,a){return u(u(a)?this.constructor===a.constructor&&tf(this,a):a)?!0:!1};
 h.ma=function(b,a){return pd(new td(null,new t(null,1,[$g,null],null),null),a)?Wc.c(Nc(Re.c(sd,this),this.A),a):new ll(this.V,this.A,ne(Wc.c(this.n,a)),null)};h.aa=function(b,a,c){return u(Z.c?Z.c($g,a):Z.call(null,$g,a))?new ll(c,this.A,this.n,null):new ll(this.V,this.A,Vc.h(this.n,a,c),null)};h.M=function(){return E(ge.c(new W(null,1,5,X,[new W(null,2,5,X,[$g,this.V],null)],null),this.n))};h.K=function(b,a){return new ll(this.V,a,this.n,this.r)};
 h.N=function(b,a){return fd(a)?db(this,B.c(a,0),B.c(a,1)):Ka.h(A,this,a)};h.ra=!0;h.oa=function(){return function(b){return function(a){return null==a?null:b.e?b.e(a):b.call(null,a)}}(al.e?al.e(this.V):al.call(null,this.V),this)};h.ga=function(){return A(A(J,$k(this.V)),new C(null,"maybe","maybe",1326133967,null))};function ml(b,a,c,d){this.ea=b;this.A=a;this.n=c;this.r=d;this.o=2229667594;this.C=8192}h=ml.prototype;h.H=function(b,a){return $a.h(this,a,null)};
@@ -11838,28 +12261,28 @@ b){if(!u(Un(a)))throw Error([y("Assert failed: "),y(Ae.j(Q([Pd(new C(null,"compo
 if(!nd(b))throw Error([y("Assert failed: "),y(Ae.j(Q([Pd(new C(null,"ifn?","ifn?",-2106461064,null),new C(null,"f","f",43394975,null))],0)))].join(""));return zo.c(a,function(){var c=Xn.e(a);return b.e?b.e(c):b.call(null,c)}())}var c=null,c=function(c,e,f){switch(arguments.length){case 2:return a.call(this,c,e);case 3:return b.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.c=a;c.h=b;return c}();var Bo=function(){function b(b,d){var e=null;if(1<arguments.length){for(var e=0,f=Array(arguments.length-1);e<f.length;)f[e]=arguments[e+1],++e;e=new F(f,0)}return a.call(this,b,e)}function a(a,b){return console[a].apply(console,La.e(b))}b.v=1;b.l=function(b){var d=G(b);b=I(b);return a(d,b)};b.j=a;return b}(),Co=function(){function b(a){if(0<arguments.length)for(var b=0,d=Array(arguments.length-0);b<d.length;)d[b]=arguments[b+0],++b;return null}b.v=0;b.l=function(a){E(a);return null};b.j=function(){return null};
 return b}(),Do=function(){function b(b){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return a.call(this,d)}function a(a){return V.c(Bo,O("error",a))}b.v=0;b.l=function(b){b=E(b);return a(b)};b.j=a;return b}(),Eo=function(){function b(b){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return a.call(this,d)}function a(a){return V.c(Bo,O("warn",a))}
 b.v=0;b.l=function(b){b=E(b);return a(b)};b.j=a;return b}();var Fo,Ho=new W(null,3,5,X,[El(el,new C(null,"data","data",1407862150,null)),El(el,new C(null,"_","_",-1201019570,null)),El(el,new C(null,"_","_",-1201019570,null))],null),Io=cl(Ho),Jo=cl(el),Ko=function(b,a,c,d,e){return function g(k,l,m){var n=b.Ea();if(u(n)){var p=new W(null,3,5,X,[k,l,m],null),r=d.e?d.e(p):d.call(null,p);if(u(r))throw Qg.c(Hk.j("Input to %s does not match schema: %s",Q([new C(null,"status-component","status-component",2119421421,null),Ae.j(Q([r],0))],0)),new t(null,4,[Nj,r,di,
-p,$g,c,ui,yh],null));}p=function(){for(;;)return"undefined"===typeof Fo&&(Fo=function(a,b,c,d,e,g,k,l,m,n,p,r,Ca){this.od=a;this.data=b;this.Jc=c;this.ce=d;this.xa=e;this.Ic=g;this.ld=k;this.$d=l;this.Bb=m;this.Xd=n;this.Kc=p;this.Ab=r;this.sd=Ca;this.C=0;this.o=393216},Fo.prototype.Ub=!0,Fo.prototype.Jb=function(){return function(){return"status-component"}}(n,b,a,c,d,e),Fo.prototype.Kb=!0,Fo.prototype.Lb=function(){return function(){return V.h(React.DOM.div,{className:"status"},Qe(new W(null,1,
-5,X,[this.data],null)))}}(n,b,a,c,d,e),Fo.prototype.I=function(){return function(){return this.sd}}(n,b,a,c,d,e),Fo.prototype.K=function(){return function(a,b){return new Fo(this.od,this.data,this.Jc,this.ce,this.xa,this.Ic,this.ld,this.$d,this.Bb,this.Xd,this.Kc,this.Ab,b)}}(n,b,a,c,d,e),Fo.kb=!0,Fo.jb="editor.views.status/t51017",Fo.xb=function(){return function(a,b){return Jb(b,"editor.views.status/t51017")}}(n,b,a,c,d,e)),new Fo(c,k,l,g,m,k,d,a,n,e,m,b,null)}();if(u(n)&&(r=e.e?e.e(p):e.call(null,
+p,$g,c,ui,yh],null));}p=function(){for(;;)return"undefined"===typeof Fo&&(Fo=function(a,b,c,d,e,g,k,l,m,n,p,r,Ca){this.data=a;this.Xd=b;this.ce=c;this.Jc=d;this.xa=e;this.$d=g;this.Bb=k;this.Ic=l;this.Ab=m;this.Kc=n;this.od=p;this.ld=r;this.sd=Ca;this.C=0;this.o=393216},Fo.prototype.Ub=!0,Fo.prototype.Jb=function(){return function(){return"status-component"}}(n,b,a,c,d,e),Fo.prototype.Kb=!0,Fo.prototype.Lb=function(){return function(){return V.h(React.DOM.div,{className:"status"},Qe(new W(null,1,
+5,X,[this.data],null)))}}(n,b,a,c,d,e),Fo.prototype.I=function(){return function(){return this.sd}}(n,b,a,c,d,e),Fo.prototype.K=function(){return function(a,b){return new Fo(this.data,this.Xd,this.ce,this.Jc,this.xa,this.$d,this.Bb,this.Ic,this.Ab,this.Kc,this.od,this.ld,b)}}(n,b,a,c,d,e),Fo.kb=!0,Fo.jb="editor.views.status/t51146",Fo.xb=function(){return function(a,b){return Jb(b,"editor.views.status/t51146")}}(n,b,a,c,d,e)),new Fo(k,e,g,l,m,a,n,k,b,m,c,d,null)}();if(u(n)&&(r=e.e?e.e(p):e.call(null,
 p),u(r)))throw Qg.c(Hk.j("Output of %s does not match schema: %s",Q([new C(null,"status-component","status-component",2119421421,null),Ae.j(Q([r],0))],0)),new t(null,4,[Nj,r,di,p,$g,a,ui,yh],null));return p}}(Vk,el,Ho,Io,Jo);Tk(Ko,Jl(el,new W(null,1,5,X,[Ho],null)));Dm&&Jm("9");!Fm||Jm("528");Em&&Jm("1.9b")||Dm&&Jm("8")||Cm&&Jm("9.5")||Fm&&Jm("528");Em&&!Jm("8")||Dm&&Jm("9");var Lo;function Mo(b){b=JSON.parse(b);return Lg.j(b,Q([Kg,!0],0))};var No=Lg.j(platform,Q([Kg,!0],0)),Oo=null!=window["faceboard-env"]?Lg.j(faceboard_env,Q([Kg,!0],0)):sd,Po=L.c(Te.c(No,new W(null,2,5,X,[Uj,th],null)),"OS X");Qi.e(Oo);if("undefined"===typeof Qo){var Qo,Ro=new t(null,2,[kj,"",Aj,new t(null,2,[bi,Qc,Gj,""],null)],null);Qo=ye.e?ye.e(Ro):ye.call(null,Ro)};function So(b){b=Mo(b);b=Ue(M.e?M.e(Qo):M.call(null,Qo),new W(null,1,5,X,[Aj],null),b);return ze.c?ze.c(Qo,b):ze.call(null,Qo,b)}var To=["editor","exports","drive"],Uo=aa;To[0]in Uo||!Uo.execScript||Uo.execScript("var "+To[0]);for(var Vo;To.length&&(Vo=To.shift());){var Wo;if(Wo=!To.length)Wo=void 0!==So;Wo?Uo[Vo]=So:Uo=Uo[Vo]?Uo[Vo]:Uo[Vo]={}}window.drive=So;var Xo=function(b){return Ka.h(function(a,b){var d=S.h(b,0,null),e=S.h(b,1,null);return Vc.h(a,e,d)},sd,b)}(Uc([Rg,Sg,Vg,Wg,Zg,ah,bh,ch,dh,fh,gh,hh,jh,kh,lh,mh,ph,qh,rh,uh,xh,va,Ah,Bh,Dh,Eh,Fh,Ih,Jh,Kh,Lh,Mh,Oh,Ph,Qh,Rh,Sh,Xh,Zh,$h,ci,ei,fi,hi,ii,ji,mi,oi,pi,qi,ri,ti,wi,xi,zi,Bi,Hi,Ii,Ji,Ki,Li,Mi,Pi,Ri,Si,Ti,Wi,Yi,Zi,$i,bj,dj,ej,fj,gj,jj,lj,nj,oj,qj,sj,tj,uj,vj,xj,yj,zj,Bj,Dj,Fj,Ij,Jj,Mj,Oj,Pj,Qj,Rj,Sj,Wj,Xj,ak,bk,ck,dk,ek,hk,jk,kk,lk,nk,qk,sk,tk,vk,xk,zk],[89,48,16,49,81,104,59,191,40,63,224,82,
 32,111,36,45,96,86,3,119,79,91,56,112,229,0,91,121,183,224,102,110,18,166,145,27,255,78,87,77,188,105,33,103,144,92,116,20,219,189,106,192,46,51,93,53,187,52,69,17,83,76,38,75,12,13,90,71,98,122,67,222,107,101,74,114,72,113,192,57,99,221,50,93,186,123,55,66,61,39,68,70,19,8,100,118,84,88,190,44,120,34,35,173,9,117,115,80,54,73,97,109,65,220,37,85]));
 function Yo(b){return Rc.c(fg(Af(Ne.c(Ld,new t(null,4,[Ki,md(b.ctrlKey),Vg,md(b.shiftKey),Oh,md(b.altKey),va,md(b.metaKey)],null)))),function(){var a=b.keyCode;return Xo.e?Xo.e(a):Xo.call(null,a)}())};function Zo(b,a,c){this.key=b;this.val=a;this.forward=c;this.C=0;this.o=2155872256}Zo.prototype.G=function(b,a,c){return pg(a,vg,"["," ","]",c,this)};Zo.prototype.M=function(){return A(A(J,this.val),this.key)};
-(function(){function b(a,b,c){c=Array(c+1);for(var g=0;;)if(g<c.length)c[g]=null,g+=1;else break;return new Zo(a,b,c)}function a(a){return c.h(null,null,a)}var c=null,c=function(c,e,f){switch(arguments.length){case 1:return a.call(this,c);case 3:return b.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.e=a;c.h=b;return c})().e(0);(function $o(a){"undefined"===typeof Lo&&(Lo=function(a,d,e){this.gb=a;this.hd=d;this.vd=e;this.C=0;this.o=393216},Lo.prototype.I=function(){return this.vd},Lo.prototype.K=function(a,d){return new Lo(this.gb,this.hd,d)},Lo.kb=!0,Lo.jb="cljs.core.async/t54314",Lo.xb=function(a,d){return Jb(d,"cljs.core.async/t54314")});return new Lo(a,$o,sd)})(function(){return null});var ap,bp,cp;function dp(){return u(ap)?Aa(ap.isClean.call(ap)):null}function ep(b){window.setTimeout(function(){var a=Vc.h(M.e?M.e(Qo):M.call(null,Qo),kj,b);return ze.c?ze.c(Qo,a):ze.call(null,Qo,a)},0)}
+(function(){function b(a,b,c){c=Array(c+1);for(var g=0;;)if(g<c.length)c[g]=null,g+=1;else break;return new Zo(a,b,c)}function a(a){return c.h(null,null,a)}var c=null,c=function(c,e,f){switch(arguments.length){case 1:return a.call(this,c);case 3:return b.call(this,c,e,f)}throw Error("Invalid arity: "+arguments.length);};c.e=a;c.h=b;return c})().e(0);(function $o(a){"undefined"===typeof Lo&&(Lo=function(a,d,e){this.gb=a;this.hd=d;this.vd=e;this.C=0;this.o=393216},Lo.prototype.I=function(){return this.vd},Lo.prototype.K=function(a,d){return new Lo(this.gb,this.hd,d)},Lo.kb=!0,Lo.jb="cljs.core.async/t54443",Lo.xb=function(a,d){return Jb(d,"cljs.core.async/t54443")});return new Lo(a,$o,sd)})(function(){return null});var ap,bp,cp;function dp(){return u(ap)?Aa(ap.isClean.call(ap)):null}function ep(b){window.setTimeout(function(){var a=Vc.h(M.e?M.e(Qo):M.call(null,Qo),kj,b);return ze.c?ze.c(Qo,a):ze.call(null,Qo,a)},0)}
 function fp(){var b=bp,a=null==ap?null:ap.getValue.call(ap);ep("");try{Mo(a);var c=window.opener.faceboardApplyJSON;if(u(c)){var d;d=JSON.stringify(Hg(new W(null,2,5,X,[b,a],null)),null,2);c.e?c.e(d):c.call(null,d)}return ap.markClean.call(ap)}catch(e){if(e instanceof Object)return ep("The JSON is malformed!"),Do.j(Q([e],0));throw e;}}function gp(b){if(null!=ap){var a=ap.getCursor.call(ap);ap.setValue.call(ap,b);u(a)&&ap.setCursor.call(ap,a);ap.markClean.call(ap)}}
 function hp(b){return V.c(y,Ke.c("/",De.c(function(a){return Hg(a)},b)))}function ip(b){var a=hp(bp),c=hp(bi.e(b));b=Gj.e(b);var d;d=null==ap?null:ap.getValue.call(ap);d=u(d)?d:b;var e=dp();return u(e)?L.c(a,c)&&!L.c(d,b):e}function jp(b,a){b.preventDefault();return u(a)?!0===confirm("Really overwrite external changes? This is most likely not a good idea.")?fp():null:fp()}
 var kp=new W(null,1,5,X,[new W(null,3,5,X,[new td(null,new t(null,2,[va,null,Li,null],null),null),new td(null,new t(null,2,[Ki,null,Li,null],null),null),Ei],null)],null);function lp(b,a){var c=S.h(a,0,null),d=S.h(a,1,null),e=S.h(a,2,null),c=u(Po)?L.c(b,c):Po,d=u(c)?c:Aa(Po)&&L.c(b,d);return u(d)?e:null}function mp(b){return Ka.h(function(a,c){return Rc.c(a,lp(b,c))},vd,kp)}
 var np=new W(null,2,5,X,[El(el,new C(null,"data","data",1407862150,null)),El(el,new C(null,"owner","owner",1247919588,null))],null),op=cl(np),pp=cl(el),qp=function(b,a,c,d,e){return function g(k,l){var m=b.Ea();if(u(m)){var n=new W(null,2,5,X,[k,l],null),p=d.e?d.e(n):d.call(null,n);if(u(p))throw Qg.c(Hk.j("Input to %s does not match schema: %s",Q([new C(null,"editor-component","editor-component",1191234199,null),Ae.j(Q([p],0))],0)),new t(null,4,[Nj,p,di,n,$g,c,ui,yh],null));}n=function(){for(;;)return"undefined"===
-typeof cp&&(cp=function(a,b,c,d,e,g,k,l,m,n,p,wb){this.Dc=a;this.Vb=b;this.data=c;this.Vd=d;this.Yd=e;this.ed=g;this.Bb=k;this.Ec=l;this.Ab=m;this.md=n;this.jd=p;this.qd=wb;this.C=0;this.o=393216},cp.prototype.Ub=!0,cp.prototype.Jb=function(){return function(){return"editor-component"}}(m,b,a,c,d,e),cp.prototype.yd=!0,cp.prototype.jc=function(a,b,c,d,e,g){return function(){var k=this,l=function(){var a=yo.c(k.Vb,"host"),b={lineWrapping:!0,gutters:["CodeMirror-linenumbers","CodeMirror-foldgutter"],
+typeof cp&&(cp=function(a,b,c,d,e,g,k,l,m,n,p,wb){this.Ec=a;this.Vb=b;this.Yd=c;this.Dc=d;this.data=e;this.Vd=g;this.md=k;this.ed=l;this.Bb=m;this.Ab=n;this.jd=p;this.qd=wb;this.C=0;this.o=393216},cp.prototype.Ub=!0,cp.prototype.Jb=function(){return function(){return"editor-component"}}(m,b,a,c,d,e),cp.prototype.yd=!0,cp.prototype.jc=function(a,b,c,d,e,g){return function(){var k=this,l=function(){var a=yo.c(k.Vb,"host"),b={lineWrapping:!0,gutters:["CodeMirror-linenumbers","CodeMirror-foldgutter"],
 foldGutter:!0,matchBrackets:!0,smartIndent:!0,value:Te.h(k.data,new W(null,2,5,X,[Aj,Gj],null),""),mode:{json:!0,name:"javascript"},lint:!0,"viewportMargin:":Infinity,lineNumbers:!0,styleActiveLine:!0,autoCloseBrackets:!0};return CodeMirror(a,b)}(),m=l.defaultCharWidth.call(l);l.on.call(l,"renderLine",function(a,b,c,d,e,g,k,l,m,n){return function(p,r,w){var z=function(){return function(a,b){var c=(new RegExp(a,"g")).exec(b);return u(c)?R(c[0]):0}}(a,b,c,d,e,g,k,l,m,n);r=r.text;p=p.getOption.call(p,
 "tabSize");p=CodeMirror.countColumn.call(CodeMirror,r,null,p)*b;z=z('".*"\\: "',r);z=p+z*b;w.style.textIndent=[y("-"),y(z),y("px")].join("");return w.style.paddingLeft=[y(c+z),y("px")].join("")}}(l,m,4,this,a,b,c,d,e,g));return ap=l}}(m,b,a,c,d,e),cp.prototype.Kb=!0,cp.prototype.Lb=function(a,b,c,d,e,g){return function(){var k=this,l=this,m=k.data,n=hp(bi.e(m)),p=Gj.e(m),wb=dp(),ka=ip(m);u(wb)||(gp(p),bp=bi.e(m));return V.h(React.DOM.div,{className:Fk([y("editor"),y(u(ka)?" danger":null),y(u(wb)?
 " unsaved":null)].join(""))},Qe(new W(null,4,5,X,[V.h(React.DOM.div,{className:"info"},Qe(new W(null,1,5,X,[V.h(React.DOM.div,{className:"path-row"},Qe(new W(null,2,5,X,["JSON PATH: ",V.h(React.DOM.span,{className:"path"},Qe(new W(null,1,5,X,[n],null)))],null)))],null))),function(){var k={onKeyDown:Fk(function(a,b,c,d,e){return function(a){return u(Ei.e(mp(Yo(a))))?jp(a,e):null}}(m,n,p,wb,ka,l,a,b,c,d,e,g)),className:"editor-host",ref:"host"};return React.DOM.div(k)}(),V.h(React.DOM.div,{className:"docs"},
 Qe(new W(null,2,5,X,["docs: ",React.DOM.a({href:"https://github.com/darwin/faceboard/wiki/format",target:"_blank"},"https://github.com/darwin/faceboard/wiki/format")],null))),V.h(React.DOM.div,{className:"buttons"},Qe(new W(null,2,5,X,[V.h(React.DOM.div,{onClick:Fk(function(a,b,c,d,e){return function(a){return jp(a,e)}}(m,n,p,wb,ka,l,a,b,c,d,e,g)),title:"Save model and update the app.",className:"button hint"},Qe(new W(null,1,5,X,[u(Po)?"save (CMD+S)":"save (CTRL+S)"],null))),u(ka)?function(){ep("Someone else just modified this data behind your back!");
 var Ca={onClick:Fk(function(a,b,c){return function(){gp(c);var a=k.Vb;if(!u(Un(a)))throw Error([y("Assert failed: "),y(Ae.j(Q([Pd(new C(null,"component?","component?",2048315517,null),new C(null,"owner","owner",1247919588,null))],0)))].join(""));return Ao.c(a,Dd)}}(m,n,p,wb,ka,l,a,b,c,d,e,g)),title:"This will throw away your changes since last save.",className:"button refresh"};return React.DOM.div(Ca,"discard my changes")}():null],null)))],null)))}}(m,b,a,c,d,e),cp.prototype.I=function(){return function(){return this.qd}}(m,
-b,a,c,d,e),cp.prototype.K=function(){return function(a,b){return new cp(this.Dc,this.Vb,this.data,this.Vd,this.Yd,this.ed,this.Bb,this.Ec,this.Ab,this.md,this.jd,b)}}(m,b,a,c,d,e),cp.kb=!0,cp.jb="editor.views.editor/t50935",cp.xb=function(){return function(a,b){return Jb(b,"editor.views.editor/t50935")}}(m,b,a,c,d,e)),new cp(k,l,k,e,a,g,m,l,b,c,d,null)}();if(u(m)&&(p=e.e?e.e(n):e.call(null,n),u(p)))throw Qg.c(Hk.j("Output of %s does not match schema: %s",Q([new C(null,"editor-component","editor-component",
+b,a,c,d,e),cp.prototype.K=function(){return function(a,b){return new cp(this.Ec,this.Vb,this.Yd,this.Dc,this.data,this.Vd,this.md,this.ed,this.Bb,this.Ab,this.jd,b)}}(m,b,a,c,d,e),cp.kb=!0,cp.jb="editor.views.editor/t51064",cp.xb=function(){return function(a,b){return Jb(b,"editor.views.editor/t51064")}}(m,b,a,c,d,e)),new cp(l,l,a,k,k,e,c,g,m,b,d,null)}();if(u(m)&&(p=e.e?e.e(n):e.call(null,n),u(p)))throw Qg.c(Hk.j("Output of %s does not match schema: %s",Q([new C(null,"editor-component","editor-component",
 1191234199,null),Ae.j(Q([p],0))],0)),new t(null,4,[Nj,p,di,n,$g,a,ui,yh],null));return n}}(Vk,el,np,op,pp);Tk(qp,Jl(el,new W(null,1,5,X,[np],null)));var rp,sp=new W(null,3,5,X,[El(el,new C(null,"data","data",1407862150,null)),El(el,new C(null,"_","_",-1201019570,null)),El(el,new C(null,"_","_",-1201019570,null))],null),tp=cl(sp),up=cl(el),vp=function(b,a,c,d,e){return function g(k,l,m){var n=b.Ea();if(u(n)){var p=new W(null,3,5,X,[k,l,m],null),r=d.e?d.e(p):d.call(null,p);if(u(r))throw Qg.c(Hk.j("Input to %s does not match schema: %s",Q([new C(null,"main-component","main-component",-40016256,null),Ae.j(Q([r],0))],0)),new t(null,4,[Nj,r,di,p,$g,
-c,ui,yh],null));}p=function(){for(;;)return"undefined"===typeof rp&&(rp=function(a,b,c,d,e,g,k,l,m,n,p,r,Ca){this.pd=a;this.Fc=b;this.data=c;this.Hc=d;this.xa=e;this.Wd=g;this.Zd=k;this.Bb=l;this.nd=m;this.Gc=n;this.Ab=p;this.kd=r;this.rd=Ca;this.C=0;this.o=393216},rp.prototype.Ub=!0,rp.prototype.Jb=function(){return function(){return"main-component"}}(n,b,a,c,d,e),rp.prototype.Kb=!0,rp.prototype.Lb=function(){return function(){var a;try{var b=window.opener.faceboardApplyJSON;u(b)&&Co.j(Q(["apply-fn",
+c,ui,yh],null));}p=function(){for(;;)return"undefined"===typeof rp&&(rp=function(a,b,c,d,e,g,k,l,m,n,p,r,Ca){this.kd=a;this.pd=b;this.Hc=c;this.data=d;this.Gc=e;this.xa=g;this.Wd=k;this.Fc=l;this.Bb=m;this.Zd=n;this.nd=p;this.Ab=r;this.rd=Ca;this.C=0;this.o=393216},rp.prototype.Ub=!0,rp.prototype.Jb=function(){return function(){return"main-component"}}(n,b,a,c,d,e),rp.prototype.Kb=!0,rp.prototype.Lb=function(){return function(){var a;try{var b=window.opener.faceboardApplyJSON;u(b)&&Co.j(Q(["apply-fn",
 b],0));a=!1}catch(c){if(c instanceof Object)Eo.j(Q(["disable the popup blocker"],0)),a=!0;else throw c;}return Aa(a)?V.h(React.DOM.div,{className:"editor-main"},Qe(new W(null,2,5,X,[vo.c(qp,Aj.e(this.data)),vo.c(Ko,kj.e(this.data))],null))):V.h(React.DOM.div,{className:"editor-main"},Qe(new W(null,1,5,X,[V.h(React.DOM.div,{className:"warning"},Qe(new W(null,8,5,X,["Please disable popup blocking for this domain.",React.DOM.br(null),""+y(location.host),React.DOM.br(null),React.DOM.br(null),"Then ",
-React.DOM.a({href:"javascript:window.close()"},"close this popup")," and then open Faceboard Editor again."],null)))],null)))}}(n,b,a,c,d,e),rp.prototype.I=function(){return function(){return this.rd}}(n,b,a,c,d,e),rp.prototype.K=function(){return function(a,b){return new rp(this.pd,this.Fc,this.data,this.Hc,this.xa,this.Wd,this.Zd,this.Bb,this.nd,this.Gc,this.Ab,this.kd,b)}}(n,b,a,c,d,e),rp.kb=!0,rp.jb="editor.views.main/t50982",rp.xb=function(){return function(a,b){return Jb(b,"editor.views.main/t50982")}}(n,
-b,a,c,d,e)),new rp(g,k,k,m,m,e,a,n,c,l,b,d,null)}();if(u(n)&&(r=e.e?e.e(p):e.call(null,p),u(r)))throw Qg.c(Hk.j("Output of %s does not match schema: %s",Q([new C(null,"main-component","main-component",-40016256,null),Ae.j(Q([r],0))],0)),new t(null,4,[Nj,r,di,p,$g,a,ui,yh],null));return p}}(Vk,el,sp,tp,up);Tk(vp,Jl(el,new W(null,1,5,X,[sp],null)));oa=function(){function b(b){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return a.call(this,d)}function a(a){return console.log.apply(console,La.e?La.e(a):La.call(null,a))}b.v=0;b.l=function(b){b=E(b);return a(b)};b.j=a;return b}();
+React.DOM.a({href:"javascript:window.close()"},"close this popup")," and then open Faceboard Editor again."],null)))],null)))}}(n,b,a,c,d,e),rp.prototype.I=function(){return function(){return this.rd}}(n,b,a,c,d,e),rp.prototype.K=function(){return function(a,b){return new rp(this.kd,this.pd,this.Hc,this.data,this.Gc,this.xa,this.Wd,this.Fc,this.Bb,this.Zd,this.nd,this.Ab,b)}}(n,b,a,c,d,e),rp.kb=!0,rp.jb="editor.views.main/t51111",rp.xb=function(){return function(a,b){return Jb(b,"editor.views.main/t51111")}}(n,
+b,a,c,d,e)),new rp(d,g,m,k,l,m,e,k,n,a,c,b,null)}();if(u(n)&&(r=e.e?e.e(p):e.call(null,p),u(r)))throw Qg.c(Hk.j("Output of %s does not match schema: %s",Q([new C(null,"main-component","main-component",-40016256,null),Ae.j(Q([r],0))],0)),new t(null,4,[Nj,r,di,p,$g,a,ui,yh],null));return p}}(Vk,el,sp,tp,up);Tk(vp,Jl(el,new W(null,1,5,X,[sp],null)));oa=function(){function b(b){var d=null;if(0<arguments.length){for(var d=0,e=Array(arguments.length-0);d<e.length;)e[d]=arguments[d+0],++d;d=new F(e,0)}return a.call(this,d)}function a(a){return console.log.apply(console,La.e?La.e(a):La.call(null,a))}b.v=0;b.l=function(b){b=E(b);return a(b)};b.j=a;return b}();
 (function(b,a,c){var d=ld(c)?V.c(we,c):c,e=U.c(d,Hj),f=U.c(d,Yh),g=U.c(d,ih),k=U.c(d,wh),l=U.c(d,Ug),m=U.c(d,wk),n=U.c(d,Yj);if(!nd(b))throw Error([y("Assert failed: "),y("First argument must be a function"),y("\n"),y(Ae.j(Q([Pd(new C(null,"ifn?","ifn?",-2106461064,null),new C(null,"f","f",43394975,null))],0)))].join(""));if(null==n)throw Error([y("Assert failed: "),y("No target specified to om.core/root"),y("\n"),y(Ae.j(Q([Pd(new C(null,"not","not",1044554643,null),Pd(new C(null,"nil?","nil?",1612038930,
 null),new C(null,"target","target",1893533248,null)))],0)))].join(""));var p=M.e?M.e(qo):M.call(null,qo);pd(p,n)&&U.c(p,n).call(null);p=Bg.t();a=(a?a.C&16384||a.fe||(a.C?0:v(Zb,a)):v(Zb,a))?a:ye.e?ye.e(a):ye.call(null,a);var r=wo(a,p,m),w=u(f)?f:Dd,z=Wc.j(d,Yj,Q([wk,Ug,Yh,Hj],0)),D=ye.e?ye.e(null):ye.call(null,null),H=function(a,c,d,e,f,g,k,l,m,n,p,r,w,z,D,H){return function Ab(){Be.h(oo,$c,Ab);var c=M.e?M.e(d):M.call(null,d),k=function(){var b=xo(null==z?Gn.h(c,d,Qc):Gn.h(Te.c(c,z),d,z),a);return e.e?
 e.e(b):e.call(null,b)}();if(!u(On(d,a,Hh))){var l=Bk(function(){var c=Pm,e=Om,g=Qm,l=Rm;Pm=r;Om=w;Qm=d;Rm=a;try{return vo.h(b,k,f)}finally{Rm=l,Qm=g,Om=e,Pm=c}}(),H);null==(M.e?M.e(g):M.call(null,g))&&(ze.c?ze.c(g,l):ze.call(null,g,l))}l=wn(d);yn(d);if(!ad(l))for(var l=E(l),m=null,n=0,p=0;;)if(p<n){var D=m.Q(null,p);if(u(D.isMounted())){var N=D.state.__om_next_cursor;u(N)&&(D.props.__om_cursor=N,D.state.__om_next_cursor=null);u(function(){var a=Vn(D);return(a=!(a?u(u(null)?null:a.wd)||(a.R?0:v(qn,
