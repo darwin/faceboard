@@ -136,6 +136,7 @@
                              (anim-class expansion-anim " expanding")
                              (anim-class shrinking-anim " shrinking")
                              (when extended? " extended")
+                             (when (:extended? data) " top-z")
                              (if filtered? " filtered" " expandable"))
                 :style     {:transform transform}
                 :data-fbid id

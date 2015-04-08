@@ -14,9 +14,48 @@
      (>> people-layout
        (>> person-card
          [:position :absolute
-          :transition (str "all 1s " ease-in-out-cubic)])
-       (>> person-card-zoom
-         [:transition (str "all 0.3s " ease-out-back)]))
+          :z-index 10
+          :transition (str "transform 1s " ease-in-out-cubic)]
+         (>> person-card-zoom
+           [:transition (str "transform 0.3s " ease-out-back)])
+         (>> &.filtered
+           [:opacity 0.2
+            :z-index 0])
+         (>> &.expandable
+           [:cursor :pointer])
+         ; zoom-in animation
+         (>> &.extended
+           [:z-index 15])
+         (>> &.top-z
+           [:z-index 20])
+         ; expanding animation
+         (>> &.expanding
+           (>> [person right-part]
+             [:transition (str "all " (ms person-expanding-sliding-delay) " " ease-in-quit)])
+           (>> polaroid-frame
+             [:transition (str "transform " (ms person-expanding-rotation-delay) " " ease-out-quit)]))
+         (>> &.expanding-phase0
+           (>> [person right-part]
+             [:width "0px"
+              :visibility :hidden]))
+         (>> &.expanding-phase1
+           (>> [person right-part]
+             [:width "300px"]))
+         ; shrinking animation
+         (>> &.shrinking
+           (>> [person right-part]
+             [:transition (str "all " (ms person-shrinking-sliding-delay) " " ease-in-quit)])
+           (>> polaroid-frame
+             [:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)]))
+         (>> &.shrinking-phase0
+           (>> [person right-part]
+             [:width (px 300)]))
+         (>> &.shrinking-phase1
+           (>> [person right-part]
+             [:width (px 0)]))
+         (>> &.shrinking-phase2
+           (>> [person right-part]
+             [:visibility :hidden]))))
      (>> people-desk
        [:background-color people-desk-background-color])
      (>> people-filters
@@ -112,45 +151,8 @@
        [:position :relative
         :float :left
         :margin (px 20 20)
-        :z-index 10
         :opacity 1
-        :transform-style :preserve-3d]
-       (>> &.filtered
-         [:opacity 0.2
-          :z-index 0])
-       (>> &.expandable
-         [:cursor :pointer])
-       ; zoom-in animation
-       (>> &.extended
-         [:z-index 20])
-       ; expanding animation
-       (>> &.expanding
-         (>> [person right-part]
-           [:transition (str "all " (ms person-expanding-sliding-delay) " " ease-in-quit)])
-         (>> polaroid-frame
-           [:transition (str "transform " (ms person-expanding-rotation-delay) " " ease-out-quit)]))
-       (>> &.expanding-phase0
-         (>> [person right-part]
-           [:width "0px"
-            :visibility :hidden]))
-       (>> &.expanding-phase1
-         (>> [person right-part]
-           [:width "300px"]))
-       ; shrinking animation
-       (>> &.shrinking
-         (>> [person right-part]
-           [:transition (str "all " (ms person-shrinking-sliding-delay) " " ease-in-quit)])
-         (>> polaroid-frame
-           [:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)]))
-       (>> &.shrinking-phase0
-         (>> [person right-part]
-           [:width (px 300)]))
-       (>> &.shrinking-phase1
-         (>> [person right-part]
-           [:width (px 0)]))
-       (>> &.shrinking-phase2
-         (>> [person right-part]
-           [:visibility :hidden])))
+        :transform-style :preserve-3d])
      (>> polaroid-frame
        [:transform-origin "70px 80px"
         :background-color "#f6f6f6"
