@@ -345,8 +345,9 @@
         (dom/div {:class "people-desk clearfix"}
           (for [item sorted-people-ordered-by-filter]
             (let [person (:person item)
+                  person-id (:id person)
                   data {:person    person
-                        :extended? (contains? extended-set (:id person))
+                        :extended? (contains? extended-set person-id)
                         :filtered? (:filtered? item)
                         :anim      (:person anims)}]
-              (om/build person-component data))))))))
+              (om/build person-component data {:react-key person-id}))))))))
