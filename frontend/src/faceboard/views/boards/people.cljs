@@ -322,7 +322,7 @@
                     (build-socials-filter-predicate active-filters)]]
     (remove nil? predicates)))
 
-(defcomponent people-component [data _ _]
+(defcomponent people-desk-component [data _ _]
   (render [_]
     (let [{:keys [ui anims]} data
           people (get-in data [:content :people])
@@ -340,14 +340,18 @@
                                                     :filtered? (not (every? true? (map #(% person) filter-predicates)))))
                                              sorted-people)
           sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
-      (dom/div {:class "no-select"}
-        (om/build filters-component data)
-        (dom/div {:class "people-desk clearfix"}
-          (for [item sorted-people-ordered-by-filter]
-            (let [person (:person item)
-                  person-id (:id person)
-                  data {:person    person
-                        :extended? (contains? extended-set person-id)
-                        :filtered? (:filtered? item)
-                        :anim      (:person anims)}]
-              (om/build person-component data {:react-key person-id}))))))))
+      (dom/div {:class "people-desk clearfix"}
+        (for [item sorted-people-ordered-by-filter]
+          (let [person (:person item)
+                person-id (:id person)
+                data {:person    person
+                      :extended? (contains? extended-set person-id)
+                      :filtered? (:filtered? item)
+                      :anim      (:person anims)}]
+            (om/build person-component data {:react-key person-id})))))))
+
+(defcomponent people-component [data _ _]
+  (render [_]
+    (dom/div {:class "no-select"}
+      (om/build filters-component data)
+      (om/build people-desk-component data))))
