@@ -8,7 +8,7 @@
             [faceboard.router :as router]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
-            [faceboard.helpers.utils :refer [non-sanitized-div]]
+            [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
             [faceboard.helpers.filters.groups :refer [build-groups-tally groups-filter-predicate]]
             [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]
             [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
@@ -90,10 +90,7 @@
           photo-rotation (str "rotate(" angle "deg)")]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
-                  :style {:transform         photo-rotation
-                          :-webkit-transform photo-rotation ; TODO: solve this prefixing hell somehow
-                          :-moz-transform    photo-rotation
-                          :-ms-transform     photo-rotation}}
+                  :style (css-transform photo-rotation)}
           (dom/div {:class "left-part"}
             (dom/div {:class (str "photo" (when (get-in bio [:photo :no-frame] false) " no-frame"))}
               (dom/img {:src (or (get-in bio [:photo :url] nil) "/images/unknown.jpg")}))
@@ -138,14 +135,14 @@
                              (when extended? " extended")
                              (when (:extended? data) " top-z")
                              (if filtered? " filtered" " expandable"))
-                :style     {:transform transform}
+                :style     (css-transform transform)
                 :data-fbid id
                 :on-click  (when interactive?
                              (fn [e]
                                (.stopPropagation e)
                                (router/switch-person (if-not extended? id nil))))}
         (dom/div {:class (str "person-card-zoom")
-                  :style {:transform zoom-transform}}
+                  :style (css-transform zoom-transform)}
           (when layout
             (dom/div {:class "person-extended-wrapper"}
               (om/build person-info-component {:hide?     (not extended?)

@@ -13,3 +13,9 @@
 
 (defn find-first [f coll]
   (first (filter f coll)))
+
+(defn css-transform [transform]
+  {:transform         transform
+   :-webkit-transform transform
+   :-moz-transform    transform
+   :-ms-transform     transform})
