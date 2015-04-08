@@ -9,6 +9,14 @@
       :padding-right (px 280)                               ; leave room for expanded cards
       :perspective (px 1000)
       :perspective-origin "50% 50%"]
+     (>> people-scaffold
+       [:visibility :hidden])
+     (>> people-layout
+       (>> person-card
+         [:position :absolute
+          :transition (str "all 1s " ease-in-out-cubic)])
+       (>> person-card-zoom
+         [:transition (str "all 0.3s " ease-out-back)]))
      (>> people-desk
        [:background-color people-desk-background-color])
      (>> people-filters
@@ -105,21 +113,16 @@
         :float :left
         :margin (px 20 20)
         :z-index 10
-        :transition "opacity .3s ease-in-out"
         :opacity 1
-        :transform-style :preserve-3d
-        :transition (str "transform 0.5s " ease-out-back)
-        :transform "translateZ(-100px)"]
+        :transform-style :preserve-3d]
        (>> &.filtered
          [:opacity 0.2
-          :z-index 0
-          :transform "translateZ(-300px)"])
+          :z-index 0])
        (>> &.expandable
          [:cursor :pointer])
        ; zoom-in animation
        (>> &.extended
-         [:z-index 20
-          :transform "translateZ(0px)"])
+         [:z-index 20])
        ; expanding animation
        (>> &.expanding
          (>> [person right-part]

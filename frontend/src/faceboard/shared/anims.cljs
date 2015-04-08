@@ -5,6 +5,7 @@
 (def ease-out-back "cubic-bezier(0.175, 0.885, 0.32, 1.275)")
 (def ease-in-quit "cubic-bezier(0.755, 0.05, 0.855, 0.06)")
 (def ease-out-quit "cubic-bezier(0.23, 1, 0.32, 1)")
+(def ease-in-out-cubic "cubic-bezier(0.645, 0.045, 0.355, 1)")
 (def ease-in-cubic "cubic-bezier(0.55, 0.055, 0.675, 0.19)")
 
 (def person-expanding-rotation-delay 300)

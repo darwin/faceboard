@@ -115,31 +115,46 @@
 
 (defcomponent person-component [data _ _]
   (render [_]
-    (let [{:keys [person filtered?]} data
+    (let [{:keys [person filtered? layout]} data
           id (:id person)
           expansion-anim (anims/person-expanding id)
           shrinking-anim (anims/person-shrinking id)
+          interactive? (and layout (not filtered?))
           extended? (and
                       (not filtered?)
-                      (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1)))]
-      (dom/div {:class    (str "person-card"
-                            (anim-class expansion-anim " expanding")
-                            (anim-class shrinking-anim " shrinking")
-                            (when extended? " extended")
-                            (if filtered? " filtered" " expandable"))
-                :on-click (when-not filtered?
-                            (fn [e]
-                              (.stopPropagation e)
-                              (router/switch-person (if-not extended? id nil))))}
-        (dom/div {:class "person-extended-wrapper"}
-          (om/build person-info-component {:hide?     (not extended?)
-                                           :extended? extended?
-                                           :id        id
-                                           :person    person}))
-        (dom/div {:class "person-essentials-wrapper"}
-          (om/build person-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
-                                           :id     id
-                                           :person person}))))))
+                      (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1)))
+          transform (when layout
+                      (str
+                        "translateX(" (:left layout) "px)"
+                        "translateY(" (:top layout) "px)"
+                        "translateZ(" (if filtered? -500 -100) "px)"))
+          zoom-transform (when layout
+                           (str
+                             "translateZ(" (if extended? 100 0) "px)"))]
+      (dom/div {:class     (str "person-card"
+                             (when layout " has-layout")
+                             (anim-class expansion-anim " expanding")
+                             (anim-class shrinking-anim " shrinking")
+                             (when extended? " extended")
+                             (if filtered? " filtered" " expandable"))
+                :style     {:transform transform}
+                :data-fbid id
+                :on-click  (when interactive?
+                             (fn [e]
+                               (.stopPropagation e)
+                               (router/switch-person (if-not extended? id nil))))}
+        (dom/div {:class (str "person-card-zoom")
+                  :style {:transform zoom-transform}}
+          (when layout
+            (dom/div {:class "person-extended-wrapper"}
+              (om/build person-info-component {:hide?     (not extended?)
+                                               :extended? extended?
+                                               :id        id
+                                               :person    person})))
+          (dom/div {:class "person-essentials-wrapper"}
+            (om/build person-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
+                                             :id     id
+                                             :person person})))))))
 
 (defcomponent filter-section-label-component [data _ _]
   (render [_]
@@ -322,7 +337,29 @@
                     (build-socials-filter-predicate active-filters)]]
     (remove nil? predicates)))
 
-(defcomponent people-desk-component [data _ _]
+(extend-type js/NodeList
+  ISeqable
+  (-seq [nl] (array-seq nl 0)))
+
+(defn retrieve-card-layout [card]
+  [(.getAttribute card "data-fbid")
+   {:left (.-offsetLeft card)
+    :top  (.-offsetTop card)}])
+
+(defn retrieve-cards-layout [cards]
+  (apply hash-map (mapcat #(retrieve-card-layout %) cards)))
+
+(defn recompute-layout [owner]
+  (let [node (om/get-node owner "desk")
+        cards (.-childNodes node)
+        layout (retrieve-cards-layout cards)]
+    (perform! :people-layout layout)))
+
+(defcomponent people-scaffold-component [data owner _]
+  (did-mount [_]
+    (recompute-layout owner))
+  (did-update [_ _ _]
+    (recompute-layout owner))
   (render [_]
     (let [{:keys [ui anims]} data
           people (get-in data [:content :people])
@@ -340,7 +377,8 @@
                                                     :filtered? (not (every? true? (map #(% person) filter-predicates)))))
                                              sorted-people)
           sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
-      (dom/div {:class "people-desk clearfix"}
+      (dom/div {:class "people-desk people-scaffold clearfix"
+                :ref   "desk"}
         (for [item sorted-people-ordered-by-filter]
           (let [person (:person item)
                 person-id (:id person)
@@ -350,8 +388,28 @@
                       :anim      (:person anims)}]
             (om/build person-component data {:react-key person-id})))))))
 
+(defcomponent people-layout-component [data _ _]
+  (render [_]
+    (let [{:keys [ui anims]} data
+          extended-set (:extended-set ui)
+          people (get-in data [:content :people])
+          layout (get-in ui [:people :layout])
+          active-filters (get-in ui [:filters :active])
+          filter-predicates (build-filter-predicates active-filters data)]
+      (dom/div {:class "people-desk people-layout clearfix"}
+        (when layout
+          (for [person people]
+            (let [person-id (:id person)
+                  data {:person    person
+                        :layout    (get layout person-id)
+                        :extended? (contains? extended-set person-id)
+                        :filtered? (not (every? true? (map #(% person) filter-predicates)))
+                        :anim      (:person anims)}]
+              (om/build person-component data {:react-key person-id}))))))))
+
 (defcomponent people-component [data _ _]
   (render [_]
     (dom/div {:class "no-select"}
       (om/build filters-component data)
-      (om/build people-desk-component data))))
+      (om/build people-layout-component data)
+      (om/build people-scaffold-component data))))

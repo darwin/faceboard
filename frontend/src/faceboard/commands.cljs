@@ -181,3 +181,7 @@
 
 (defmethod handle-command :refresh-editor []
   (editor/refresh-editor))
+
+(defmethod handle-command :people-layout [_ layout]
+  (transform-app-state
+    (model/set [:ui :people :layout] layout)))
