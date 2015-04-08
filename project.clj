@@ -75,6 +75,7 @@
                                        :output-to     "resources/public/_generated/prod/faceboard/faceboard.js"
                                        :output-dir    "resources/public/_generated/prod/faceboard/"
                                        :preamble      ["public/js/platform.js"
+                                                       "public/js/delegate.js"
                                                        "public/js/prefixfree.min.js"
                                                        ]}}
 
@@ -85,6 +86,7 @@
                                        :output-to     "resources/public/_generated/prod/editor/editor.js"
                                        :output-dir    "resources/public/_generated/prod/editor/"
                                        :preamble      ["public/js/platform.js"
+                                                       "public/js/delegate.js"
                                                        "public/js/prefixfree.min.js"
                                                        "public/codemirror/codemirror.js"
                                                        "public/codemirror/addon/edit/matchbrackets.js"
