@@ -349,17 +349,19 @@
 (defn retrieve-cards-layout [cards]
   (apply hash-map (mapcat #(retrieve-card-layout %) cards)))
 
-(defn recompute-layout [owner]
+(defn recompute-layout [data owner]
   (let [node (om/get-node owner "desk")
         cards (.-childNodes node)
+        old-layout (get-in data [:ui :people :layout])
         layout (retrieve-cards-layout cards)]
-    (perform! :people-layout layout)))
+    (when-not (= (pr-str old-layout) (pr-str layout))
+      (perform! :people-layout layout))))
 
 (defcomponent people-scaffold-component [data owner _]
   (did-mount [_]
-    (recompute-layout owner))
+    (recompute-layout data owner))
   (did-update [_ _ _]
-    (recompute-layout owner))
+    (recompute-layout data owner))
   (render [_]
     (let [{:keys [ui anims]} data
           people (get-in data [:content :people])
