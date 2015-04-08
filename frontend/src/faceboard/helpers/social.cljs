@@ -47,10 +47,15 @@
     "instagram" (str "https://instagram.com/" id)
     nil))
 
+(defn decorate-with-http-if-needed [url]
+  (if (str/starts-with? url "http")
+    url
+    (str "http://" url)))
+
 (defn social->url [[type id]]
   (if (str/starts-with? id "http")
     id
-    (or (build-known-url type id) id)))
+    (or (build-known-url type id) (decorate-with-http-if-needed id))))
 
 (defn social->icon [[type _]]
   (let [prefix-matches (filter #(str/starts-with? % type) known-icons)
