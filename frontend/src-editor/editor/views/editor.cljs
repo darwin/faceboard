@@ -127,7 +127,7 @@
                         :lineWrapping      true
                         :foldGutter        true
                         :gutters           #js ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-                        :viewportMargin:   Infinity})
+                        :viewportMargin    Infinity})
           char-width (.call (aget editor "defaultCharWidth") editor)
           base-padding 4]
       (.call (aget editor "on") editor "renderLine" (fn [cm, line, elt]
