@@ -7,6 +7,7 @@
             [faceboard.shared.anims :as anims]
             [faceboard.router :as router]
             [faceboard.helpers.social :refer [parse-social social-info]]
+            [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
             [faceboard.helpers.filters.groups :refer [build-groups-tally groups-filter-predicate]]
@@ -14,8 +15,7 @@
             [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
             [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]
             [faceboard.helpers.underscore :refer [throttle]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
-            [cemerick.pprng]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defcomponent social-section-item-component [data _ _]
   (render [_]
@@ -28,35 +28,31 @@
 
 (defcomponent social-section-component [data _ _]
   (render [_]
-    (dom/div {:class "extended-info-section social"}
+    (dom/div {:class "extended-info-section social clearfix"}
       (dom/div {:class "info-title"} "social")
-      (om/build-all social-section-item-component data)
-      (dom/div {:class "clear"}))))
+      (om/build-all social-section-item-component data))))
 
 (defcomponent tags-section-item-component [data _ _]
   (render [_]
     (let [tag data]
-      (dom/span {:class "tags-item"}
-        tag))))
+      (dom/span {:class "tags-item"} tag))))
 
 (defcomponent tags-section-component [data _ _]
   (render [_]
-    (dom/div {:class "extended-info-section tags"}
+    (dom/div {:class "extended-info-section tags clearfix"}
       (dom/div {:class "info-title"} "interests")
-      (om/build-all tags-section-item-component data)
-      (dom/div {:class "clear"}))))
+      (om/build-all tags-section-item-component data))))
 
 (defcomponent about-section-component [data _ _]
   (render [_]
-    (dom/div {:class "extended-info-section about"}
+    (dom/div {:class "extended-info-section about clearfix"}
       (dom/div {:class "info-title"} "about")
-      (non-sanitized-div (:about data))
-      (dom/div {:class "clear"}))))
+      (non-sanitized-div (:about data)))))
 
 (defcomponent contact-section-component [data _ _]
   (render [_]
     (let [{:keys [phone email]} data]
-      (dom/div {:class "extended-info-section contact"}
+      (dom/div {:class "extended-info-section contact clearfix"}
         (dom/div {:class "info-title"} "contact")
         (when email
           (dom/div {:class "email"}
@@ -64,8 +60,7 @@
         (when phone
           (dom/div {:class "phone"}
             (dom/span {} "phone: ")
-            (dom/span {:class "number"} phone)))
-        (dom/div {:class "clear"})))))
+            (dom/span {:class "number"} phone)))))))
 
 (defcomponent person-extended-info-component [data _ _]
   (render [_]
@@ -82,22 +77,18 @@
 
 (defcomponent person-info-component [data _ _]
   (render [_]
-    (let [{:keys [person id extended?]} data
-          bio (:bio person)
-          random-generator (cemerick.pprng/rng (hash id))
-          angle (or (get-in bio [:photo :angle]) (- (cemerick.pprng/int random-generator 20) 10))
-          country-code (:country bio)
-          country-name (lookup-country-name country-code)
-          photo-rotation (str "rotate(" angle "deg)")]
+    (let [{:keys [person extended?]} data
+          country-code (person/country-code person)
+          country-name (person/country-name person)]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
-                  :style (css-transform photo-rotation)}
+                  :style (css-transform (str "rotate(" (person/photo-angle person) "deg)"))}
           (dom/div {:class "left-part"}
-            (dom/div {:class (str "photo" (when (get-in bio [:photo :no-frame] false) " no-frame"))}
-              (dom/img {:src (or (get-in bio [:photo :url] nil) "/images/unknown.jpg")}))
+            (dom/div {:class (str "photo" (when-not (person/photo-has-frame? person) " no-frame"))}
+              (dom/img {:src (person/photo-url person)}))
             (dom/div {:class "name f16"
-                      :title (:full-name bio)}
-              (:name bio)
+                      :title (person/full-name person)}
+              (person/name person)
               (when-not (nil? country-code)
                 (dom/div {:class (str "flag " country-code)
                           :title country-name}))))
@@ -378,10 +369,7 @@
     (throttled-recompute-layout (om/get-node owner "desk") data))
   (render [_]
     (let [people (get-in data [:content :people])
-          people-comparator (fn [p1 p2]
-                              (let [name1 (str (get-in p1 [:bio :name]))
-                                    name2 (str (get-in p2 [:bio :name]))]
-                                (compare name1 name2)))
+          people-comparator #(compare (person/name %) (person/name %2))
           sorted-people (sort people-comparator people)
           active-filters (get-in data [:ui :filters :active])
           filter-predicates (build-filter-predicates active-filters data)
