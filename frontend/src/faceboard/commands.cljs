@@ -182,6 +182,6 @@
 (defmethod handle-command :refresh-editor []
   (editor/refresh-editor))
 
-(defmethod handle-command :people-layout [_ layout]
+(defmethod handle-command :update-people-layout [_ tab-id layout]
   (transform-app-state
-    (model/set [:ui :people :layout] layout)))
+    (model/set [:transient tab-id :layout] layout)))

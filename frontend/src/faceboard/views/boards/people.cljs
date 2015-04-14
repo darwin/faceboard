@@ -13,6 +13,7 @@
             [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]
             [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
             [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]
+            [faceboard.helpers.underscore :refer [throttle]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cemerick.pprng]))
 
@@ -346,32 +347,35 @@
   (first (filter #(= id (:id %)) people)))
 
 (defn retrieve-card-layout [people filter-predicates card]
-  (let [person-id (.getAttribute card "data-fbid")
-        person (lookup-person people person-id)]
-    [person-id
-     {:left (.-offsetLeft card)
-      :top  (.-offsetTop card)
-      :z    (if (is-person-filtered? person filter-predicates) -500 -100)}]))
+  (if-let [person-id (.getAttribute card "data-fbid")]
+    (let [person (lookup-person people person-id)]
+      [person-id
+       {:left (.-offsetLeft card)
+        :top  (.-offsetTop card)
+        :z    (if (is-person-filtered? person filter-predicates) -500 -100)}])))
 
 (defn retrieve-cards-layout [people filter-predicates cards]
   (apply hash-map (mapcat #(retrieve-card-layout people filter-predicates %) cards)))
 
-(defn recompute-layout [data owner]
-  (let [node (om/get-node owner "desk")
-        cards (.-childNodes node)
+(defn recompute-layout [node data]
+  (let [cards (.-childNodes node)
         active-filters (get-in data [:ui :filters :active])
         filter-predicates (build-filter-predicates active-filters data)
         people (get-in data [:content :people])
-        old-layout (get-in data [:ui :people :layout])
+        old-layout (get-in data [:transient :layout])
         layout (retrieve-cards-layout people filter-predicates cards)]
     (when-not (= (pr-str old-layout) (pr-str layout))
-      (.setTimeout js/window #(perform! :people-layout layout) 200))))
+      (.setTimeout js/window #(perform! :update-people-layout (:id data) layout) 200))))
+
+(def throttled-recompute-layout (throttle recompute-layout 1000))
 
 (defcomponent people-scaffold-component [data owner _]
   (did-mount [_]
-    (recompute-layout data owner))
+    (let [node (om/get-node owner "desk")
+          addResizeListener (aget js/window "addResizeListener")]
+      (.call addResizeListener js/window node #(throttled-recompute-layout node data))))
   (did-update [_ _ _]
-    (recompute-layout data owner))
+    (throttled-recompute-layout (om/get-node owner "desk") data))
   (render [_]
     (let [people (get-in data [:content :people])
           people-comparator (fn [p1 p2]
@@ -400,10 +404,10 @@
 
 (defcomponent people-layout-component [data _ _]
   (render [_]
-    (let [{:keys [ui anims]} data
+    (let [{:keys [ui anims transient]} data
           extended-set (:extended-set ui)
           people (get-in data [:content :people])
-          layout (get-in ui [:people :layout])
+          layout (get-in transient [:layout])
           active-filters (get-in ui [:filters :active])
           filter-predicates (build-filter-predicates active-filters data)]
       (dom/div {:class "people-desk people-layout clearfix"}
@@ -422,4 +426,4 @@
     (dom/div {:class "no-select"}
       (om/build filters-component data)
       (om/build people-layout-component data)
-      (om/build people-scaffold-component data))))
+      (om/build people-scaffold-component (dissoc data :transient))))) ; transient data would trigger unwanted updates

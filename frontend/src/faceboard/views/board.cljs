@@ -58,11 +58,12 @@
                                                      :ui      ui
                                                      :id      id
                                                      :content (:content selected-tab)
-                                                     :cache   (get-in data [:cache :tabs id])})))))))
+                                                     :cache   (get-in data [:cache :tabs id])
+                                                     :transient (get-in data [:transient id])})))))))
 
 (defcomponent board-component [data _ _]
   (render [_]
-    (let [{:keys [model ui anims cache]} data
+    (let [{:keys [model ui anims cache transient]} data
           {:keys [tabs]} model
           {:keys [selected-tab-id loading?]} ui
           selected-tab (router/lookup-tab selected-tab-id tabs)]
@@ -81,4 +82,5 @@
                                              :anims        anims
                                              :model        model
                                              :cache        cache
+                                             :transient    transient
                                              :selected-tab selected-tab}))))))

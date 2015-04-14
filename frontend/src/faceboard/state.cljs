@@ -16,4 +16,5 @@
                                            :socials   #{}
                                            :tags      #{}}}}
      :anims {}
-     :cache {:tabs {}}}))
+     :cache {:tabs {}}
+     :transient {}}))
