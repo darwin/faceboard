@@ -9,7 +9,6 @@
             [faceboard.views.logo :refer [small-logo-component]]
             [faceboard.views.menu :refer [menu-component]]
             [faceboard.views.boards.people :refer [people-component]]
-            [faceboard.views.boards.places :refer [places-component]]
             [faceboard.views.boards.iframe :refer [iframe-component]]
             [faceboard.views.boards.webget :refer [webget-component]]
             [faceboard.views.boards.gist :refer [gist-component]]
@@ -19,7 +18,6 @@
 (defn- tab->component [tab]
   (condp = (:kind tab)
     "people" people-component
-    "places" places-component
     "iframe" iframe-component
     "webget" webget-component
     "gist" gist-component
