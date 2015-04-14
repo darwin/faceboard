@@ -36,12 +36,12 @@
 (defn photo-displace-x [person]
   (or
     (get-in person [:bio :photo :displace :x])
-    (rng (hash (get-in person [:bio :name])) -10 10)))      ; +/- 10px based on name
+    (rng (hash (get-in person [:bio :name])) 1 -10 10)))      ; +/- 10px based on name
 
 (defn photo-displace-y [person]
   (or
     (get-in person [:bio :photo :displace :y])
-    (rng (hash (get-in person [:bio :name])) -10 10)))      ; +/- 10px based on name
+    (rng (hash (get-in person [:bio :name])) 2 -10 10)))      ; +/- 10px based on name
 
 (defn photo-displace-z [person]
   (or (get-in person [:bio :photo :displace :z]) 0))        ; 0px unless requested by data
