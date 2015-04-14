@@ -1,5 +1,7 @@
 (ns faceboard.helpers.utils
-  (:require [om-tools.dom :as dom]))
+  (:require [om-tools.dom :as dom]
+            [cemerick.pprng :as pprng]
+            [cuerdas.core :as str]))
 
 (defn model->json [model]
   (.stringify js/JSON (clj->js model) nil 2))
@@ -19,3 +21,14 @@
    :-webkit-transform transform
    :-moz-transform    transform
    :-ms-transform     transform})
+
+(defn first-word [string]
+  (let [parts (str/split (str/trim string) #" " 2)]
+    (first parts)))
+
+(defn rng
+  ([seed min max] (let [random-generator (pprng/rng seed)
+                        range (- max min)]
+                    (+ min (pprng/int random-generator range))))
+  ([seed generation min max] (rng (+ seed generation) min max)))
+

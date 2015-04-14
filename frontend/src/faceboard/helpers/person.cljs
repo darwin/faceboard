@@ -1,18 +1,7 @@
 (ns faceboard.helpers.person
   (:refer-clojure :exclude [name])
-  (:require [cuerdas.core :as str]
-            [cemerick.pprng :as pprng]
+  (:require [faceboard.helpers.utils :refer [rng first-word]]
             [faceboard.helpers.countries :refer [lookup-country-name]]))
-
-(defn- first-word [string]
-  (let [parts (str/split (str/trim string) #" " 2)]
-    (first parts)))
-
-(defn- rng
-  ([seed min max] (let [random-generator (pprng/rng seed)
-                        range (- max min)]
-                    (+ min (pprng/int random-generator range))))
-  ([seed generation min max] (rng (+ seed generation) min max)))
 
 (defn name [person]
   (first-word (str (get-in person [:bio :name]))))
@@ -36,12 +25,12 @@
 (defn photo-displace-x [person]
   (or
     (get-in person [:bio :photo :displace :x])
-    (rng (hash (get-in person [:bio :name])) 1 -10 10)))      ; +/- 10px based on name
+    (rng (hash (get-in person [:bio :name])) 1 -10 10)))    ; +/- 10px based on name
 
 (defn photo-displace-y [person]
   (or
     (get-in person [:bio :photo :displace :y])
-    (rng (hash (get-in person [:bio :name])) 2 -10 10)))      ; +/- 10px based on name
+    (rng (hash (get-in person [:bio :name])) 2 -10 10)))    ; +/- 10px based on name
 
 (defn photo-displace-z [person]
   (or (get-in person [:bio :photo :displace :z]) 0))        ; 0px unless requested by data
