@@ -3,7 +3,7 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-3178"]
+                 [org.clojure/clojurescript "0.0-3196"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.8.8"]
                  [prismatic/om-tools "0.3.11"]
@@ -16,7 +16,7 @@
                  [cuerdas "0.3.2"]
                  [markdown-clj "0.9.65"]
                  [garden "1.2.5"]
-                 [figwheel "0.2.5"]
+                 [figwheel "0.2.6"]
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "5.1"]
                  [compojure "1.3.3"]
