@@ -50,7 +50,7 @@
             (let [next-phase (inc current-phase)]
               (if (< next-phase (count timing))
                 (do
-                  (perform! :animate path)
+                  (perform! :animate path current-phase)
                   (recur next-phase))
                 (perform! :stop-anim path)))))))))
 
