@@ -168,9 +168,9 @@
 
 (defcomponent groups-filter-item-component [data _ _]
   (render [_]
-    (let [{:keys [group report selected?]} data
+    (let [{:keys [group report selected? empty?]} data
           {:keys [count label title]} report]
-      (dom/div {:class    (str "groups-filter-item" (when selected? " selected"))
+      (dom/div {:class    (str "groups-filter-item" (when selected? " selected") (when empty? " empty"))
                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-group :filter-select-group) group)}
         (dom/span {:class "group"
                    :title (str (when title (str title " ")) "(" count "x)")}
@@ -178,10 +178,10 @@
 
 (defcomponent countries-filter-item-component [data _ _]
   (render [_]
-    (let [{:keys [country-code report selected?]} data
+    (let [{:keys [country-code report selected? empty?]} data
           country-name (lookup-country-name country-code)
           count (:count report)]
-      (dom/div {:class    (str "countries-filter-item f16" (when selected? " selected"))
+      (dom/div {:class    (str "countries-filter-item f16" (when selected? " selected") (when empty? " empty"))
                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-country :filter-select-country) country-code)}
         (dom/span {:class "countries-filter-item-body"
                    :title (str country-name " (" count "x)")}
@@ -190,119 +190,22 @@
 
 (defcomponent tags-filter-item-component [data _ _]
   (render [_]
-    (let [{:keys [tag report selected?]} data
+    (let [{:keys [tag report selected? empty?]} data
           count (:count report)]
-      (dom/div {:class    (str "tags-filter-item" (when selected? " selected"))
+      (dom/div {:class    (str "tags-filter-item" (when selected? " selected") (when empty? " empty"))
                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-tag :filter-select-tag) tag)}
         (dom/span {:class "tag"
                    :title (str "(" count "x)")} tag)))))
 
 (defcomponent socials-filter-item-component [data _ _]
   (render [_]
-    (let [{:keys [social report selected?]} data
+    (let [{:keys [social report selected? empty?]} data
           count (:count report)
           icon (:icon report)]
-      (dom/div {:class    (str "socials-filter-item" (when selected? " selected"))
+      (dom/div {:class    (str "socials-filter-item" (when selected? " selected") (when empty? " empty"))
                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-social :filter-select-social) social)}
         (dom/i {:class (str "icon fa " icon)
                 :title (str social " (" count "x)")})))))
-
-(defcomponent groups-filter-component [data _ _]
-  (render [_]
-    (let [people (get-in data [:content :people])
-          groups (get-in data [:content :groups])
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :groups)
-          groups-tally (build-groups-tally people groups)
-          selected-groups (get-in data [:ui :filters :active :groups])
-          sorted-groups (:ordered-groups groups-tally)]
-      (dom/div {:class "groups-filter-wrapper"}
-        (when (> (count sorted-groups) 0)
-          (dom/div {:class "groups-filter filter-section"}
-            (om/build filter-section-label-component {:key       :groups
-                                                      :active?   (> (count selected-groups) 0)
-                                                      :expanded? expanded?
-                                                      :label     "groups"})
-            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
-              (for [group sorted-groups]
-                (let [report (get-in groups-tally [:tally group])
-                      selected? (contains? selected-groups group)]
-                  (om/build groups-filter-item-component {:group     group
-                                                          :selected? selected?
-                                                          :report    report}))))))))))
-(defcomponent countries-filter-component [data _ _]
-  (render [_]
-    (let [people (get-in data [:content :people])
-          expanded-filters (get-in data [:ui :filters :expanded-set])
-          expanded? (contains? expanded-filters :countries)
-          selected-countries (get-in data [:ui :filters :active :countries])
-          countries-tally (build-countries-tally people)
-          sorted-countries (:countries-by-size countries-tally)]
-      (dom/div {:class "countries-filter-wrapper"}
-        (when (> (count sorted-countries) 1)
-          (dom/div {:class "countries-filter filter-section"}
-            (om/build filter-section-label-component {:key       :countries
-                                                      :active?   (> (count selected-countries) 0)
-                                                      :expanded? expanded?
-                                                      :label     "countries"})
-            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
-              (for [country-code sorted-countries]
-                (let [report (get-in countries-tally [:tally country-code])
-                      selected? (contains? selected-countries country-code)]
-                  (om/build countries-filter-item-component {:country-code country-code
-                                                             :selected?    selected?
-                                                             :report       report}))))))))))
-(defcomponent tags-filter-component [data _ _]
-  (render [_]
-    (let [people (get-in data [:content :people])
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :tags)
-          tags-tally (build-tags-tally people)
-          selected-tags (get-in data [:ui :filters :active :tags])
-          sorted-tags (:tags-by-size tags-tally)]
-      (dom/div {:class "tags-filter-wrapper"}
-        (when (> (count sorted-tags) 0)
-          (dom/div {:class "tags-filter filter-section"}
-            (om/build filter-section-label-component {:key       :tags
-                                                      :active?   (> (count selected-tags) 0)
-                                                      :expanded? expanded?
-                                                      :label     "interests"})
-            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
-              (for [tag sorted-tags]
-                (let [report (get-in tags-tally [:tally tag])
-                      selected? (contains? selected-tags tag)]
-                  (om/build tags-filter-item-component {:tag       tag
-                                                        :selected? selected?
-                                                        :report    report}))))))))))
-
-(defcomponent socials-filter-component [data _ _]
-  (render [_]
-    (let [people (get-in data [:content :people])
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :socials)
-          socials-tally (build-socials-tally people)
-          selected-socials (get-in data [:ui :filters :active :socials])
-          sorted-socials (:socials-by-size socials-tally)]
-      (dom/div {:class "socials-filter-wrapper"}
-        (when (> (count sorted-socials) 0)
-          (dom/div {:class "socials-filter filter-section"}
-            (om/build filter-section-label-component {:key       :socials
-                                                      :active?   (> (count selected-socials) 0)
-                                                      :expanded? expanded?
-                                                      :label     "social"})
-            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
-              (for [social sorted-socials]
-                (let [report (get-in socials-tally [:tally social])
-                      selected? (contains? selected-socials social)]
-                  (om/build socials-filter-item-component {:social    social
-                                                           :selected? selected?
-                                                           :report    report}))))))))))
-
-(defcomponent filters-component [data _ _]
-  (render [_]
-    (dom/div {:class    "people-filters no-select"
-              :on-click #(.stopPropagation %)}
-      (om/build groups-filter-component data)
-      (om/build countries-filter-component data)
-      (om/build socials-filter-component data)
-      (om/build tags-filter-component data))))
 
 (defn build-groups-filter-predicate [active-filters groups]
   (if-let [active-groups (:groups active-filters)]
@@ -331,12 +234,131 @@
                     (build-socials-filter-predicate active-filters)]]
     (remove nil? predicates)))
 
+(defn is-person-filtered? [person filter-predicates]
+  (not (every? true? (map #(% person) filter-predicates))))
+
+(defn all-people-filtered-out? [data]
+  (let [people (get-in data [:content :people])
+        active-filters (get-in data [:ui :filters :active])
+        filter-predicates (build-filter-predicates active-filters data)]
+    (every? #(is-person-filtered? % filter-predicates) people)))
+
+(defcomponent groups-filter-component [data _ _]
+  (render [_]
+    (let [people (get-in data [:content :people])
+          groups (get-in data [:content :groups])
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :groups)
+          groups-tally (build-groups-tally people groups)
+          filter-path [:ui :filters :active :groups]
+          selected-groups (get-in data filter-path)
+          sorted-groups (:ordered-groups groups-tally)]
+      (dom/div {:class "groups-filter-wrapper"}
+        (when (> (count sorted-groups) 0)
+          (dom/div {:class "groups-filter filter-section"}
+            (om/build filter-section-label-component {:key       :groups
+                                                      :active?   (> (count selected-groups) 0)
+                                                      :expanded? expanded?
+                                                      :label     "groups"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
+              (for [group sorted-groups]
+                (let [report (get-in groups-tally [:tally group])
+                      selected? (contains? selected-groups group)
+                      empty? (when-not selected?
+                               (all-people-filtered-out? (assoc-in data filter-path #{group})))]
+                  (om/build groups-filter-item-component {:group     group
+                                                          :selected? selected?
+                                                          :empty?    empty?
+                                                          :report    report}))))))))))
+(defcomponent countries-filter-component [data _ _]
+  (render [_]
+    (let [people (get-in data [:content :people])
+          expanded-filters (get-in data [:ui :filters :expanded-set])
+          expanded? (contains? expanded-filters :countries)
+          filter-path [:ui :filters :active :countries]
+          selected-countries (get-in data filter-path)
+          countries-tally (build-countries-tally people)
+          sorted-countries (:countries-by-size countries-tally)]
+      (dom/div {:class "countries-filter-wrapper"}
+        (when (> (count sorted-countries) 1)
+          (dom/div {:class "countries-filter filter-section"}
+            (om/build filter-section-label-component {:key       :countries
+                                                      :active?   (> (count selected-countries) 0)
+                                                      :expanded? expanded?
+                                                      :label     "countries"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
+              (for [country-code sorted-countries]
+                (let [report (get-in countries-tally [:tally country-code])
+                      selected? (contains? selected-countries country-code)
+                      empty? (when-not selected?
+                               (all-people-filtered-out? (assoc-in data filter-path #{country-code})))]
+                  (om/build countries-filter-item-component {:country-code country-code
+                                                             :selected?    selected?
+                                                             :empty?       empty?
+                                                             :report       report}))))))))))
+(defcomponent tags-filter-component [data _ _]
+  (render [_]
+    (let [people (get-in data [:content :people])
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :tags)
+          tags-tally (build-tags-tally people)
+          filter-path [:ui :filters :active :tags]
+          selected-tags (get-in data filter-path)
+          sorted-tags (:tags-by-size tags-tally)]
+      (dom/div {:class "tags-filter-wrapper"}
+        (when (> (count sorted-tags) 0)
+          (dom/div {:class "tags-filter filter-section"}
+            (om/build filter-section-label-component {:key       :tags
+                                                      :active?   (> (count selected-tags) 0)
+                                                      :expanded? expanded?
+                                                      :label     "interests"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
+              (for [tag sorted-tags]
+                (let [report (get-in tags-tally [:tally tag])
+                      selected? (contains? selected-tags tag)
+                      empty? (when-not selected?
+                               (all-people-filtered-out? (assoc-in data filter-path #{tag})))]
+                  (om/build tags-filter-item-component {:tag       tag
+                                                        :selected? selected?
+                                                        :empty?    empty?
+                                                        :report    report}))))))))))
+
+(defcomponent socials-filter-component [data _ _]
+  (render [_]
+    (let [people (get-in data [:content :people])
+          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :socials)
+          socials-tally (build-socials-tally people)
+          filter-path [:ui :filters :active :socials]
+          selected-socials (get-in data filter-path)
+          sorted-socials (:socials-by-size socials-tally)]
+      (dom/div {:class "socials-filter-wrapper"}
+        (when (> (count sorted-socials) 0)
+          (dom/div {:class "socials-filter filter-section"}
+            (om/build filter-section-label-component {:key       :socials
+                                                      :active?   (> (count selected-socials) 0)
+                                                      :expanded? expanded?
+                                                      :label     "social"})
+            (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
+              (for [social sorted-socials]
+                (let [report (get-in socials-tally [:tally social])
+                      selected? (contains? selected-socials social)
+                      empty? (when-not selected?
+                               (all-people-filtered-out? (assoc-in data filter-path #{social})))]
+                  (om/build socials-filter-item-component {:social    social
+                                                           :selected? selected?
+                                                           :empty?    empty?
+                                                           :report    report}))))))))))
+
+(defcomponent filters-component [data _ _]
+  (render [_]
+    (dom/div {:class    "people-filters no-select"
+              :on-click #(.stopPropagation %)}
+      (om/build groups-filter-component data)
+      (om/build countries-filter-component data)
+      (om/build socials-filter-component data)
+      (om/build tags-filter-component data))))
+
 (extend-type js/NodeList
   ISeqable
   (-seq [nl] (array-seq nl 0)))
-
-(defn is-person-filtered? [person filter-predicates]
-  (not (every? true? (map #(% person) filter-predicates))))
 
 (defn lookup-person [people id]
   (first (filter #(= id (:id %)) people)))

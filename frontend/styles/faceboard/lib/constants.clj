@@ -28,3 +28,5 @@
 (def filter-item-background-selected-color signature-color)
 
 (def people-desk-background-color selected-tab-color)
+
+(def empty-filter-opacity 0.3)

@@ -104,6 +104,8 @@
           :margin-right (px 2)
           :border-radius (px 2)
           :cursor :pointer]
+         (>> &.empty
+           [:opacity empty-filter-opacity])
          (>> &.selected
            [:background-color filter-item-background-selected-color])
          (>> &:hover
@@ -117,6 +119,8 @@
           :padding (px 1 3)
           :height (px 16)
           :float :left]
+         (>> &.empty
+           [:opacity empty-filter-opacity])
          (>> &.selected
            [:background-color filter-item-background-selected-color])
          (>> &:hover
@@ -130,6 +134,8 @@
           :margin-right (px 2)
           :border-radius (px 2)
           :cursor :pointer]
+         (>> &.empty
+           [:opacity empty-filter-opacity])
          (>> &.selected
            [:background-color filter-item-background-selected-color])
          (>> &:hover
@@ -143,6 +149,8 @@
           :color filter-item-background-normal-color
           :border-radius (px 4)
           :cursor :pointer]
+         (>> &.empty
+           [:opacity empty-filter-opacity])
          (>> &.selected
            [:color filter-item-background-selected-color])
          (>> &:hover
