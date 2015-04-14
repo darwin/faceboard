@@ -82,7 +82,11 @@
           country-name (person/country-name person)]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
         (dom/div {:class "polaroid-frame"
-                  :style (css-transform (str "rotate(" (person/photo-angle person) "deg)"))}
+                  :style (css-transform (str
+                                          "rotate(" (person/photo-angle person) "deg)"
+                                          "translateX(" (person/photo-displace-x person) "px)"
+                                          "translateY(" (person/photo-displace-y person) "px)"
+                                          "translateZ(" (person/photo-displace-z person) "px)"))}
           (dom/div {:class "left-part"}
             (dom/div {:class (str "photo" (when-not (person/photo-has-frame? person) " no-frame"))}
               (dom/img {:src (person/photo-url person)}))
