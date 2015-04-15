@@ -9,8 +9,7 @@
 (defcomponent loading-message-component [data _ _]
   (render [_]
     (dom/div {:class "loading-message"}
-      (dom/div {:class "label"} (dom/i {:class "fa fa-cog fa-spin"}) " WORKING")
-      (dom/div {:class "message"} (str (:message data))))))
+      (dom/div {:class "label"} (dom/i {:class "fa fa-cog fa-spin"}) (str " " (:message data))))))
 
 (defcomponent loading-component [data _ _]
   (render [_]

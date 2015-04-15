@@ -16,7 +16,5 @@
         :padding-bottom (px 20)
         :border-bottom-left-radius (px 4)
         :border-bottom-right-radius (px 4)]
-       (>> message
-         [:margin-top (px 10)
-          :font-size (px 18)
-          :line-height (px 20)])))])
+       (>> label
+         [:text-transform :uppercase])))])
