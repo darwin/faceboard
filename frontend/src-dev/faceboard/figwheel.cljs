@@ -7,5 +7,5 @@
 
 (defn start []
   (fw/start
-    {:on-jsload    (fn [] (. js/window faceboard_reloader))
+    #_{:on-jsload    (fn [] (. js/window faceboard_reloader))
      :url-rewriter (fn [url] (clojure.string/replace url "resources/public/" ""))}))

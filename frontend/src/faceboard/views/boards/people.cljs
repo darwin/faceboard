@@ -15,7 +15,9 @@
             [faceboard.helpers.filters.tags :refer [build-tags-tally tags-filter-predicate]]
             [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]
             [faceboard.helpers.underscore :refer [throttle]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.state :refer [app-state]]
+            [faceboard.logging :refer [log log-err log-warn log-info]])
+  (:require-macros [faceboard.macros.utils :refer [profile, measure]]))
 
 (defcomponent social-section-item-component [data _ _]
   (render [_]
@@ -234,14 +236,17 @@
                     (build-socials-filter-predicate active-filters)]]
     (remove nil? predicates)))
 
-(defn is-person-filtered? [person filter-predicates]
-  (not (every? true? (map #(% person) filter-predicates))))
+(defn is-person-kept? [filter-predicates person]
+  (every? true? (map #(% person) filter-predicates)))
 
-(defn all-people-filtered-out? [data]
+(defn is-person-filtered? [filter-predicates person]
+  (not (is-person-kept? filter-predicates person)))
+
+(defn filter-people-except [except-filter data]
   (let [people (get-in data [:content :people])
-        active-filters (get-in data [:ui :filters :active])
+        active-filters (dissoc (get-in data [:ui :filters :active]) except-filter)
         filter-predicates (build-filter-predicates active-filters data)]
-    (every? #(is-person-filtered? % filter-predicates) people)))
+    (remove #(is-person-filtered? filter-predicates %) people)))
 
 (defcomponent groups-filter-component [data _ _]
   (render [_]
@@ -251,7 +256,9 @@
           groups-tally (build-groups-tally people groups)
           filter-path [:ui :filters :active :groups]
           selected-groups (get-in data filter-path)
-          sorted-groups (:ordered-groups groups-tally)]
+          sorted-groups (:ordered-groups groups-tally)
+          prefiltered-people (filter-people-except :groups data)
+          people-filtered-out? (fn [group] (every? #(not (groups-filter-predicate groups #{group} %)) prefiltered-people))]
       (dom/div {:class "groups-filter-wrapper"}
         (when (> (count sorted-groups) 0)
           (dom/div {:class "groups-filter filter-section"}
@@ -263,8 +270,7 @@
               (for [group sorted-groups]
                 (let [report (get-in groups-tally [:tally group])
                       selected? (contains? selected-groups group)
-                      empty? (when-not selected?
-                               (all-people-filtered-out? (assoc-in data filter-path #{group})))]
+                      empty? (when-not selected? (people-filtered-out? group))]
                   (om/build groups-filter-item-component {:group     group
                                                           :selected? selected?
                                                           :empty?    empty?
@@ -277,7 +283,9 @@
           filter-path [:ui :filters :active :countries]
           selected-countries (get-in data filter-path)
           countries-tally (build-countries-tally people)
-          sorted-countries (:countries-by-size countries-tally)]
+          sorted-countries (:countries-by-size countries-tally)
+          prefiltered-people (filter-people-except :countries data)
+          people-filtered-out? (fn [country-code] (every? #(not (countries-filter-predicate #{country-code} %)) prefiltered-people))]
       (dom/div {:class "countries-filter-wrapper"}
         (when (> (count sorted-countries) 1)
           (dom/div {:class "countries-filter filter-section"}
@@ -289,8 +297,7 @@
               (for [country-code sorted-countries]
                 (let [report (get-in countries-tally [:tally country-code])
                       selected? (contains? selected-countries country-code)
-                      empty? (when-not selected?
-                               (all-people-filtered-out? (assoc-in data filter-path #{country-code})))]
+                      empty? (when-not selected? (people-filtered-out? country-code))]
                   (om/build countries-filter-item-component {:country-code country-code
                                                              :selected?    selected?
                                                              :empty?       empty?
@@ -302,7 +309,9 @@
           tags-tally (build-tags-tally people)
           filter-path [:ui :filters :active :tags]
           selected-tags (get-in data filter-path)
-          sorted-tags (:tags-by-size tags-tally)]
+          sorted-tags (:tags-by-size tags-tally)
+          prefiltered-people (filter-people-except :tags data)
+          people-filtered-out? (fn [tag] (every? #(not (tags-filter-predicate #{tag} %)) prefiltered-people))]
       (dom/div {:class "tags-filter-wrapper"}
         (when (> (count sorted-tags) 0)
           (dom/div {:class "tags-filter filter-section"}
@@ -314,8 +323,7 @@
               (for [tag sorted-tags]
                 (let [report (get-in tags-tally [:tally tag])
                       selected? (contains? selected-tags tag)
-                      empty? (when-not selected?
-                               (all-people-filtered-out? (assoc-in data filter-path #{tag})))]
+                      empty? (when-not selected? (people-filtered-out? tag))]
                   (om/build tags-filter-item-component {:tag       tag
                                                         :selected? selected?
                                                         :empty?    empty?
@@ -328,7 +336,9 @@
           socials-tally (build-socials-tally people)
           filter-path [:ui :filters :active :socials]
           selected-socials (get-in data filter-path)
-          sorted-socials (:socials-by-size socials-tally)]
+          sorted-socials (:socials-by-size socials-tally)
+          prefiltered-people (filter-people-except :socials data)
+          people-filtered-out? (fn [social] (every? #(not (socials-filter-predicate #{social} %)) prefiltered-people))]
       (dom/div {:class "socials-filter-wrapper"}
         (when (> (count sorted-socials) 0)
           (dom/div {:class "socials-filter filter-section"}
@@ -340,8 +350,7 @@
               (for [social sorted-socials]
                 (let [report (get-in socials-tally [:tally social])
                       selected? (contains? selected-socials social)
-                      empty? (when-not selected?
-                               (all-people-filtered-out? (assoc-in data filter-path #{social})))]
+                      empty? (when-not selected? (people-filtered-out? social))]
                   (om/build socials-filter-item-component {:social    social
                                                            :selected? selected?
                                                            :empty?    empty?
@@ -369,7 +378,7 @@
       [person-id
        {:left (.-offsetLeft card)
         :top  (.-offsetTop card)
-        :z    (if (is-person-filtered? person filter-predicates) -500 -100)}])))
+        :z    (if (is-person-filtered? filter-predicates person) -500 -100)}])))
 
 (defn retrieve-cards-layout [people filter-predicates cards]
   (apply hash-map (mapcat #(retrieve-card-layout people filter-predicates %) cards)))
@@ -379,12 +388,12 @@
         active-filters (get-in data [:ui :filters :active])
         filter-predicates (build-filter-predicates active-filters data)
         people (get-in data [:content :people])
-        old-layout (get-in data [:transient :layout])
+        current-layout (get-in @app-state [:transient (:id data) :layout])
         layout (retrieve-cards-layout people filter-predicates cards)]
-    (when-not (= (pr-str old-layout) (pr-str layout))
-      (.setTimeout js/window #(perform! :update-people-layout (:id data) layout) 200))))
+    (when-not (= (pr-str current-layout) (pr-str layout))
+      (perform! :update-people-layout (:id data) layout))))
 
-(def throttled-recompute-layout (throttle recompute-layout 1000))
+(def throttled-recompute-layout (throttle recompute-layout 200))
 
 (defcomponent people-scaffold-component [data owner _]
   (did-mount [_]
@@ -431,13 +440,14 @@
                   data {:person    person
                         :layout    (get layout person-id)
                         :extended? (contains? extended-set person-id)
-                        :filtered? (is-person-filtered? person filter-predicates)
+                        :filtered? (is-person-filtered? filter-predicates person)
                         :anim      (:person anims)}]
               (om/build person-component data {:react-key person-id}))))))))
 
 (defcomponent people-component [data _ _]
   (render [_]
-    (dom/div {:class "no-select"}
-      (om/build filters-component data)
-      (om/build people-layout-component data)
-      (om/build people-scaffold-component (dissoc data :transient))))) ; transient data would trigger unwanted updates
+    (let [static-data (apply dissoc data [:transient :anims :cache])]
+      (dom/div {:class "no-select"}
+        (om/build filters-component static-data)
+        (om/build people-layout-component data)
+        (om/build people-scaffold-component static-data)))))
