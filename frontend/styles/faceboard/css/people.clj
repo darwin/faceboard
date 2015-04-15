@@ -11,6 +11,8 @@
       :perspective-origin "50% 50%"]
      (>> people-scaffold
        [:visibility :hidden])
+     (>> separator
+       [:margin-top (px 100)])
      (>> people-layout
        (>> person-card
          [:position :absolute
@@ -19,7 +21,9 @@
          (>> person-card-zoom
            [:transition (str "transform 0.3s " ease-out-back)])
          (>> &.filtered
-           [:opacity 0.2
+           [:opacity 0.3
+            :-webkit-filter "grayscale(1)"
+            :filter "grayscale(1)"
             :z-index 0])
          (>> &.expandable
            [:cursor :pointer])
