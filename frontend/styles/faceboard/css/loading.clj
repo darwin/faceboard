@@ -15,6 +15,4 @@
         :padding-top (px 20)
         :padding-bottom (px 20)
         :border-bottom-left-radius (px 4)
-        :border-bottom-right-radius (px 4)]
-       (>> label
-         [:text-transform :uppercase])))])
+        :border-bottom-right-radius (px 4)]))])

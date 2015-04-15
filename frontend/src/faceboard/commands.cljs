@@ -67,7 +67,7 @@
       (transform-app-state
         (model/set [:ui :view] :loading)
         (model/inc [:ui :loading?])
-        (model/set [:ui :view-params] {:message "Loading the board..."}))
+        (model/set [:ui :view-params] {:message "loading the board..."}))
       (db/connect-board board-id {:on-connect (fn [model]
                                                 (if model
                                                   (transform-app-state
@@ -79,7 +79,7 @@
   (transform-app-state
     (model/set [:ui :view] :loading)
     (model/inc [:ui :loading?])
-    (model/set [:ui :view-params] {:message "Creating a new board..."}))
+    (model/set [:ui :view-params] {:message "creating a new board..."}))
   (let [init-and-navigate (fn [_]
                             (transform-app-state
                               (model/dec-clamp-zero [:ui :loading?])

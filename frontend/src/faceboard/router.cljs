@@ -97,7 +97,7 @@
 (defn define-test-routes! []
   (defroute-with-info :test "/test" [] (perform! :switch-view :test))
   (defroute-with-info :test-error "/test/error" [] (perform! :switch-view :error {:message "This is a sample error message xxxx this is a sample error message this is a sample error message this is a sample error message."}))
-  (defroute-with-info :test-loading "/test/loading" [] (perform! :switch-view :loading {:message "This is a sample loading message."})))
+  (defroute-with-info :test-loading "/test/loading" [] (perform! :switch-view :loading {:message "this is a sample loading message"})))
 
 (defn init! []
   (setup!)
