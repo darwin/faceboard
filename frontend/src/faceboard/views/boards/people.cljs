@@ -124,7 +124,7 @@
                         "translateZ(" (:z layout) "px)"))
           zoom-transform (when layout
                            (str
-                             "translateZ(" (if extended? 50 0) "px)"))]
+                             "translateZ(" (if extended? 100 0) "px)"))]
       (dom/div {:class     (str "person-card"
                              (when layout " has-layout")
                              (anim-class expansion-anim " expanding")
@@ -377,7 +377,7 @@
       [person-id
        {:left (.-offsetLeft card)
         :top  (.-offsetTop card)
-        :z    (if (is-person-filtered? filter-predicates person) -200 -50)}])))
+        :z    (if (is-person-filtered? filter-predicates person) -100 -100)}])))
 
 (defn retrieve-cards-layout [people filter-predicates cards]
   (apply hash-map (mapcat #(retrieve-card-layout people filter-predicates %) cards)))
@@ -407,22 +407,27 @@
           sorted-people (sort people-comparator people)
           active-filters (get-in data [:ui :filters :active])
           filter-predicates (build-filter-predicates active-filters data)
-          sorted-people-with-filter-status (map (fn [person]
-                                                  (hash-map
-                                                    :person person
-                                                    :filtered? (not (every? true? (map #(% person) filter-predicates)))))
-                                             sorted-people)
-          sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)]
+          person->item (fn [person] (hash-map :person person :filtered? (is-person-filtered? filter-predicates person)))
+          sorted-people-with-filter-status (map person->item sorted-people)
+          sorted-people-ordered-by-filter (sort-by :filtered? sorted-people-with-filter-status)
+          last-filtered? (atom false)
+          separator-adder (fn [item] (if (and (not @last-filtered?) (:filtered? item))
+                                       (do (reset! last-filtered? true) [{:separator true} item])
+                                       [item]))
+          sorted-people-ordered-by-filter-with-separator (mapcat separator-adder sorted-people-ordered-by-filter)]
       (dom/div {:class "people-desk people-scaffold clearfix"
                 :ref   "desk"}
-        (for [item sorted-people-ordered-by-filter]
-          (let [person (:person item)
-                person-id (:id person)
-                data {:person    person
-                      :extended? false
-                      :filtered? false
-                      :anim      0}]
-            (om/build person-component data {:react-key person-id})))))))
+        (for [item sorted-people-ordered-by-filter-with-separator]
+          (if (:separator item)
+            (dom/div {:class "separator clear"})
+            (let [person (:person item)
+                  person-id (:id person)
+                  filtered? (:filtered? item)
+                  data {:person    person
+                        :extended? false
+                        :filtered? filtered?
+                        :anim      0}]
+              (om/build person-component data {:react-key person-id}))))))))
 
 (defcomponent people-layout-component [data _ _]
   (render [_]
