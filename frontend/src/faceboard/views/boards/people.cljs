@@ -19,6 +19,8 @@
             [faceboard.logging :refer [log log-err log-warn log-info]])
   (:require-macros [faceboard.macros.utils :refer [profile, measure]]))
 
+(def person-card-z-level 100)
+
 (defcomponent social-section-item-component [data _ _]
   (render [_]
     (let [{:keys [type label content icon url]} (social-info data)]
@@ -101,6 +103,7 @@
           (when extended?
             (dom/div {:class "right-part"}
               (dom/div {:class    "person-edit-button"
+                        :title    "edit the card"
                         :on-click (fn [e]
                                     (.stopPropagation e)
                                     (perform! :open-editor (om/path person) (.-shiftKey e)))}
@@ -124,7 +127,7 @@
                         "translateZ(" (:z layout) "px)"))
           zoom-transform (when layout
                            (str
-                             "translateZ(" (if extended? 100 0) "px)"))]
+                             "translateZ(" (if extended? person-card-z-level 0) "px)"))]
       (dom/div {:class     (str "person-card"
                              (when layout " has-layout")
                              (anim-class expansion-anim " expanding")
@@ -368,27 +371,19 @@
   ISeqable
   (-seq [nl] (array-seq nl 0)))
 
-(defn lookup-person [people id]
-  (first (filter #(= id (:id %)) people)))
-
-(defn retrieve-card-layout [people filter-predicates card]
+(defn retrieve-card-layout [card]
   (if-let [person-id (.getAttribute card "data-fbid")]
-    (let [person (lookup-person people person-id)]
-      [person-id
-       {:left (.-offsetLeft card)
-        :top  (.-offsetTop card)
-        :z    (if (is-person-filtered? filter-predicates person) -100 -100)}])))
+    [person-id {:left (.-offsetLeft card)
+                :top  (.-offsetTop card)
+                :z    (- person-card-z-level)}]))
 
-(defn retrieve-cards-layout [people filter-predicates cards]
-  (apply hash-map (mapcat #(retrieve-card-layout people filter-predicates %) cards)))
+(defn retrieve-cards-layout [cards]
+  (apply hash-map (mapcat retrieve-card-layout cards)))
 
 (defn recompute-layout [node data]
   (let [cards (.-childNodes node)
-        active-filters (get-in data [:ui :filters :active])
-        filter-predicates (build-filter-predicates active-filters data)
-        people (get-in data [:content :people])
         current-layout (get-in @app-state [:transient (:id data) :layout])
-        layout (retrieve-cards-layout people filter-predicates cards)]
+        layout (retrieve-cards-layout cards)]
     (when-not (= (pr-str current-layout) (pr-str layout))
       (perform! :update-people-layout (:id data) layout))))
 
