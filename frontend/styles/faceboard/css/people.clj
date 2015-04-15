@@ -7,7 +7,7 @@
   [(>> people-board
      [:padding (px 0)
       :padding-right (px 280)                               ; leave room for expanded cards
-      :perspective (px 1000)
+      :perspective (px 2000)
       :perspective-origin "50% 50%"]
      (>> people-scaffold
        [:visibility :hidden])

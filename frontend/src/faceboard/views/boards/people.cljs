@@ -125,7 +125,7 @@
                         "translateZ(" (:z layout) "px)"))
           zoom-transform (when layout
                            (str
-                             "translateZ(" (if extended? 100 0) "px)"))]
+                             "translateZ(" (if extended? 50 0) "px)"))]
       (dom/div {:class     (str "person-card"
                              (when layout " has-layout")
                              (anim-class expansion-anim " expanding")
@@ -378,7 +378,7 @@
       [person-id
        {:left (.-offsetLeft card)
         :top  (.-offsetTop card)
-        :z    (if (is-person-filtered? filter-predicates person) -500 -100)}])))
+        :z    (if (is-person-filtered? filter-predicates person) -200 -50)}])))
 
 (defn retrieve-cards-layout [people filter-predicates cards]
   (apply hash-map (mapcat #(retrieve-card-layout people filter-predicates %) cards)))
