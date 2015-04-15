@@ -7,7 +7,7 @@
   (render [_]
     (dom/div {:class "small-logo"}
       (dom/div {:class "faceboard-logo"}
-        (dom/a {:href "/"} "faceboard")))))
+        (dom/a {:href "/" :target "_self"} "faceboard")))))
 
 
 (defcomponent big-logo-component [_ _ _]

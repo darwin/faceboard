@@ -30,7 +30,7 @@
       (dom/div {:class "board-label"}
         "/"
         (dom/span {:class "label"}
-          (dom/a {:href (:board-url data)} board-label))))))
+          (dom/a {:href (:board-url data) :target "_self"} board-label))))))
 
 (defcomponent board-tabs-component [data _ _]
   (render [_]
