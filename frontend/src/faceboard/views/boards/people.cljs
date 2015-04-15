@@ -83,7 +83,7 @@
           country-code (person/country-code person)
           country-name (person/country-name person)]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
-        (dom/div {:class "polaroid-frame"
+        (dom/div {:class "polaroid-frame clearfix"
                   :style (css-transform (str
                                           "rotate(" (person/photo-angle person) "deg)"
                                           "translateX(" (person/photo-displace-x person) "px)"
@@ -105,8 +105,7 @@
                                     (.stopPropagation e)
                                     (perform! :open-editor (om/path person)))}
                 (dom/i {:class "fa fa-cog"}))
-              (om/build person-extended-info-component person)))
-          (dom/div {:class "clear"}))))))
+              (om/build person-extended-info-component person))))))))
 
 (defcomponent person-component [data _ _]
   (render [_]

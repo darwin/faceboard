@@ -2,10 +2,13 @@
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
 
+  :jvm-opts ^:replace ["-Xms512m" "-Xmx512m" "-server"]
+
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-3196"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [org.omcljs/om "0.8.8"]
+                 [org.omcljs/om "0.8.8" :exclusions [cljsjs/react]]
+                 [cljsjs/react "0.13.1-0"]
                  [prismatic/om-tools "0.3.11"]
                  [binaryage/devtools "0.2.0"]
                  [spellhouse/phalanges "0.1.6"]
@@ -32,8 +35,8 @@
 
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-garden "0.2.5"]
-            [lein-figwheel "0.2.3-SNAPSHOT"]
-            [lein-ring "0.9.1"]
+            [lein-figwheel "0.2.6"]
+            [lein-ring "0.9.3"]
             [environ/environ.lein "0.2.1"]
             [lein-aggravate "0.1.2-SNAPSHOT"]]
 
