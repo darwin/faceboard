@@ -24,7 +24,9 @@
            [:opacity 0.3
             :-webkit-filter "grayscale(1)"
             :filter "grayscale(1)"
-            :z-index 0])
+            :z-index 0]
+           (>> polaroid-frame
+             [:opacity 1]))
          (>> &.expandable
            [:cursor :pointer])
          ; zoom-in animation
