@@ -64,10 +64,11 @@
     (let [{:keys [model ui anims cache transient]} data
           {:keys [tabs]} model
           {:keys [selected-tab-id loading?]} ui
-          selected-tab (router/lookup-tab selected-tab-id tabs)]
+          selected-tab (router/lookup-tab selected-tab-id tabs)
+          is-loading? (> loading? 0)]
       (page/page-skeleton
-        (dom/div {:class (str "loading-indicator" (when (> loading? 0) " visible"))
-                  :title "Waiting for network response..."}
+        (dom/div {:class (str "loading-indicator" (when is-loading? " visible"))
+                  :title (when is-loading? "Waiting for network response...")}
           (dom/i {:class "fa fa-refresh fa-spin"}))
         (dom/div {:class "top-bar no-select"}
           (om/build small-logo-component {})
