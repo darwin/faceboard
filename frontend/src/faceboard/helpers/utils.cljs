@@ -11,7 +11,9 @@
     (js->clj obj :keywordize-keys true)))
 
 (defn non-sanitized-div [content]
-  (dom/div {:dangerouslySetInnerHTML #js {:__html content}}))
+  (if content
+    (dom/div {:dangerouslySetInnerHTML #js {:__html content}})
+    (dom/div)))                                             ; note: nil content would cause firing React's assertion
 
 (defn find-first [f coll]
   (first (filter f coll)))
