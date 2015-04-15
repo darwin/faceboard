@@ -25,7 +25,7 @@
   (set-status "")
   (try                                                      ; json is provided by user, can be broken
     (utils/json->model value)
-    (let [opener (.-opener js/window)]
+    (if-let [opener (.-opener js/window)]
       (if-let [apply-fn (aget opener "faceboardApplyJSON")]
         (apply-fn (utils/model->json [path value]))))
     (.call (aget *codemirror* "markClean") *codemirror*)
@@ -59,16 +59,24 @@
         unsaved? (has-unsaved-data?)]
     (and unsaved? (= old-path new-path) (not (= old-value new-value)))))
 
-(defn save [e was-not-in-sync?]
+(defn save [was-not-in-sync? e]
   (.preventDefault e)
   (if was-not-in-sync?
     (when (true? (js/confirm "Really overwrite external changes? This is most likely not a good idea."))
       (apply-changes))
     (apply-changes)))
 
+(defn close-editor [e]
+  (.preventDefault e)
+  (if (has-unsaved-data?)
+    (when (true? (js/confirm "You have unsaved changes in the editor. Close without saving?"))
+      (.close js/window))
+    (.close js/window)))
+
 (def action-table
   ; [mac-key win-key action]
-  [[#{:meta :s} #{:ctrl :s} :save]])
+  [[#{:meta :s} #{:ctrl :s} :save]
+   [#{:esc} #{:esc} :close]])
 
 (defn matching-action [keyset [mac-keyset non-mac-keyset action]]
   (when (or (and mac? (= keyset mac-keyset))
@@ -76,7 +84,7 @@
     action))
 
 (defn select-actions [keyset]
-  (reduce (fn [res line] (conj res (matching-action keyset line))) #{} action-table))
+  (set (remove nil? (reduce (fn [res line] (conj res (matching-action keyset line))) [] action-table))))
 
 (defn handle-codemirror-key [event]
   (select-actions (phalanges/key-set event)))
@@ -87,7 +95,13 @@
           path (stringify-path (:editor-path editor))
           new-value (:editor-content editor)
           unsaved? (has-unsaved-data?)
-          not-in-sync? (is-not-in-sync? editor)]
+          not-in-sync? (is-not-in-sync? editor)
+          save-fn (partial save not-in-sync?)
+          key-dispatch (fn [e]
+                         (condp #(% %2) (handle-codemirror-key e)
+                           :save (save-fn e)
+                           :close (close-editor e)
+                           nil))]
       (when-not unsaved?
         (set-codemirror-value! new-value)
         (set! *path* (:editor-path editor)))
@@ -97,8 +111,7 @@
             "JSON PATH: " (dom/span {:class "path"} path)))
         (dom/div {:ref         "host"
                   :class       "editor-host"
-                  :on-key-down (fn [e] (when (:save (handle-codemirror-key e))
-                                         (save e not-in-sync?)))})
+                  :on-key-down key-dispatch})
         (dom/div {:class "docs"}
           "docs: " (dom/a {:target "_blank"
                            :href   "https://github.com/darwin/faceboard/wiki/format"}
@@ -106,14 +119,19 @@
         (dom/div {:class "buttons"}
           (dom/div {:class    "button hint"
                     :title    "Save model and update the app."
-                    :on-click (fn [e] (save e not-in-sync?))}
+                    :on-click save-fn}
             (if mac? "save (CMD+S)" "save (CTRL+S)"))
           (when not-in-sync?
             (set-status "Someone else just modified this data behind your back!")
             (dom/div {:class    "button refresh"
                       :title    "This will throw away your changes since last save."
                       :on-click (fn [_] (set-codemirror-value! new-value) (om/refresh! owner))}
-              "discard my changes"))))))
+              "discard my changes"))
+          (dom/div {:class    "button hint"
+                    :title    "Close editor."
+                    :on-click close-editor}
+            "close (ESC)")
+          ))))
   (did-mount [_]
     (let [editor (js/CodeMirror (om/get-node owner "host")
                    #js {:mode              #js {:name "javascript" :json true}

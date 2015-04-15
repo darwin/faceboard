@@ -7,6 +7,7 @@
     {:model {}
      :ui    {:view         :blank
              :view-params  nil
+             :show-editor  false
              :editor-path  nil
              :loading?     0
              :extended-set #{}

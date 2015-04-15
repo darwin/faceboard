@@ -9,10 +9,9 @@
 (defn popup-blocked? []
   (try                                                      ; json is provided by user, can be broken
     (let [opener (.-opener js/window)]
-      (if-let [apply-fn (aget opener "faceboardApplyJSON")]
-        (log "apply-fn" apply-fn)))
+      (let [_ (aget opener "faceboardApplyJSON")]))
     false
-    (catch js/Object err
+    (catch js/Object _
       (log-warn "disable the popup blocker")
       true)))
 

@@ -16,5 +16,7 @@
 
 (defn request-refresh! []
   (let [opener (.-opener js/window)]
-    (if-let [perform-fn (aget opener "faceboardPerformRefresh")]
-      (perform-fn))))
+    (if opener
+      (if-let [perform-fn (aget opener "faceboardPerformRefresh")]
+        (perform-fn))
+      (log-err "no opener!"))))

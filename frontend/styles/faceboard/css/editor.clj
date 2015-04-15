@@ -3,7 +3,22 @@
   (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
-  [(>> editor-main
+  [(>> editor-iframe
+     [:position :fixed
+      :opacity 0.95
+      :z-index 100
+      :top (px 40)
+      :bottom (px 20)
+      :left (px 40)
+      :right (px 40)
+      :padding (px 6 6)
+      :background-color "#eee"
+      :box-shadow "0px 0px 10px 4px rgba(0,0,0,0.2)"
+      :border-radius (px 2)]
+     (>> :iframe
+       [:width "100%"
+        :height "100%"]))
+   (>> editor-main
      (>> warning
        [:background-color "red"
         :font-size (px 18)

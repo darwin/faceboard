@@ -174,13 +174,19 @@
   (transform-app-state
     (model/set [:ui :filters :active which] #{})))
 
-(defmethod handle-command :open-editor [_ path]
-  (editor/open-editor-window)
+(defmethod handle-command :open-editor [_ path external?]
+  (when external?
+    (editor/open-editor-window))
   (transform-app-state
+    (model/set [:ui :show-editor] (if external? false true))
     (model/set [:ui :editor-path] path)))
 
 (defmethod handle-command :refresh-editor []
   (editor/refresh-editor))
+
+(defmethod handle-command :hide-editor [_]
+  (transform-app-state
+    (model/set [:ui :show-editor] false)))
 
 (defmethod handle-command :update-people-layout [_ tab-id layout]
   (transform-app-state

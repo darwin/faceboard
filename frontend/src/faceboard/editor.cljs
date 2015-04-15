@@ -1,14 +1,25 @@
 (ns faceboard.editor
   (:require [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.state :refer [app-state]]
+            [faceboard.controller :refer [perform!]]
             [faceboard.helpers.utils :as utils]))
 
 (def ^:dynamic *editor-window*)
 
+(defn adopt-iframe [iframe]
+  (if-let [iframe-win (aget iframe "contentWindow")]
+    (do
+      (set! *editor-window* iframe-win)
+      (aset iframe-win "opener" js/window)
+      (aset iframe-win "close" #(do (set! *editor-window* nil)
+                                    (perform! :hide-editor))))))
+
 (defn open-editor-window []
-  (if-let [editor-window (.open js/goog.window "editor.html" #js {"target" "faceboardeditor"
-                                                                  "width"  "590"
-                                                                  "height" "600"})]
+  (if-let [editor-window (.open js/goog.window
+                           "editor.html"
+                           #js {"target" "faceboardeditor"
+                                "width"  "590"
+                                "height" "600"})]
     (do (.focus editor-window)
         (set! *editor-window* editor-window))
     (log-warn "popup blocked?")))

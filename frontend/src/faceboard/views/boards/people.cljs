@@ -103,7 +103,7 @@
               (dom/div {:class    "person-edit-button"
                         :on-click (fn [e]
                                     (.stopPropagation e)
-                                    (perform! :open-editor (om/path person)))}
+                                    (perform! :open-editor (om/path person) (.-shiftKey e)))}
                 (dom/i {:class "fa fa-cog"}))
               (om/build person-extended-info-component person))))))))
 
