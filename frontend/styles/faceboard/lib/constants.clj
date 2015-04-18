@@ -8,6 +8,7 @@
 (def board-font "'Kalam', cursive")
 (def editor-font "monospace")
 (def signature-font "'Exo', sans-serif")
+(def gizmo-font "monospace")
 
 (def signature-color "#3a5795")
 (def error-color "#e00000")
@@ -28,5 +29,8 @@
 (def filter-item-background-selected-color signature-color)
 
 (def people-desk-background-color selected-tab-color)
+
+(def gizmo-signature-color "#FA6900")
+(def gizmo-signature-hovered-color "#F38630")
 
 (def empty-filter-opacity 0.3)

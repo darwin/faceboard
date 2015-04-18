@@ -124,13 +124,14 @@
               (if (and editing? extended?)
                 (om/build gizmo-component {:id    :name-country
                                            :title "edit name and country"
-                                           :icon  "chevron-circle-right"
+                                           :icon  "sign-in"
                                            :content (partial om/build name-country-gizmo-component {:person person
                                                                                                     :id id})
                                            :state gizmo
                                            :left  "0%"
                                            :top   "50%"
-                                           :px    -16}))
+                                           :py    -2
+                                           :px    -12}))
               (dom/div {:class "name f16"
                         :title (person/full-name person)}
                 name

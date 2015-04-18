@@ -9,7 +9,7 @@
 (defcomponent gizmo-content-component [data _ _]
   (render [_]
     (let [{:keys [content]} data]
-      (dom/div {:class "gizmo-frame"
+      (dom/div {:class    "gizmo-frame"
                 :on-click (fn [e]
                             (.stopPropagation e))}
         (dom/div {:class "gizmo-content"}
