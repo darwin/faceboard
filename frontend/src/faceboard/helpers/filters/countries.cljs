@@ -14,7 +14,8 @@
     (update tally country-code #(add-person-to-country-report % id))))
 
 (defn- sorted-list-of-countries-by-size [tally]
-  (reverse (sort #(compare (:count (get tally %1)) (:count (get tally %2))) (reverse (sort (filter #(not (nil? %)) (keys tally)))))))
+  (let [compare #(compare (:count (get tally %1)) (:count (get tally %2)))]
+    (reverse (sort compare (reverse (sort (filter #(not (nil? %)) (keys tally))))))))
 
 (defn build-countries-tally [people]
   (let [tally (reduce countries-tally-reducer {} people)]
