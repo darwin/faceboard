@@ -6,7 +6,9 @@
             [faceboard.controller :refer [perform!]]
             [faceboard.shared.anims :as anims]
             [faceboard.router :as router]
+            [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.views.boards.people.base :refer [person-card-z-level]]
+            [faceboard.views.boards.people.gizmos :refer [name-country-gizmo-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
@@ -103,7 +105,7 @@
 
 (defcomponent person-info-component [data _ _]
   (render [_]
-    (let [{:keys [person extended? editing?]} data
+    (let [{:keys [id person extended? editing? gizmo]} data
           need-name-placeholder? (and editing? (not (has-name? person)))
           name (if need-name-placeholder? person/name-placeholder (person/name person))
           country-code (person/country-code person)
@@ -119,6 +121,16 @@
             (dom/div {:class (str "photo" (when-not (person/photo-has-frame? person) " no-frame"))}
               (dom/img {:src (person/photo-url person)}))
             (dom/div {:class (str "name-section" (if need-name-placeholder? " has-placeholder"))}
+              (if (and editing? extended?)
+                (om/build gizmo-component {:id    :name-country
+                                           :title "edit name and country"
+                                           :icon  "chevron-circle-right"
+                                           :content (partial om/build name-country-gizmo-component {:person person
+                                                                                                    :id id})
+                                           :state gizmo
+                                           :left  "0%"
+                                           :top   "50%"
+                                           :px    -16}))
               (dom/div {:class "name f16"
                         :title (person/full-name person)}
                 name
@@ -144,7 +156,7 @@
 
 (defcomponent person-component [data _ _]
   (render [_]
-    (let [{:keys [person filtered? editing? layout]} data
+    (let [{:keys [person filtered? editing? gizmo layout]} data
           id (:id person)
           expansion-anim (anims/person-expanding id)
           shrinking-anim (anims/person-shrinking id)
@@ -180,6 +192,7 @@
               (om/build person-info-component {:hide?     (not extended?)
                                                :extended? extended?
                                                :editing?  editing?
+                                               :gizmo     gizmo
                                                :id        id
                                                :person    person})))
           (dom/div {:class "person-essentials-wrapper"}

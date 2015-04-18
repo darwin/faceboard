@@ -10,6 +10,7 @@
              :show-editor  false
              :editor-path  nil
              :editing?     false
+             :gizmo        {:active nil}
              :loading?     0
              :extended-set #{}
              :filters      {:expanded-set #{:groups :countries :socials :tags}

@@ -195,3 +195,7 @@
 (defmethod handle-command :toggle-edit [_]
   (transform-app-state
     (model/toggle [:ui :editing?])))
+
+(defmethod handle-command :activate-gizmo [_ gizmo-id]
+  (transform-app-state
+    (model/set [:ui :gizmo :active] gizmo-id)))

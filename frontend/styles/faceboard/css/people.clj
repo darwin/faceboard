@@ -210,17 +210,19 @@
             :border "2px solid transparent"])
          (>> :img
            [:max-width (px 126)]))
-       (>> flag
-         [:margin-left (px 6)
-          :height "14px !important"
-          :position :relative
-          :top (px 1)])
-       (>> name
-         [:font-size (px 18)
-          :text-align :center
-          :font-weight :bold
-          :white-space :nowrap
-          :overflow :hidden]))
+       (>> name-section
+         [:position :relative]
+         (>> flag
+           [:margin-left (px 6)
+            :height "14px !important"
+            :position :relative
+            :top (px 1)])
+         (>> name
+           [:font-size (px 18)
+            :text-align :center
+            :font-weight :bold
+            :white-space :nowrap
+            :overflow :hidden])))
      (>> person-extended-wrapper
        [:position :absolute])
      (>> [extended polaroid-frame]
@@ -267,7 +269,7 @@
           :padding-top (px 6)]
          (>> &.has-placeholder
            (>> info-title
-           [:opacity 1]))
+             [:opacity 1]))
          (>> &:last-child
            [:margin-bottom (px 14)])
          (>> &.about

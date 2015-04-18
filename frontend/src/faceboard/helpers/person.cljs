@@ -5,6 +5,7 @@
             [cuerdas.core :as str]))
 
 (def name-placeholder "John")
+(def full-name-placeholder "John Doe")
 (def about-placeholder "Tell us something about yourself in a few sentences.")
 (def phone-placeholder nil)
 (def email-placeholder "somebody@somewhere.com")

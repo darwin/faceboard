@@ -16,11 +16,11 @@
     [faceboard.css.people :as people]
     [faceboard.css.places :as places]
     [faceboard.css.iframe :as iframe]
+    [faceboard.css.gizmo :as gizmo]
     [faceboard.css.menu :as menu]))
 
 (def ad-hoc
-  [
-  #_[:body {:background-color "red"}]])
+  [#_[:body {:background-color "red"}]])
 
 (def imports
   [(at-import "http://fonts.googleapis.com/css?family=Exo:800")
@@ -43,6 +43,7 @@
    people/styles
    places/styles
    iframe/styles
+   gizmo/styles
    ad-hoc])
 
 ; fully generated stylesheet => resources/public/css/garden.css
