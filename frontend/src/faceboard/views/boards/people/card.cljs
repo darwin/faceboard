@@ -93,12 +93,18 @@
                           :title country-name}))))
           (when extended?
             (dom/div {:class "right-part"}
-              (dom/div {:class    "person-edit-button"
-                        :title    "edit the card"
+              (dom/div {:class    "person-data-button"
+                        :title    "edit raw data of the card"
                         :on-click (fn [e]
                                     (.stopPropagation e)
                                     (perform! :open-editor (om/path person) (.-shiftKey e)))}
                 (dom/i {:class "fa fa-cog"}))
+              (dom/div {:class    "person-edit-button"
+                        :title    "edit the card"
+                        :on-click (fn [e]
+                                    (.stopPropagation e)
+                                    (perform! :toggle-edit))}
+                (dom/i {:class "fa fa-edit"}))
               (om/build person-extended-info-component person))))))))
 
 (defcomponent person-component [data _ _]

@@ -9,6 +9,7 @@
              :view-params  nil
              :show-editor  false
              :editor-path  nil
+             :editing?     false
              :loading?     0
              :extended-set #{}
              :filters      {:expanded-set #{:groups :countries :socials :tags}

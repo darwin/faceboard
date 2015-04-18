@@ -72,11 +72,18 @@
   (render [_]
     (let [{:keys [ui anims transient]} data
           extended-set (:extended-set ui)
+          editing? (:editing? ui)
           people (get-in data [:content :people])
           layout (get-in transient [:layout])
           active-filters (get-in ui [:filters :active])
           filter-predicates (build-filter-predicates active-filters data)]
       (dom/div {:class "people-desk people-layout clearfix"}
+        (when editing?
+          (dom/div {:class "edit-background"
+                    :on-click (fn [e]
+                                (.stopPropagation e)
+                                (.preventDefault e)
+                                (perform! :toggle-edit))}))
         (when layout
           (for [person people]
             (let [person-id (:id person)

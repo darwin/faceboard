@@ -63,7 +63,16 @@
            (>> [person right-part]
              [:visibility :hidden]))))
      (>> people-desk
-       [:background-color people-desk-background-color])
+       [:background-color people-desk-background-color]
+       (>> edit-background
+         [:opacity 0.7
+          :background-color "#999"
+          :position :fixed
+          :top (px 0)
+          :bottom (px 0)
+          :left (px 0)
+          :right (px 0)
+          :z-index 11]))
      (>> people-filters
        [:font-size (px 12)
         :position :absolute
@@ -219,6 +228,12 @@
          [:position :absolute
           :bottom (px 0)
           :right (px 4)
+          :z-index 10
+          :color "#999"])
+       (>> person-data-button
+         [:position :absolute
+          :bottom (px 0)
+          :right (px 24)
           :z-index 10
           :color "#999"])
        (>> left-part

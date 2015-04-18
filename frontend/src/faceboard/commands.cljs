@@ -191,3 +191,7 @@
 (defmethod handle-command :update-people-layout [_ tab-id layout]
   (transform-app-state
     (model/set [:transient tab-id :layout] layout)))
+
+(defmethod handle-command :toggle-edit [_]
+  (transform-app-state
+    (model/toggle [:ui :editing?])))
