@@ -91,6 +91,7 @@
                         :layout    (get layout person-id)
                         :extended? (contains? extended-set person-id)
                         :filtered? (is-person-filtered? filter-predicates person)
+                        :editing?  editing?
                         :anim      (:person anims)}]
               (om/build person-component data {:react-key person-id}))))))))
 

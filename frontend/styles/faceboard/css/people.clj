@@ -175,7 +175,12 @@
         :float :left
         :margin (px 20 20)
         :opacity 1
-        :transform-style :preserve-3d])
+        :transform-style :preserve-3d]
+       (>> has-placeholder
+         [:border "1px dashed #ddd"
+          :border-radius (px 2)]
+         (>> [> *]
+           [:opacity 0.3])))
      (>> polaroid-frame
        [:transform-origin "70px 80px"
         :background-color "#f6f6f6"
@@ -227,13 +232,13 @@
        (>> person-edit-button
          [:position :absolute
           :bottom (px 0)
-          :right (px 4)
+          :right (px 8)
           :z-index 10
           :color "#999"])
        (>> person-data-button
          [:position :absolute
           :bottom (px 0)
-          :right (px 24)
+          :right (px 28)
           :z-index 10
           :color "#999"])
        (>> left-part
@@ -257,9 +262,14 @@
            [:text-decoration :underline]))
        (>> extended-info-section
          [:clear :both
-          :margin-bottom (px 20)]
+          :margin-bottom (px 10)
+          :padding (px 3)
+          :padding-top (px 6)]
+         (>> &.has-placeholder
+           (>> info-title
+           [:opacity 1]))
          (>> &:last-child
-           [:margin-bottom (px 0)])
+           [:margin-bottom (px 14)])
          (>> &.about
            [:max-width (px 300)
             :white-space :normal])

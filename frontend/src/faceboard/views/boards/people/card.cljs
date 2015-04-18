@@ -12,6 +12,21 @@
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
+(defn has-name? [person]
+  (boolean (person/name person)))
+
+(defn has-about? [person]
+  (boolean (person/about person)))
+
+(defn has-contact? [person]
+  (boolean (or (person/email person) (person/phone person))))
+
+(defn has-tags? [person]
+  (not (zero? (count (person/tags person)))))
+
+(defn has-socials? [person]
+  (not (zero? (count (person/socials person)))))
+
 (defcomponent social-section-item-component [data _ _]
   (render [_]
     (let [{:keys [type label content icon url]} (social-info data)]
@@ -21,58 +36,76 @@
                   :title (when type (str content " @ " label))})
           (dom/span {:class "content"} (str " " content)))))))
 
-(defcomponent social-section-component [data _ _]
-  (render [_]
-    (dom/div {:class "extended-info-section social clearfix"}
-      (dom/div {:class "info-title"} "social")
-      (om/build-all social-section-item-component data))))
-
 (defcomponent tags-section-item-component [data _ _]
   (render [_]
     (let [tag data]
       (dom/span {:class "tags-item"} tag))))
 
-(defcomponent tags-section-component [data _ _]
-  (render [_]
-    (dom/div {:class "extended-info-section tags clearfix"}
-      (dom/div {:class "info-title"} "interests")
-      (om/build-all tags-section-item-component data))))
-
 (defcomponent about-section-component [data _ _]
   (render [_]
-    (dom/div {:class "extended-info-section about clearfix"}
-      (dom/div {:class "info-title"} "about")
-      (non-sanitized-div (:about data)))))
+    (let [{:keys [person]} data
+          need-placeholder? (not (has-about? person))
+          about (if need-placeholder? person/about-placeholder (person/about person))]
+      (dom/div {:class (str "extended-info-section about clearfix" (if need-placeholder? " has-placeholder"))}
+        (dom/div {:class "info-title"} "about")
+        (dom/div {:class "info-body"}
+          (non-sanitized-div about))))))
 
 (defcomponent contact-section-component [data _ _]
   (render [_]
-    (let [{:keys [phone email]} data]
-      (dom/div {:class "extended-info-section contact clearfix"}
+    (let [{:keys [person]} data
+          need-placeholder? (not (has-contact? person))
+          phone (if need-placeholder? person/phone-placeholder (person/phone person))
+          email (if need-placeholder? person/email-placeholder (person/email person))]
+      (dom/div {:class (str "extended-info-section contact clearfix" (if need-placeholder? " has-placeholder"))}
         (dom/div {:class "info-title"} "contact")
-        (when email
-          (dom/div {:class "email"}
-            (dom/a {:href (str "mailto:" email)} email)))
-        (when phone
-          (dom/div {:class "phone"}
-            (dom/span {} "phone: ")
-            (dom/span {:class "number"} phone)))))))
+        (dom/div {:class "info-body"}
+          (when email
+            (dom/div {:class "email"}
+              (dom/a {:href (str "mailto:" email)} email)))
+          (when phone
+            (dom/div {:class "phone"}
+              (dom/span {} "phone: ")
+              (dom/span {:class "number"} phone))))))))
+
+(defcomponent tags-section-component [data _ _]
+  (render [_]
+    (let [{:keys [person]} data
+          need-placeholder? (not (has-tags? person))
+          tags (if need-placeholder? person/tags-placeholder (person/tags person))]
+      (dom/div {:class (str "extended-info-section tags clearfix" (if need-placeholder? " has-placeholder"))}
+        (dom/div {:class "info-title"} "interests")
+        (dom/div {:class "info-body"}
+          (om/build-all tags-section-item-component tags))))))
+
+(defcomponent social-section-component [data _ _]
+  (render [_]
+    (let [{:keys [person]} data
+          need-placeholder? (not (has-socials? person))
+          socials (if need-placeholder? person/socials-placeholder (person/socials person))]
+      (dom/div {:class (str "extended-info-section social clearfix" (if need-placeholder? " has-placeholder"))}
+        (dom/div {:class "info-title"} "social")
+        (dom/div {:class "info-body"}
+          (om/build-all social-section-item-component socials))))))
 
 (defcomponent person-extended-info-component [data _ _]
   (render [_]
-    (let [{:keys [bio social tags]} data]
+    (let [{:keys [editing? person]} data]
       (dom/div {:class "person-extended-info"}
-        (when (:about bio)
-          (om/build about-section-component bio))
-        (when (or (:email bio) (:phone bio))
-          (om/build contact-section-component bio))
-        (when (and tags (> (count tags) 0))
-          (om/build tags-section-component tags))
-        (when (and social (> (count social) 0))
-          (om/build social-section-component social))))))
+        (if (or editing? (has-about? person))
+          (om/build about-section-component data))
+        (if (or editing? (has-contact? person))
+          (om/build contact-section-component data))
+        (if (or editing? (has-tags? person))
+          (om/build tags-section-component data))
+        (if (or editing? (has-socials? person))
+          (om/build social-section-component data))))))
 
 (defcomponent person-info-component [data _ _]
   (render [_]
-    (let [{:keys [person extended?]} data
+    (let [{:keys [person extended? editing?]} data
+          need-name-placeholder? (and editing? (not (has-name? person)))
+          name (if need-name-placeholder? person/name-placeholder (person/name person))
           country-code (person/country-code person)
           country-name (person/country-name person)]
       (dom/div {:class (str "person" (when (:hide? data) " hide"))}
@@ -85,12 +118,13 @@
           (dom/div {:class "left-part"}
             (dom/div {:class (str "photo" (when-not (person/photo-has-frame? person) " no-frame"))}
               (dom/img {:src (person/photo-url person)}))
-            (dom/div {:class "name f16"
-                      :title (person/full-name person)}
-              (person/name person)
-              (when-not (nil? country-code)
-                (dom/div {:class (str "flag " country-code)
-                          :title country-name}))))
+            (dom/div {:class (str "name-section" (if need-name-placeholder? " has-placeholder"))}
+              (dom/div {:class "name f16"
+                        :title (person/full-name person)}
+                name
+                (if country-code
+                  (dom/div {:class (str "flag " country-code)
+                            :title country-name})))))
           (when extended?
             (dom/div {:class "right-part"}
               (dom/div {:class    "person-data-button"
@@ -105,11 +139,12 @@
                                     (.stopPropagation e)
                                     (perform! :toggle-edit))}
                 (dom/i {:class "fa fa-edit"}))
-              (om/build person-extended-info-component person))))))))
+              (om/build person-extended-info-component {:editing? editing?
+                                                        :person   person}))))))))
 
 (defcomponent person-component [data _ _]
   (render [_]
-    (let [{:keys [person filtered? layout]} data
+    (let [{:keys [person filtered? editing? layout]} data
           id (:id person)
           expansion-anim (anims/person-expanding id)
           shrinking-anim (anims/person-shrinking id)
@@ -144,6 +179,7 @@
             (dom/div {:class "person-extended-wrapper"}
               (om/build person-info-component {:hide?     (not extended?)
                                                :extended? extended?
+                                               :editing?  editing?
                                                :id        id
                                                :person    person})))
           (dom/div {:class "person-essentials-wrapper"}
