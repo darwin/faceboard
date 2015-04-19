@@ -48,4 +48,8 @@
      (>> :input :select
        [:margin-left (px 6)
         :width (px 200)
-        :font-family gizmo-font]))])
+        :font-family gizmo-font])
+     (>> photo-gizmo
+       (>> url-input
+         (>> :input
+         [:width (px 300)]))))])

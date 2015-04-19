@@ -98,8 +98,9 @@
 
 (defcomponent people-component [data _ _]
   (render [_]
-    (let [static-data (apply dissoc data [:transient :anims :cache])]
-      (dom/div {:class "no-select"}
+    (let [static-data (apply dissoc data [:transient :anims :cache])
+          editing? (:editing? (:ui data))]
+      (dom/div {:class (str "desktop no-select" (if editing? " editing"))}
         (om/build filters-component static-data)
         (om/build people-layout-component data)
         (om/build people-scaffold-component static-data)))))

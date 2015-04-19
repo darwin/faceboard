@@ -8,6 +8,7 @@
 (def full-name-placeholder "John Doe")
 (def about-placeholder "Tell us something about yourself in a few sentences.")
 (def phone-placeholder nil)
+(def photo-url-placeholder "http://some.server.com/photo.jpg")
 (def email-placeholder "somebody@somewhere.com")
 (def tags-placeholder ["movies" "internet" "yoga" "running"])
 (def socials-placeholder ["facebook|some-facebook-user-id"

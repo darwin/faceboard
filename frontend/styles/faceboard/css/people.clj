@@ -5,10 +5,11 @@
 
 (def styles
   [(>> people-board
-     [:padding (px 0)
-      :padding-right (px 280)                               ; leave room for expanded cards
-      :perspective (px 2000)
-      :perspective-origin "50% 50%"]
+     (>> desktop
+       [:padding (px 0)
+        :padding-right (px 280)                             ; leave room for expanded cards
+        :perspective (px 2000)
+        :perspective-origin "50% 50%"])
      (>> people-scaffold
        [:visibility :hidden])
      (>> separator
@@ -21,9 +22,8 @@
          (>> person-card-zoom
            [:transition (str "transform 0.3s " ease-out-back)])
          (>> &.filtered
-           [:opacity 0.3
-            :-webkit-filter "grayscale(1)"
-            :filter "grayscale(1)"
+           [:opacity 0.5
+            :-webkit-filter "sepia(1)"
             :z-index 0]
            (>> polaroid-frame
              [:opacity 1]))
@@ -65,7 +65,7 @@
      (>> people-desk
        [:background-color people-desk-background-color]
        (>> edit-background
-         [:opacity 0.5
+         [:opacity 0.3
           :background-color gizmo-signature-color
           :position :fixed
           :top (px 0)
@@ -210,6 +210,8 @@
             :border "2px solid transparent"])
          (>> :img
            [:max-width (px 126)]))
+       (>> photo-section
+         [:position :relative])
        (>> name-section
          [:position :relative]
          (>> flag
@@ -264,11 +266,11 @@
            [:text-decoration :underline]))
        (>> extended-info-section
          [:position :relative
-          :border "1px solid transparent" ; to be consistent with has-placeholder
+          :border "1px solid transparent"                   ; to be consistent with has-placeholder
           :clear :both
           :margin-bottom (px 10)
           :padding (px 3)
-          :max-width (px 293) ; (- 300 (* 2 3)) account for 3px left/right padding
+          :max-width (px 293)                               ; (- 300 (* 2 3)) account for 3px left/right padding
           :padding-top (px 6)]
          (>> &.has-placeholder
            (>> info-title

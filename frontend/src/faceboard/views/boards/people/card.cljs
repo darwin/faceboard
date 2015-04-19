@@ -9,6 +9,7 @@
             [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.views.boards.people.base :refer [person-card-z-level]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-component]]
             [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
             [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-component]]
             [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-component]]
@@ -146,8 +147,15 @@
                                           "translateY(" (person/photo-displace-y person) "px)"
                                           "translateZ(" (person/photo-displace-z person) "px)"))}
           (dom/div {:class "left-part"}
-            (dom/div {:class (str "photo" (when-not (person/photo-has-frame? person) " no-frame"))}
-              (dom/img {:src (person/photo-url person)}))
+            (dom/div {:class (str "photo-section")}
+              (if (and editing? extended?)
+                (om/build gizmo-component {:id       :photo
+                                           :title    "edit photo"
+                                           :position :left
+                                           :state    gizmo
+                                           :content  (partial om/build photo-gizmo-component {:person person})}))
+              (dom/div {:class (str "photo" (when-not (person/photo-has-frame? person) " no-frame"))}
+                (dom/img {:src (person/photo-url person)})))
             (dom/div {:class (str "name-section" (if need-name-placeholder? " has-placeholder"))}
               (if (and editing? extended?)
                 (om/build gizmo-component {:id       :name

@@ -3,7 +3,6 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.countries :refer [country-names]]
             [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
