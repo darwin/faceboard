@@ -314,6 +314,4 @@
           :margin-right (px 3)
           :white-space :nowrap
           :border-radius (px 2)
-          :background-color social-badge-background-color]
-         (>> &:hover
-           [:background-color social-badge-background-hovered-color]))))])
+          :background-color social-badge-background-color])))])
