@@ -17,4 +17,5 @@
 (defn gizmo-form-key-down [e]
   (let [key (phalanges/key-set e)]
     (condp #(contains? %2 %1) key
-      :esc (perform! :toggle-gizmo))))                      ; close gizmo on ESC
+      :esc (perform! :toggle-gizmo)                         ; close gizmo on ESC
+      nil)))

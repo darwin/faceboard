@@ -21,7 +21,11 @@
     ["--" "--- none ---"]
     (sort #(compare (second %) (second %2)) country-names)))
 
-(defcomponent name-gizmo-component [data _ _]
+(defcomponent name-gizmo-component [data owner]
+  (did-mount [_]
+    (let [focus-node (om/get-node owner "focus")]
+      (.focus focus-node)
+      (.select focus-node)))
   (render [_]
     (let [{:keys [person]} data
           name (get-in person [:bio :name])
@@ -32,6 +36,7 @@
         (dom/div {:class "name-input"}
           (dom/label "Name:"
             (dom/input {:type        "text"
+                        :ref         "focus"
                         :value       name
                         :placeholder person/full-name-placeholder
                         :on-change   (handler (partial commit-name-change person))})))
