@@ -4,11 +4,24 @@
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [country-names]]
+            [faceboard.helpers.underscore :refer [throttle]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defn handle-name-change [person e]
   (let [value (.. e -target -value)]
     (om/transact! person [:bio :name] #(do value))))
+
+(defn commit-name-change [person value]
+  (log "commit")
+  (om/transact! person [:bio :name] #(do value)))
+
+(defn handler [commit-fn person]
+  (let [throttled-commit-fn (throttle commit-fn 1000)]
+    (log "handler")
+    (fn [e]
+      (log "ev")
+      (let [value (.. e -target -value)]
+        (throttled-commit-fn person value)))))
 
 (defn handle-nick-change [person e]
   (let [value (.. e -target -value)]
@@ -35,13 +48,13 @@
             (dom/input {:type        "text"
                         :value       name
                         :placeholder person/full-name-placeholder
-                        :on-change   (partial handle-name-change person)})))
+                        :on-change   (handler commit-name-change person)})))
         (dom/div {:class "nick-input"}
           (dom/label "Nick:"
-            (dom/input {:type      "text"
-                        :value     nick
+            (dom/input {:type        "text"
+                        :value       nick
                         :placeholder "(optional)"
-                        :on-change (partial handle-nick-change person)})))
+                        :on-change   (partial handle-nick-change person)})))
         (dom/div {:class "country-select"}
           (dom/label "Country:"
             (dom/select {:value     country-code

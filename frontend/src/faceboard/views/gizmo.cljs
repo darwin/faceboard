@@ -28,9 +28,9 @@
           left? (= position :left)
           top "50%"
           left (if left? "0%" "100%")
-          px (if left? -12 12)
+          px (if left? -10 12)
           py (if left? -2 2)
-          icon (if left? "sign-in" "sign-in fa-rotate-180")]
+          icon (if left? "paperclip fa-flip-horizontal" "paperclip")]
       (dom/div {:class "gizmo-point"
                 :style (merge
                          (css-transform (str "translateX(" px "px)" "translateY(" py "px)"))
@@ -39,8 +39,8 @@
           (if active?
             (dom/div {:class "gizmo-frame-correction"
                       :style {:top   "0px"
-                              :right (if left? "30px")
-                              :left  (if-not left? "10px")}}
+                              :right (if left? "20px")
+                              :left  (if-not left? "0px")}}
               (dom/div {:class "gizmo-frame-placement"}
                 (om/build gizmo-content-component {:content content}))))
           (dom/div {:class "pin-point"}
