@@ -27,7 +27,7 @@
                  ;:onload      #(perform! :dec-loading-counter)  ; this is a bug in react https://github.com/facebook/react/issues/1718
                  })))
 
-(defcomponent iframe-component [data owner _]
+(defcomponent iframe-component [data _]
   (render [_]
     (let [{:keys [content]} data]
       (dom/div {:class "iframe-parent"}

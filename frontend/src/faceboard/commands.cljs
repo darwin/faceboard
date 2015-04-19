@@ -194,8 +194,13 @@
 
 (defmethod handle-command :toggle-edit [_]
   (transform-app-state
-    (model/toggle [:ui :editing?])))
+    (model/toggle [:ui :editing?])
+    (model/set [:ui :gizmo :active] nil)))
 
-(defmethod handle-command :activate-gizmo [_ gizmo-id]
-  (transform-app-state
-    (model/set [:ui :gizmo :active] gizmo-id)))
+(defmethod handle-command :toggle-gizmo [_ gizmo-id position]
+  (if (= (get-in @app-state [:ui :gizmo :active]) gizmo-id)
+    (transform-app-state
+      (model/set [:ui :gizmo :active] nil))
+    (transform-app-state
+      (model/set [:ui :gizmo :active] gizmo-id)
+      (model/set [:ui :gizmo :position] position))))

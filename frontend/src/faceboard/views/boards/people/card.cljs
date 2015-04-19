@@ -133,7 +133,7 @@
 
 (defcomponent person-info-component [data _ _]
   (render [_]
-    (let [{:keys [id person extended? editing? gizmo]} data
+    (let [{:keys [person extended? editing? gizmo]} data
           need-name-placeholder? (and editing? (not (has-name? person)))
           name (if need-name-placeholder? person/name-placeholder (person/name person))
           country-code (person/country-code person)
@@ -163,23 +163,27 @@
                             :title country-name})))))
           (when extended?
             (dom/div {:class "right-part"}
-              (dom/div {:class    "person-data-button"
-                        :title    "edit raw data of the card"
-                        :on-click (fn [e]
-                                    (.stopPropagation e)
-                                    (perform! :open-editor (om/path person) (.-shiftKey e)))}
-                (dom/i {:class "fa fa-cog"}))
               (dom/div {:class    "person-edit-button"
                         :title    "edit the card"
                         :on-click (fn [e]
                                     (.stopPropagation e)
-                                    (perform! :toggle-edit))}
+                                    (if (.-altKey e)
+                                      (perform! :open-editor (om/path person) (.-shiftKey e))
+                                      (perform! :toggle-edit)))}
                 (dom/i {:class "fa fa-edit"}))
               (om/build person-extended-info-component {:editing? editing?
                                                         :gizmo    gizmo
                                                         :person   person}))))))))
 
-(defcomponent person-component [data _ _]
+(defn get-current-scroll-position []
+  (if-let [contents-node (.item (.getElementsByClassName js/document "tab-contents") 0)]
+    {:top (.-scrollTop contents-node) :left (.-scrollLeft contents-node)}
+    {:top 0 :left 0}))
+
+(defn get-current-window-dimensions []
+  {:width (.-innerWidth js/window) :height (.-innerHeight js/window)})
+
+(defcomponent person-component [data _]
   (render [_]
     (let [{:keys [person filtered? editing? gizmo layout]} data
           id (:id person)
@@ -189,11 +193,27 @@
           extended? (and
                       (not filtered?)
                       (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1)))
-          transform (when layout
-                      (str
-                        "translateX(" (:left layout) "px)"
-                        "translateY(" (:top layout) "px)"
-                        "translateZ(" (:z layout) "px)"))
+          normal-transform #(when layout
+                             (str
+                               "translateX(" (:left layout) "px)"
+                               "translateY(" (:top layout) "px)"
+                               "translateZ(" (:z layout) "px)"))
+          ; snappy transform is active in editing mode the goal is to keep one card in the center of attention
+          ; also moving it left/right to make room for currently opened gizmo
+          snappy-transform #(let [card-width 480
+                                  scroll-top (:top (get-current-scroll-position))
+                                  window-width (:width (get-current-window-dimensions))
+                                  left? (and (:active gizmo) (= (:position gizmo) :left))
+                                  right? (and (:active gizmo) (= (:position gizmo) :right))
+                                  padding 20
+                                  posx (cond
+                                         right? padding     ; move card left
+                                         left? (- window-width (+ card-width padding)) ; move card to the right
+                                         :else (.round js/Math (/ (- window-width card-width) 2)))] ; center card horizontally
+                             (str
+                               "translateX(" posx "px)"
+                               "translateY(" (+ scroll-top 20) "px)"
+                               "translateZ(" (- person-card-z-level) "px)"))
           zoom-transform (when layout
                            (str
                              "translateZ(" (if extended? person-card-z-level 0) "px)"))]
@@ -204,12 +224,13 @@
                              (when extended? " extended")
                              (when (:extended? data) " top-z")
                              (if filtered? " filtered" " expandable"))
-                :style     (css-transform transform)
+                :style     (css-transform (if (and extended? editing?) (snappy-transform) (normal-transform)))
                 :data-fbid id
                 :on-click  (when interactive?
                              (fn [e]
                                (.stopPropagation e)
-                               (router/switch-person (if-not extended? id nil))))}
+                               (if-not editing?
+                                 (router/switch-person (if-not extended? id nil)))))}
         (dom/div {:class (str "person-card-zoom")
                   :style (css-transform zoom-transform)}
           (when layout

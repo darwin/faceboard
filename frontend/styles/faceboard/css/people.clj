@@ -65,8 +65,8 @@
      (>> people-desk
        [:background-color people-desk-background-color]
        (>> edit-background
-         [:opacity 0.7
-          :background-color "#999"
+         [:opacity 0.5
+          :background-color gizmo-signature-color
           :position :fixed
           :top (px 0)
           :bottom (px 0)
@@ -267,6 +267,7 @@
           :clear :both
           :margin-bottom (px 10)
           :padding (px 3)
+          :max-width (px 294) ; (- 300 (* 2 3)) account for 3px left/right padding
           :padding-top (px 6)]
          (>> &.has-placeholder
            (>> info-title
@@ -274,11 +275,9 @@
          (>> &:last-child
            [:margin-bottom (px 14)])
          (>> &.about
-           [:max-width (px 300)
-            :white-space :normal])
+           [:white-space :normal])
          (>> &.tags
            [:color social-badge-text-color
-            :max-width (px 300)
             :line-height (px 18)
             :white-space :normal])
          (>> info-title

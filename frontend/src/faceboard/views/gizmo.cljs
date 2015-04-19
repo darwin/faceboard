@@ -47,4 +47,4 @@
                       :on-click (fn [e]
                                   (.stopPropagation e)
                                   (.preventDefault e)
-                                  (perform! :activate-gizmo id))}))))))))
+                                  (perform! :toggle-gizmo id position))}))))))))
