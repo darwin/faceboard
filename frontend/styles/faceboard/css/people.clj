@@ -177,7 +177,7 @@
         :opacity 1
         :transform-style :preserve-3d]
        (>> has-placeholder
-         [:border "1px dashed #ddd"
+         [:border "1px dashed #ddd !important"
           :border-radius (px 2)]
          (>> [> *]
            [:opacity 0.3])))
@@ -264,6 +264,7 @@
            [:text-decoration :underline]))
        (>> extended-info-section
          [:position :relative
+          :border "1px solid transparent" ; to be consistent with has-placeholder
           :clear :both
           :margin-bottom (px 10)
           :padding (px 3)

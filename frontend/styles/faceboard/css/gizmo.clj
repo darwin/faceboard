@@ -26,6 +26,7 @@
         :transform "translateY(-50%)"]))
    (>> gizmo-frame
      [:cursor :pointer
+      :min-width (px 300)
       :border-radius (px 2)
       :background-color "#f6f6f6"
       :border (str "2px solid " gizmo-signature-color)
@@ -39,11 +40,12 @@
          [:margin-bottom (px 4)]))
      (>> :label
        [:color "#999"
-        :font-size (px 10)])
+        :font-size (px 10)]
+       (>> :span
+         [:display :inline-block
+          :text-align :right
+          :width (px 80)]))
      (>> :input :select
        [:margin-left (px 6)
-        :font-family gizmo-font])
-     (>> name-country-gizmo
-       (>> country-select
-         (>> :select
-           [:max-width (px 200)]))))])
+        :width (px 200)
+        :font-family gizmo-font]))])
