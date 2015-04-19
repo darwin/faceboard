@@ -7,14 +7,18 @@
             [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
+(def name-path [:bio :name])
+(def nick-path [:bio :nick])
+(def country-path [:bio :country])
+
 (defn commit-name-change [person value]
-  (om/update! person [:bio :name] value))
+  (om/update! person name-path value))
 
 (defn handle-nick-change [person value]
-  (om/update! person [:bio :nick] value))
+  (om/update! person nick-path value))
 
 (defn handle-country-change [person value]
-  (om/update! person [:bio :country] (if (= value "--") nil value)))
+  (om/update! person country-path (if (= value "--") nil value)))
 
 (defn country-list []
   (cons
@@ -28,9 +32,9 @@
       (.select focus-node)))
   (render [_]
     (let [{:keys [person]} data
-          name (get-in person [:bio :name])
-          nick (get-in person [:bio :nick])
-          country-code (get-in person [:bio :country])]
+          name (get-in person name-path)
+          nick (get-in person nick-path)
+          country-code (get-in person country-path)]
       (dom/form {:class "name-country-gizmo"
                  :on-key-down gizmo-form-key-down}
         (dom/div {:class "name-input"}

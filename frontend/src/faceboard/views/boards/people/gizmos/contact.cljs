@@ -4,47 +4,39 @@
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [country-names]]
+            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
-(defn handle-name-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :name] #(do value))))
+(def email-path [:bio :email])
+(def phone-path [:bio :phone])
 
-(defn handle-nick-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :nick] #(do value))))
+(defn commit-email-change [person value]
+  (om/update! person email-path value))
 
-(defn handle-country-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :country] #(do (if (= value "--") nil value)))))
+(defn handle-phone-change [person value]
+  (om/update! person phone-path value))
 
-(defn country-list []
-  (cons
-    ["--" "--- none ---"]
-    (sort #(compare (second %) (second %2)) country-names)))
-
-(defcomponent contact-gizmo-component [data _ _]
+(defcomponent contact-gizmo-component [data owner]
+  (did-mount [_]
+    (let [focus-node (om/get-node owner "focus")]
+      (.focus focus-node)
+      (.select focus-node)))
   (render [_]
     (let [{:keys [person]} data
-          name (get-in person [:bio :name])
-          nick (get-in person [:bio :nick])
-          country-code (get-in person [:bio :country])]
-      (dom/form {:class "contact-gizmo"}
-        (dom/div {:class "name-input"}
-          (dom/label "Name:"
+          email (get-in person email-path)
+          phone (get-in person phone-path)]
+      (dom/form {:class "contact-gizmo"
+                 :on-key-down gizmo-form-key-down}
+        (dom/div {:class "email-input"}
+          (dom/label "Email:"
             (dom/input {:type        "text"
-                        :value       name
-                        :placeholder person/full-name-placeholder
-                        :on-change   (partial handle-name-change person)})))
-        (dom/div {:class "nick-input"}
-          (dom/label "Nick:"
-            (dom/input {:type      "text"
-                        :value     nick
+                        :ref         "focus"
+                        :value       email
+                        :placeholder person/email-placeholder
+                        :on-change   (handler (partial commit-email-change person))})))
+        (dom/div {:class "phone-input"}
+          (dom/label "Phone:"
+            (dom/input {:type        "text"
+                        :value       phone
                         :placeholder "(optional)"
-                        :on-change (partial handle-nick-change person)})))
-        (dom/div {:class "country-select"}
-          (dom/label "Country:"
-            (dom/select {:value     country-code
-                         :on-change (partial handle-country-change person)}
-              (for [[code name] (country-list)]
-                (dom/option {:value code} name)))))))))
+                        :on-change   (handler (partial handle-phone-change person))})))))))
