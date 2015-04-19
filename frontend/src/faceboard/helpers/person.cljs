@@ -16,14 +16,18 @@
                           "instagram|some-instagram-user-id"
                           "http://www.yourweb.com"])
 
+(defn s [v]
+  (let [sv (str v)]
+    (if (zero? (count sv)) nil sv)))
+
 (defn name [person]
   (let [name (str/trim (first-word (str (get-in person [:bio :name]))))]
-    (if (zero? (count name)) nil name)))
+    (s name)))
 
 (defn full-name [person]
-  (str (or
-         (get-in person [:bio :full-name])
-         (get-in person [:bio :name]))))
+  (s (or
+       (get-in person [:bio :full-name])
+       (get-in person [:bio :name]))))
 
 (defn photo-url [person]
   (or (get-in person [:bio :photo :url] nil) "/images/unknown.jpg"))
@@ -50,19 +54,19 @@
   (or (get-in person [:bio :photo :displace :z]) 0))        ; 0px unless requested by data
 
 (defn country-code [person]
-  (get-in person [:bio :country]))
+  (s (get-in person [:bio :country])))
 
 (defn country-name [person]
   (lookup-country-name (country-code person)))
 
 (defn email [person]
-  (get-in person [:bio :email]))
+  (s (get-in person [:bio :email])))
 
 (defn phone [person]
-  (get-in person [:bio :phone]))
+  (s (get-in person [:bio :phone])))
 
 (defn about [person]
-  (get-in person [:bio :about]))
+  (s (get-in person [:bio :about])))
 
 (defn tags [person]
   (get-in person [:tags] []))
