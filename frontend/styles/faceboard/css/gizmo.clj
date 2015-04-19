@@ -6,17 +6,19 @@
   [(>> gizmo-point
      [:position :absolute
       :opacity "1 !important"
-      :z-index 110]
+      :z-index 200
+      :cursor :auto]
+     (>> pin-point
+       [:cursor :pointer
+        :position :relative
+        :top (px -15)
+        :left (px -10)
+        :color gizmo-signature-color
+        :font-size (px 24)]
+       (>> &:hover
+         [:color gizmo-signature-hovered-color])))
      (>> mover
-       [:position :relative]
-       (>> pin-point
-         [:position :relative
-          :top (px -15)
-          :left (px -10)
-          :color gizmo-signature-color
-          :font-size (px 24)]
-         (>> &:hover
-           [:color gizmo-signature-hovered-color]))))
+       [:position :relative])
    (>> gizmo-frame-correction
      [:position :absolute
       :z-index 100]
@@ -24,7 +26,8 @@
        [:position :relative
         :transform "translateY(-50%)"]))
    (>> gizmo-frame
-     [:border-radius (px 2)
+     [:cursor :pointer
+      :border-radius (px 2)
       :background-color "#f6f6f6"
       :border (str "2px solid " gizmo-signature-color)
       :padding (px 10 12)

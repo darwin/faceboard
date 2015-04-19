@@ -30,7 +30,7 @@
 
 (def people-desk-background-color selected-tab-color)
 
-(def gizmo-signature-color "#FA6900")
-(def gizmo-signature-hovered-color "#F38630")
+(def gizmo-signature-color signature-color)
+(def gizmo-signature-hovered-color "#1e2d4d")
 
 (def empty-filter-opacity 0.3)

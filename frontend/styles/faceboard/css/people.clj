@@ -267,7 +267,7 @@
           :clear :both
           :margin-bottom (px 10)
           :padding (px 3)
-          :max-width (px 294) ; (- 300 (* 2 3)) account for 3px left/right padding
+          :max-width (px 292) ; (- 300 (* 2 3)) account for 3px left/right padding
           :padding-top (px 6)]
          (>> &.has-placeholder
            (>> info-title
