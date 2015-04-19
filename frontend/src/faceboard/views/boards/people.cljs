@@ -6,7 +6,7 @@
             [faceboard.views.boards.people.base :refer [is-person-filtered? person-card-z-level]]
             [faceboard.views.boards.people.card :refer [person-component]]
             [faceboard.views.boards.people.filters :refer [filters-component build-filter-predicates]]
-            [faceboard.helpers.underscore :refer [throttle]]
+            [faceboard.helpers.underscore :refer [debounce]]
             [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.helpers.person :as person]))
@@ -31,7 +31,7 @@
     (when-not (= (pr-str current-layout) (pr-str layout))
       (perform! :update-people-layout (:id data) layout))))
 
-(def throttled-recompute-layout (throttle recompute-layout 200))
+(def throttled-recompute-layout (debounce recompute-layout 200))
 
 (defcomponent people-scaffold-component [data owner _]
   (did-mount [_]

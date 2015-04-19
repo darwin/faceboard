@@ -4,32 +4,23 @@
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [country-names]]
-            [faceboard.helpers.underscore :refer [throttle]]
+            [faceboard.helpers.underscore :refer [debounce]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
-(defn handle-name-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :name] #(do value))))
-
 (defn commit-name-change [person value]
-  (log "commit")
-  (om/transact! person [:bio :name] #(do value)))
+  (om/update! person [:bio :name] value))
 
-(defn handler [commit-fn person]
-  (let [throttled-commit-fn (throttle commit-fn 1000)]
-    (log "handler")
+(defn handle-nick-change [person value]
+  (om/update! person [:bio :nick] value))
+
+(defn handle-country-change [person value]
+  (om/update! person [:bio :country] (if (= value "--") nil value)))
+
+(defn handler [commit-fn]
+  (let [debounced-commit-fn (debounce commit-fn 1000)]
     (fn [e]
-      (log "ev")
       (let [value (.. e -target -value)]
-        (throttled-commit-fn person value)))))
-
-(defn handle-nick-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :nick] #(do value))))
-
-(defn handle-country-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :country] #(do (if (= value "--") nil value)))))
+        (debounced-commit-fn value)))))
 
 (defn country-list []
   (cons
@@ -48,16 +39,16 @@
             (dom/input {:type        "text"
                         :value       name
                         :placeholder person/full-name-placeholder
-                        :on-change   (handler commit-name-change person)})))
+                        :on-change   (handler (partial commit-name-change person))})))
         (dom/div {:class "nick-input"}
           (dom/label "Nick:"
             (dom/input {:type        "text"
                         :value       nick
                         :placeholder "(optional)"
-                        :on-change   (partial handle-nick-change person)})))
+                        :on-change   (handler (partial handle-nick-change person))})))
         (dom/div {:class "country-select"}
           (dom/label "Country:"
             (dom/select {:value     country-code
-                         :on-change (partial handle-country-change person)}
+                         :on-change (handler (partial handle-country-change person))}
               (for [[code name] (country-list)]
                 (dom/option {:value code} name)))))))))
