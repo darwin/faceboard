@@ -8,7 +8,11 @@
             [faceboard.router :as router]
             [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.views.boards.people.base :refer [person-card-z-level]]
-            [faceboard.views.boards.people.gizmos :refer [name-country-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
@@ -45,21 +49,33 @@
 
 (defcomponent about-section-component [data _ _]
   (render [_]
-    (let [{:keys [person]} data
+    (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-about? person))
           about (if need-placeholder? person/about-placeholder (person/about person))]
       (dom/div {:class (str "extended-info-section about clearfix" (if need-placeholder? " has-placeholder"))}
+        (if editing?
+          (om/build gizmo-component {:id       :about
+                                     :title    "edit about section"
+                                     :position :right
+                                     :state    gizmo
+                                     :content  (partial om/build about-gizmo-component {:person person})}))
         (dom/div {:class "info-title"} "about")
         (dom/div {:class "info-body"}
           (non-sanitized-div about))))))
 
 (defcomponent contact-section-component [data _ _]
   (render [_]
-    (let [{:keys [person]} data
+    (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-contact? person))
           phone (if need-placeholder? person/phone-placeholder (person/phone person))
           email (if need-placeholder? person/email-placeholder (person/email person))]
       (dom/div {:class (str "extended-info-section contact clearfix" (if need-placeholder? " has-placeholder"))}
+        (if editing?
+          (om/build gizmo-component {:id       :contact
+                                     :title    "edit contact section"
+                                     :position :right
+                                     :state    gizmo
+                                     :content  (partial om/build contact-gizmo-component {:person person})}))
         (dom/div {:class "info-title"} "contact")
         (dom/div {:class "info-body"}
           (when email
@@ -72,20 +88,32 @@
 
 (defcomponent tags-section-component [data _ _]
   (render [_]
-    (let [{:keys [person]} data
+    (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-tags? person))
           tags (if need-placeholder? person/tags-placeholder (person/tags person))]
       (dom/div {:class (str "extended-info-section tags clearfix" (if need-placeholder? " has-placeholder"))}
+        (if editing?
+          (om/build gizmo-component {:id       :tags
+                                     :title    "edit interests section"
+                                     :position :right
+                                     :state    gizmo
+                                     :content  (partial om/build tags-gizmo-component {:person person})}))
         (dom/div {:class "info-title"} "interests")
         (dom/div {:class "info-body"}
           (om/build-all tags-section-item-component tags))))))
 
 (defcomponent social-section-component [data _ _]
   (render [_]
-    (let [{:keys [person]} data
+    (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-socials? person))
           socials (if need-placeholder? person/socials-placeholder (person/socials person))]
       (dom/div {:class (str "extended-info-section social clearfix" (if need-placeholder? " has-placeholder"))}
+        (if editing?
+          (om/build gizmo-component {:id       :social
+                                     :title    "edit social section"
+                                     :position :right
+                                     :state    gizmo
+                                     :content  (partial om/build social-gizmo-component {:person person})}))
         (dom/div {:class "info-title"} "social")
         (dom/div {:class "info-body"}
           (om/build-all social-section-item-component socials))))))
@@ -122,16 +150,11 @@
               (dom/img {:src (person/photo-url person)}))
             (dom/div {:class (str "name-section" (if need-name-placeholder? " has-placeholder"))}
               (if (and editing? extended?)
-                (om/build gizmo-component {:id    :name-country
-                                           :title "edit name and country"
-                                           :icon  "sign-in"
-                                           :content (partial om/build name-country-gizmo-component {:person person
-                                                                                                    :id id})
-                                           :state gizmo
-                                           :left  "0%"
-                                           :top   "50%"
-                                           :py    -2
-                                           :px    -12}))
+                (om/build gizmo-component {:id       :name
+                                           :title    "edit name and country"
+                                           :position :left
+                                           :state    gizmo
+                                           :content  (partial om/build name-gizmo-component {:person person})}))
               (dom/div {:class "name f16"
                         :title (person/full-name person)}
                 name
@@ -153,6 +176,7 @@
                                     (perform! :toggle-edit))}
                 (dom/i {:class "fa fa-edit"}))
               (om/build person-extended-info-component {:editing? editing?
+                                                        :gizmo    gizmo
                                                         :person   person}))))))))
 
 (defcomponent person-component [data _ _]

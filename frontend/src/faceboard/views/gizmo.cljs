@@ -19,8 +19,14 @@
 
 (defcomponent gizmo-component [data _ _]
   (render [_]
-    (let [{:keys [state id title top left px py icon content]} data
-          active? (= (:active state) id)]
+    (let [{:keys [state id title content position]} data
+          active? (= (:active state) id)
+          left? (= position :left)
+          top "50%"
+          left (if left? "0%" "100%")
+          px (if left? -12 12)
+          py (if left? -2 2)
+          icon (if left? "sign-in" "sign-in fa-rotate-180")]
       (dom/div {:class "gizmo-point"
                 :style {:top  top
                         :left left}}
@@ -29,7 +35,10 @@
                           :left px}}
           (dom/div {:class "gizmo-wrapper"}
             (if active?
-              (dom/div {:class "gizmo-frame-correction"}
+              (dom/div {:class "gizmo-frame-correction"
+                        :style {:top "0px"
+                                :right (if left? "30px")
+                                :left (if-not left? "10px")}}
                 (dom/div {:class "gizmo-frame-placement"}
                   (om/build gizmo-content-component {:content content}))))
             (dom/div {:class "pin-point"}

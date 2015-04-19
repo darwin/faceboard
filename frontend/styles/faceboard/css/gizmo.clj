@@ -19,9 +19,7 @@
            [:color gizmo-signature-hovered-color]))))
    (>> gizmo-frame-correction
      [:position :absolute
-      :z-index 100
-      :top "0px"
-      :right "30px"]
+      :z-index 100]
      (>> gizmo-frame-placement
        [:position :relative
         :transform "translateY(-50%)"]))

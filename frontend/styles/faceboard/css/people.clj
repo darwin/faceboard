@@ -248,7 +248,7 @@
           :vertical-align :top])
        (>> right-part
          [:display :inline-block
-          :overflow :hidden
+          :overflow :visible
           :visibility :visible]))
      (>> person-extended-info
        [:min-width (px 300)
@@ -263,7 +263,8 @@
          (>> &:hover
            [:text-decoration :underline]))
        (>> extended-info-section
-         [:clear :both
+         [:position :relative
+          :clear :both
           :margin-bottom (px 10)
           :padding (px 3)
           :padding-top (px 6)]

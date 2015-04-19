@@ -1,4 +1,4 @@
-(ns faceboard.views.boards.people.gizmos
+(ns faceboard.views.boards.people.gizmos.contact
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -23,13 +23,13 @@
     ["--" "--- none ---"]
     (sort #(compare (second %) (second %2)) country-names)))
 
-(defcomponent name-country-gizmo-component [data _ _]
+(defcomponent contact-gizmo-component [data _ _]
   (render [_]
     (let [{:keys [person]} data
           name (get-in person [:bio :name])
           nick (get-in person [:bio :nick])
           country-code (get-in person [:bio :country])]
-      (dom/form {:class "name-country-gizmo"}
+      (dom/form {:class "contact-gizmo"}
         (dom/div {:class "name-input"}
           (dom/label "Name:"
             (dom/input {:type        "text"
