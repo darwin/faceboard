@@ -4,7 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [country-names]]
-            [faceboard.helpers.underscore :refer [debounce]]
+            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defn commit-name-change [person value]
@@ -15,12 +15,6 @@
 
 (defn handle-country-change [person value]
   (om/update! person [:bio :country] (if (= value "--") nil value)))
-
-(defn handler [commit-fn]
-  (let [debounced-commit-fn (debounce commit-fn 1000)]
-    (fn [e]
-      (let [value (.. e -target -value)]
-        (debounced-commit-fn value)))))
 
 (defn country-list []
   (cons
@@ -33,7 +27,8 @@
           name (get-in person [:bio :name])
           nick (get-in person [:bio :nick])
           country-code (get-in person [:bio :country])]
-      (dom/form {:class "name-country-gizmo"}
+      (dom/form {:class "name-country-gizmo"
+                 :on-key-down gizmo-form-key-down}
         (dom/div {:class "name-input"}
           (dom/label "Name:"
             (dom/input {:type        "text"
