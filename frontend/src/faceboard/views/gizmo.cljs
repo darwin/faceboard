@@ -31,9 +31,10 @@
           left? (= position :left)
           top "50%"
           left (if left? "0%" "100%")
-          px (if active? (if left? -10 12) (if left? -4 6))
+          px (if active? (if left? -8 4) (if left? -2 0))
           py (if left? -2 2)
-          icon (if left? "paperclip fa-flip-horizontal" "paperclip")]
+          base-icon "reply"
+          icon (if left? (str base-icon " fa-flip-horizontal") base-icon)]
       (dom/div {:class "gizmo-point"
                 :style (merge
                          (css-transform (str "translateX(" px "px)" "translateY(" py "px)"))
@@ -42,8 +43,8 @@
           (if active?
             (dom/div {:class "gizmo-frame-correction"
                       :style {:top   "0px"
-                              :right (if left? "20px")
-                              :left  (if-not left? "0px")}}
+                              :right (if left? "31px")
+                              :left  (if-not left? "11px")}}
               (dom/div {:class "gizmo-frame-placement"}
                 (om/build gizmo-content-component {:content content}))))
           (dom/div {:class (str "pin-point" (if active? " active"))}

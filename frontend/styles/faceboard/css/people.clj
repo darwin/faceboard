@@ -241,16 +241,13 @@
      (>> person
        (>> person-edit-button
          [:position :absolute
-          :bottom (px 0)
+          :top (px 4)
           :right (px 8)
+          :padding (px 0 4)
           :z-index 10
-          :color "#999"])
-       (>> person-data-button
-         [:position :absolute
-          :bottom (px 0)
-          :right (px 28)
-          :z-index 10
-          :color "#999"])
+          :color "#999"]
+         (>> &:hover
+           [:color signature-color]))
        (>> left-part
          [:display :inline-block
           :vertical-align :top])

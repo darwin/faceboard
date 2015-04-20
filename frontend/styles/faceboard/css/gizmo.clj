@@ -12,10 +12,11 @@
      [:z-index 100
       :cursor :pointer
       :position :relative
-      :top (px -15)
-      :left (px -10)
+      :top (px -23)
+      :left (px -14)
       :color gizmo-point-color
-      :font-size (px 24)]
+      :font-size (px 24)
+      :padding (px 8 4)]
      (>> &.active
        [:color gizmo-point-active-color])
      (>> &:hover
@@ -31,7 +32,7 @@
       :min-width (px 300)
       :border-radius (px 2)
       :background-color "#f6f6f6"
-      :border (str "2px solid " gizmo-border-color)
+      :border (str "3px solid " gizmo-border-color)
       :padding (px 10 10)
       :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"])
    (>> gizmo-content

@@ -179,18 +179,19 @@
                             :title country-name})))))
           (when extended?
             (dom/div {:class "right-part"}
-              (dom/div {:class    "person-edit-button"
-                        :title    "edit the card"
-                        :on-click (fn [e]
-                                    (.stopPropagation e)
-                                    (if (.-altKey e)
-                                      (perform! :open-editor (om/path person) (.-shiftKey e))
-                                      (perform! :toggle-edit)))}
-                (dom/i {:class "fa fa-edit"}))
               (om/build person-extended-info-component {:editing? editing?
                                                         :gizmo    gizmo
                                                         :people   people
-                                                        :person   person}))))))))
+                                                        :person   person})))
+          (when (and extended? (not editing?))
+            (dom/div {:class    "person-edit-button"
+                      :title    "edit the card"
+                      :on-click (fn [e]
+                                  (.stopPropagation e)
+                                  (if (.-altKey e)
+                                    (perform! :open-editor (om/path person) (.-shiftKey e))
+                                    (perform! :toggle-edit)))}
+              (dom/i {:class "fa fa-wrench"}))))))))
 
 (defn get-current-scroll-position []
   (if-let [contents-node (.item (.getElementsByClassName js/document "tab-contents") 0)]
@@ -225,7 +226,7 @@
                                   left-padding 20
                                   top-padding 40
                                   posx (cond
-                                         right? left-padding     ; move card left
+                                         right? left-padding ; move card left
                                          left? (- window-width (+ card-width left-padding)) ; move card to the right
                                          :else (.round js/Math (/ (- window-width card-width) 2)))] ; center card horizontally
                              (str
