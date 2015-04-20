@@ -17,14 +17,14 @@
           :position :fixed
           :top (px 0)
           ;:bottom (px 0) this does not work for small boards
-          :height "100000%" ; HACK IT
+          :height "100000%"                                 ; HACK IT
           :left (px 0)
           :right (px 0)
           :z-index 11])
        (>> &.editing
          (>> person
            (>> right-part
-             [:overflow :visible])))) ; for gizmos
+             [:overflow :visible]))))                       ; for gizmos
      (>> people-scaffold
        [:visibility :hidden])
      (>> separator
@@ -38,7 +38,7 @@
            [:transition (str "transform 0.3s " ease-out-back)])
          (>> &.filtered
            [:opacity 0.5
-            :-webkit-filter "sepia(1)"
+            :-webkit-filter "grayscale(1)"
             :z-index 0]
            (>> polaroid-frame
              [:opacity 1]))
@@ -248,7 +248,7 @@
        (>> person-edit-button
          [:position :absolute
           :top (px -6)
-          :right (px 0)
+          :left (px 292)                                    ; position it from left to play well with shrinking/expanding animation
           :padding (px 0 4)
           :z-index 10
           :color "#999"]
