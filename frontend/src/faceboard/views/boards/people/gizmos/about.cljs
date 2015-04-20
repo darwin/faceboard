@@ -3,48 +3,26 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.countries :refer [country-names]]
+            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
-(defn handle-name-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :name] #(do value))))
+(def about-path [:bio :about])
 
-(defn handle-nick-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :nick] #(do value))))
+(defn commit-about-change [person value]
+  (om/update! person about-path value))
 
-(defn handle-country-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :country] #(do (if (= value "--") nil value)))))
-
-(defn country-list []
-  (cons
-    ["--" "--- none ---"]
-    (sort #(compare (second %) (second %2)) country-names)))
-
-(defcomponent about-gizmo-component [data _ _]
+(defcomponent about-gizmo-component [data owner]
+  (did-mount [_]
+    (let [focus-node (om/get-node owner "focus")]
+      (.focus focus-node)))
   (render [_]
     (let [{:keys [person]} data
-          name (get-in person [:bio :name])
-          nick (get-in person [:bio :nick])
-          country-code (get-in person [:bio :country])]
-      (dom/form {:class "about-gizmo"}
-        (dom/div {:class "name-input"}
-          (dom/label "Name:"
-            (dom/input {:type        "text"
-                        :value       name
-                        :placeholder person/full-name-placeholder
-                        :on-change   (partial handle-name-change person)})))
-        (dom/div {:class "nick-input"}
-          (dom/label "Nick:"
-            (dom/input {:type      "text"
-                        :value     nick
-                        :placeholder "(optional)"
-                        :on-change (partial handle-nick-change person)})))
-        (dom/div {:class "country-select"}
-          (dom/label "Country:"
-            (dom/select {:value     country-code
-                         :on-change (partial handle-country-change person)}
-              (for [[code name] (country-list)]
-                (dom/option {:value code} name)))))))))
+          about (get-in person about-path)]
+      (dom/form {:class       "about-gizmo"
+                 :on-key-down gizmo-form-key-down}
+        (dom/div {:class "about-textarea"}
+          (dom/label "About:"
+            (dom/textarea {:ref         "focus"
+                           :value       about
+                           :placeholder person/about-placeholder
+                           :on-change   (handler (partial commit-about-change person))})))))))

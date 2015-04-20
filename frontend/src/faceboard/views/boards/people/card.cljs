@@ -213,14 +213,15 @@
                                   window-width (:width (get-current-window-dimensions))
                                   left? (and (:active gizmo) (= (:position gizmo) :left))
                                   right? (and (:active gizmo) (= (:position gizmo) :right))
-                                  padding 20
+                                  left-padding 20
+                                  top-padding 40
                                   posx (cond
-                                         right? padding     ; move card left
-                                         left? (- window-width (+ card-width padding)) ; move card to the right
+                                         right? left-padding     ; move card left
+                                         left? (- window-width (+ card-width left-padding)) ; move card to the right
                                          :else (.round js/Math (/ (- window-width card-width) 2)))] ; center card horizontally
                              (str
                                "translateX(" posx "px)"
-                               "translateY(" (+ scroll-top 20) "px)"
+                               "translateY(" (+ scroll-top top-padding) "px)"
                                "translateZ(" (- person-card-z-level) "px)"))
           zoom-transform (when layout
                            (str

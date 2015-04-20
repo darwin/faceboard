@@ -14,7 +14,7 @@
                             (.stopPropagation e)
                             (.preventDefault e)
                             (let [hit (keyword (.-tagName (.-target e)))]
-                              (if-not (hit #{:SELECT :INPUT})
+                              (if-not (hit #{:SELECT :INPUT :TEXTAREA})
                                 (perform! :toggle-gizmo))))}
         (dom/div {:class "gizmo-content"}
           (if (fn? content)

@@ -30,14 +30,16 @@
       :border-radius (px 2)
       :background-color "#f6f6f6"
       :border (str "2px solid " gizmo-signature-color)
-      :padding (px 10 12)
+      :padding (px 10 10)
       :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"])
    (>> gizmo-content
      [:font-family gizmo-font
       :font-size (px 12)]
      (>> :form
        (>> [> *]
-         [:margin-bottom (px 4)]))
+         [:margin-bottom (px 4)]
+         (>> &:last-child
+           [:margin-bottom (px 0)])))
      (>> :label
        [:color "#999"
         :font-size (px 10)]
@@ -45,11 +47,22 @@
          [:display :inline-block
           :text-align :right
           :width (px 80)]))
-     (>> :input :select
-       [:margin-left (px 6)
+     (>> :input :select :textarea
+       [:margin (px 0)
+        :margin-left (px 6)
         :width (px 200)
         :font-family gizmo-font])
      (>> photo-gizmo
        (>> url-input
          (>> :input
-         [:width (px 300)]))))])
+           [:width (px 300)])))
+     (>> about-gizmo
+       (>> about-textarea
+         (>> :span
+           [:display :block
+            :text-align :left])
+         (>> :textarea
+           [:margin (px 0)
+            :width (px 400)
+            :box-sizing :border-box
+            :height "120px"]))))])
