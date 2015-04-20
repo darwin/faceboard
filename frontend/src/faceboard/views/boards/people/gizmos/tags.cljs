@@ -3,48 +3,86 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.countries :refer [country-names]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.filters.tags :refer [build-tags-tally]]
+            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
+            [faceboard.logging :refer [log log-err log-warn log-info]]
+            [phalanges.core :as phalanges]
+            [cuerdas.core :as str]))
 
-(defn handle-name-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :name] #(do value))))
+(def tags-path [:tags])
 
-(defn handle-nick-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :nick] #(do value))))
+(defn commit-tags-change [person value]
+  (om/update! person tags-path value))
 
-(defn handle-country-change [person e]
-  (let [value (.. e -target -value)]
-    (om/transact! person [:bio :country] #(do (if (= value "--") nil value)))))
+(defn toggle-tag [tag tags]
+  (if (some #(= tag %) tags)
+    (remove #(= tag %) tags)
+    (concat tags [tag])))
 
-(defn country-list []
-  (cons
-    ["--" "--- none ---"]
-    (sort #(compare (second %) (second %2)) country-names)))
+(defn insert-tag [tag tags]
+  (if-not (some #(= tag %) tags)
+    (concat tags [tag])
+    tags))
 
-(defcomponent tags-gizmo-component [data _ _]
+(defn add-tag [owner name tags committer]
+  (let [node (om/get-node owner name)
+        value (str/trim (str (.-value node)))]
+    (when-not (zero? (count value))
+      (swap! tags (partial insert-tag value))
+      (committer)
+      (aset node "value" ""))))
+
+(defn handle-add-tag-key [adder e]
+  (let [key (phalanges/key-set e)]
+    (condp #(contains? %2 %1) key
+      :enter (adder)
+      nil)))
+
+(defcomponent tags-filter-item-component [data owner]
   (render [_]
-    (let [{:keys [person]} data
-          name (get-in person [:bio :name])
-          nick (get-in person [:bio :nick])
-          country-code (get-in person [:bio :country])]
-      (dom/form {:class "tags-gizmo"}
-        (dom/div {:class "name-input"}
-          (dom/label "Name:"
-            (dom/input {:type        "text"
-                        :value       name
-                        :placeholder person/full-name-placeholder
-                        :on-change   (partial handle-name-change person)})))
-        (dom/div {:class "nick-input"}
-          (dom/label "Nick:"
-            (dom/input {:type      "text"
-                        :value     nick
-                        :placeholder "(optional)"
-                        :on-change (partial handle-nick-change person)})))
-        (dom/div {:class "country-select"}
-          (dom/label "Country:"
-            (dom/select {:value     country-code
-                         :on-change (partial handle-country-change person)}
-              (for [[code name] (country-list)]
-                (dom/option {:value code} name)))))))))
+    (let [{:keys [tag tags report selected? committer add-input-resolver]} data
+          count (:count report)
+          toggler (partial toggle-tag tag)
+          last? (and selected? (= count 1))]
+      (dom/div {:class    (str "tag-item" (when selected? " selected") (if last? " last"))
+                :on-click #(do
+                            (if last?
+                              (if-let [focus-node (add-input-resolver)]
+                                (aset focus-node "value" tag)))
+                            (swap! tags toggler)
+                            (committer))}
+        (dom/span {:class "tag no-dismiss"
+                   :title (if last? "last usage of this tag, click to remove it completely" (str "used " count " times"))} tag)))))
+
+(defcomponent tags-gizmo-component [data owner]
+  (did-mount [_]
+    (let [focus-node (om/get-node owner "focus")]
+      (.focus focus-node)))
+  (render [_]
+    (let [{:keys [person people]} data
+          tags (person/tags person)
+          live-tags (atom tags)                             ; contains latest local state, commit may be deferred for a while
+          committer (handler (partial commit-tags-change person) 1000 live-tags)
+          adder (partial add-tag owner "focus" live-tags committer)]
+      (dom/form {:class       "tags-gizmo"
+                 :on-key-down gizmo-form-key-down
+                 :on-submit   (fn [e] (.preventDefault e))}
+        (dom/div {:class "tags-selector clearfix no-dismiss"}
+          (let [tags-tally (build-tags-tally people)
+                sorted-tags (sort (:tags-by-size tags-tally))]
+            (for [tag sorted-tags]
+              (om/build tags-filter-item-component {:tag       tag
+                                                    :tags      live-tags
+                                                    :committer committer
+                                                    :add-input-resolver #(om/get-node owner "focus")
+                                                    :selected? (boolean (some #(= tag %) tags))
+                                                    :report    (get-in tags-tally [:tally tag])}))))
+        (dom/div {:class "add-input"}
+          (dom/label "Add interest:"
+            (dom/input {:ref         "focus"
+                        :type        "text"
+                        :placeholder "tag name"
+                        :on-key-down (partial handle-add-tag-key adder)})
+            (dom/button {:class    "add-tag-action"
+                         :on-click adder}
+              "↵")))))))

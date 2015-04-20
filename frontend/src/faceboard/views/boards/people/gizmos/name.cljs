@@ -36,7 +36,8 @@
           nick (get-in person nick-path)
           country-code (get-in person country-path)]
       (dom/form {:class "name-country-gizmo"
-                 :on-key-down gizmo-form-key-down}
+                 :on-key-down gizmo-form-key-down
+                 :on-submit (fn [e] (.preventDefault e))}
         (dom/div {:class "name-input"}
           (dom/label "Name:"
             (dom/input {:type        "text"

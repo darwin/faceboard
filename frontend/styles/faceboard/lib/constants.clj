@@ -28,6 +28,9 @@
 (def filter-item-background-hovered-color signature-color)
 (def filter-item-background-selected-color signature-color)
 
+(def filter-item-background-last-color "#888")
+(def filter-item-background-deselected-color "#ddd")
+
 (def people-desk-background-color selected-tab-color)
 
 (def gizmo-border-color signature-color)

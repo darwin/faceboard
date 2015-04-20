@@ -12,7 +12,11 @@
    (let [debounced-commit-fn (debounce commit-fn time)]
      (fn [e]
        (let [value (.. e -target -value)]
-         (debounced-commit-fn value))))))
+         (debounced-commit-fn value)))))
+  ([commit-fn time value-atom]
+   (let [debounced-commit-fn (debounce commit-fn time)]
+     (fn [_]
+       (debounced-commit-fn @value-atom)))))
 
 (defn gizmo-form-key-down [e]
   (let [key (phalanges/key-set e)]

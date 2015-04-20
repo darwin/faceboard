@@ -19,7 +19,8 @@
     (let [{:keys [person]} data
           about (get-in person about-path)]
       (dom/form {:class       "about-gizmo"
-                 :on-key-down gizmo-form-key-down}
+                 :on-key-down gizmo-form-key-down
+                 :on-submit (fn [e] (.preventDefault e))}
         (dom/div {:class "about-textarea"}
           (dom/label "About:"
             (dom/textarea {:ref         "focus"

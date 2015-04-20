@@ -89,7 +89,7 @@
 
 (defcomponent tags-section-component [data _ _]
   (render [_]
-    (let [{:keys [person editing? gizmo]} data
+    (let [{:keys [person people editing? gizmo]} data
           need-placeholder? (not (has-tags? person))
           tags (if need-placeholder? person/tags-placeholder (person/tags person))]
       (dom/div {:class (str "extended-info-section tags clearfix" (if need-placeholder? " has-placeholder"))}
@@ -98,7 +98,8 @@
                                      :title    "edit interests section"
                                      :position :right
                                      :state    gizmo
-                                     :content  (partial om/build tags-gizmo-component {:person person})}))
+                                     :content  (partial om/build tags-gizmo-component {:person person
+                                                                                       :people people})}))
         (dom/div {:class "info-title"} "interests")
         (dom/div {:class "info-body"}
           (om/build-all tags-section-item-component tags))))))
@@ -134,7 +135,7 @@
 
 (defcomponent person-info-component [data _ _]
   (render [_]
-    (let [{:keys [person extended? editing? gizmo]} data
+    (let [{:keys [person people extended? editing? gizmo]} data
           need-name-placeholder? (and editing? (not (has-name? person)))
           name (if need-name-placeholder? person/name-placeholder (person/name person))
           country-code (person/country-code person)
@@ -181,6 +182,7 @@
                 (dom/i {:class "fa fa-edit"}))
               (om/build person-extended-info-component {:editing? editing?
                                                         :gizmo    gizmo
+                                                        :people   people
                                                         :person   person}))))))))
 
 (defn get-current-scroll-position []
@@ -193,7 +195,7 @@
 
 (defcomponent person-component [data _]
   (render [_]
-    (let [{:keys [person filtered? editing? gizmo layout]} data
+    (let [{:keys [person people filtered? editing? gizmo layout]} data
           id (:id person)
           expansion-anim (anims/person-expanding id)
           shrinking-anim (anims/person-shrinking id)
@@ -249,6 +251,7 @@
                                                :editing?  editing?
                                                :gizmo     gizmo
                                                :id        id
+                                               :people    people
                                                :person    person})))
           (dom/div {:class "person-essentials-wrapper"}
             (om/build person-info-component {:hide?  extended? ; acts as a hidden placeholder when extended

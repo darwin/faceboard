@@ -82,6 +82,7 @@
           (for [person people]
             (let [person-id (:id person)
                   data {:person    person
+                        :people    people
                         :layout    (get layout person-id)
                         :extended? (contains? extended-set person-id)
                         :filtered? (is-person-filtered? filter-predicates person)

@@ -4,6 +4,7 @@
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
             [faceboard.controller :refer [perform!]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
+            [cuerdas.core :as str]
             [om.core :as om]))
 
 (defcomponent gizmo-content-component [data _ _]
@@ -13,8 +14,10 @@
                 :on-click (fn [e]
                             (.stopPropagation e)
                             (.preventDefault e)
-                            (let [hit (keyword (.-tagName (.-target e)))]
-                              (if-not (hit #{:SELECT :INPUT :TEXTAREA})
+                            (let [target (.-target e)
+                                  hit (keyword (.-tagName target))
+                                  class-name (.-className target)]
+                              (if-not (or (hit #{:SELECT :INPUT :TEXTAREA :BUTTON}) (str/contains? class-name "no-dismiss"))
                                 (perform! :toggle-gizmo))))}
         (dom/div {:class "gizmo-content"}
           (if (fn? content)
@@ -28,7 +31,7 @@
           left? (= position :left)
           top "50%"
           left (if left? "0%" "100%")
-          px (if left? -10 12)
+          px (if active? (if left? -10 12) (if left? -4 6))
           py (if left? -2 2)
           icon (if left? "paperclip fa-flip-horizontal" "paperclip")]
       (dom/div {:class "gizmo-point"
