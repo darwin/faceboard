@@ -17,7 +17,8 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]
+            [cuerdas.core :as str]))
 
 (defn has-name? [person]
   (boolean (person/name person)))
@@ -104,11 +105,17 @@
         (dom/div {:class "info-body"}
           (om/build-all tags-section-item-component tags))))))
 
+(defn has-icon? [social]
+  (if (str/contains? social "|") 0 1))
+
+(defn sort-social-icons-first [socials]
+  (sort #(compare (has-icon? %) (has-icon? %2)) socials))
+
 (defcomponent social-section-component [data _ _]
   (render [_]
     (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-socials? person))
-          socials (if need-placeholder? person/socials-placeholder (person/socials person))]
+          socials (if need-placeholder? person/socials-placeholder (sort-social-icons-first (person/socials person)))]
       (dom/div {:class (str "extended-info-section social clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
           (om/build gizmo-component {:id       :social
