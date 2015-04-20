@@ -59,7 +59,7 @@
         (dom/i {:class (str "icon fa " icon)})
         (dom/input {:type        "text"
                     :value       url
-                    :placeholder "profile url"
+                    :placeholder "user profile url"
                     :on-change   (partial update-social state socials committer)})
         (dom/button {:class    "remove-action"
                      :on-click (partial remove-social social socials committer)}

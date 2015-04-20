@@ -54,9 +54,11 @@
     nil))
 
 (defn decorate-with-http-if-needed [url]
-  (if (str/starts-with? url "http")
+  (if (str/empty? url)
     url
-    (str "http://" url)))
+    (if (str/starts-with? url "http")
+      url
+      (str "http://" url))))
 
 (defn social->url [[type id]]
   (if (str/starts-with? id "http")
@@ -68,7 +70,7 @@
         last-match (last prefix-matches)]                   ; last match is usually -square version
     (if last-match
       (str "fa-" last-match)
-      "fa-link")))                          ; generic web icon if no match
+      "fa-link")))                                          ; generic web icon if no match
 
 (defn social->label [[type _]]
   (str/replace type "-" " "))
