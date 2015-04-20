@@ -111,7 +111,7 @@
           :margin-bottom (px 8)
           :padding-bottom (px 6)
           :border-bottom "1px dashed #ddd"]
-         (>> no-social-avail
+         (>> no-socials-avail
            [:color "#999"])
          (>> social-item
            (>> icon

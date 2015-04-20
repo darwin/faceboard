@@ -83,9 +83,9 @@
       (dom/form {:class       "social-gizmo"
                  :on-key-down gizmo-form-key-down
                  :on-submit   (fn [e] (.preventDefault e))}
-        (dom/div {:class "social-list clearfix"}
+        (dom/div {:class "social-list clearfix no-dismiss"}
           (if (zero? (count socials))
-            (dom/div {:class "no-socials-avail"} "Add some interests below...")
+            (dom/div {:class "no-socials-avail"} "Add some links below...")
             (for [social socials]
               (om/build social-item-component {:social    social
                                                :socials   live-socials
