@@ -75,13 +75,15 @@
         (dom/div {:class "tags-selector clearfix no-dismiss"}
           (let [tags-tally (build-tags-tally people)
                 sorted-tags (sort (:tags-by-size tags-tally))]
-            (for [tag sorted-tags]
-              (om/build tags-filter-item-component {:tag       tag
-                                                    :tags      live-tags
-                                                    :committer committer
-                                                    :add-input-resolver #(om/get-node owner "focus")
-                                                    :selected? (boolean (some #(= tag %) tags))
-                                                    :report    (get-in tags-tally [:tally tag])}))))
+            (if (zero? (count sorted-tags))
+              (dom/div {:class "no-tags-avail"} "Add some interests below...")
+              (for [tag sorted-tags]
+                (om/build tags-filter-item-component {:tag                tag
+                                                      :tags               live-tags
+                                                      :committer          committer
+                                                      :add-input-resolver #(om/get-node owner "focus")
+                                                      :selected?          (boolean (some #(= tag %) tags))
+                                                      :report             (get-in tags-tally [:tally tag])})))))
         (dom/div {:class "add-input"}
           (dom/label "Add interest:"
             (dom/input {:ref         "focus"

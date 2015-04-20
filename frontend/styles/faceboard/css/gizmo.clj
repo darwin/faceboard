@@ -53,6 +53,7 @@
        [:margin (px 0)
         :margin-left (px 6)
         :width (px 200)
+        :font-size (px 10)
         :font-family gizmo-font])
      (>> photo-gizmo
        (>> url-input
@@ -73,28 +74,30 @@
        (>> tags-selector
          [:font-family board-font
           :margin-bottom (px 10)]
-       (>> tag-item
-         [:float :left
-          :padding (px 0 3)
-          :color "#999"
-          :margin-bottom (px 2)
-          :margin-right (px 2)
-          :border-radius (px 2)
-          :border (str "1px solid " filter-item-background-deselected-color)
-          :background-color filter-item-background-deselected-color
-          :cursor :pointer]
-         (>> &.selected
-           [:background-color filter-item-background-normal-color
-            :border (str "1px solid " filter-item-background-normal-color)
-            :color people-desk-background-color])
-         (>> &.last
-           [:background-color filter-item-background-normal-color
-            :border (str "1px dotted " "white")
-            :color people-desk-background-color])
-         (>> &:hover
-           [:background-color filter-item-background-hovered-color
-            :border-color :white
-            :color people-desk-background-color])))
+         (>> no-tags-avail
+           [:color "#999"])
+         (>> tag-item
+           [:float :left
+            :padding (px 0 3)
+            :color "#999"
+            :margin-bottom (px 2)
+            :margin-right (px 2)
+            :border-radius (px 2)
+            :border (str "1px solid " filter-item-background-deselected-color)
+            :background-color filter-item-background-deselected-color
+            :cursor :pointer]
+           (>> &.selected
+             [:background-color filter-item-background-normal-color
+              :border (str "1px solid " filter-item-background-normal-color)
+              :color people-desk-background-color])
+           (>> &.last
+             [:background-color filter-item-background-normal-color
+              :border (str "1px dotted " "white")
+              :color people-desk-background-color])
+           (>> &:hover
+             [:background-color filter-item-background-hovered-color
+              :border-color :white
+              :color people-desk-background-color])))
        (>> add-input
          [:white-space :nowrap]
          (>> :input
