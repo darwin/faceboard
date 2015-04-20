@@ -13,7 +13,7 @@
         :perspective-origin "50% 50%"]
        (>> edit-background
          [:opacity 0.3
-          :background-color gizmo-signature-color
+          :background-color gizmo-border-color
           :position :fixed
           :top (px 0)
           ;:bottom (px 0) this does not work for small boards
@@ -194,7 +194,7 @@
         :background-color "#f6f6f6"
         :border "1px solid #eee"
         :padding-left (px 8)
-        :padding-rigth (px 8)
+        :padding-right (px 8)
         :padding-bottom (px 4)
         :padding-top (px 0)
         :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"
