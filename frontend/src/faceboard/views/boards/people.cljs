@@ -78,12 +78,6 @@
           active-filters (get-in ui [:filters :active])
           filter-predicates (build-filter-predicates active-filters data)]
       (dom/div {:class "people-desk people-layout clearfix"}
-        (when editing?
-          (dom/div {:class "edit-background"
-                    :on-click (fn [e]
-                                (.stopPropagation e)
-                                (.preventDefault e)
-                                (perform! :toggle-edit))}))
         (when layout
           (for [person people]
             (let [person-id (:id person)
@@ -103,4 +97,10 @@
       (dom/div {:class (str "desktop no-select" (if editing? " editing"))}
         (om/build filters-component static-data)
         (om/build people-layout-component data)
-        (om/build people-scaffold-component static-data)))))
+        (om/build people-scaffold-component static-data)
+        (when editing?
+          (dom/div {:class "edit-background"
+                    :on-click (fn [e]
+                                (.stopPropagation e)
+                                (.preventDefault e)
+                                (perform! :toggle-edit))}))))))

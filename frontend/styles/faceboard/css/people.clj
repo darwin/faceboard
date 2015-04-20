@@ -5,11 +5,26 @@
 
 (def styles
   [(>> people-board
+     [:padding (px 0)]
      (>> desktop
        [:padding (px 0)
         :padding-right (px 280)                             ; leave room for expanded cards
         :perspective (px 2000)
-        :perspective-origin "50% 50%"])
+        :perspective-origin "50% 50%"]
+       (>> edit-background
+         [:opacity 0.3
+          :background-color gizmo-signature-color
+          :position :fixed
+          :top (px 0)
+          ;:bottom (px 0) this does not work for small boards
+          :height "100000%" ; HACK IT
+          :left (px 0)
+          :right (px 0)
+          :z-index 11])
+       (>> &.editing
+         (>> person
+           (>> right-part
+             [:overflow :visible])))) ; for gizmos
      (>> people-scaffold
        [:visibility :hidden])
      (>> separator
@@ -63,16 +78,7 @@
            (>> [person right-part]
              [:visibility :hidden]))))
      (>> people-desk
-       [:background-color people-desk-background-color]
-       (>> edit-background
-         [:opacity 0.3
-          :background-color gizmo-signature-color
-          :position :fixed
-          :top (px 0)
-          :bottom (px 0)
-          :left (px 0)
-          :right (px 0)
-          :z-index 11]))
+       [:background-color people-desk-background-color])
      (>> people-filters
        [:font-size (px 12)
         :position :absolute
@@ -250,7 +256,7 @@
           :vertical-align :top])
        (>> right-part
          [:display :inline-block
-          :overflow :visible
+          :overflow :hidden
           :visibility :visible]))
      (>> person-extended-info
        [:min-width (px 300)

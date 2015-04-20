@@ -28,6 +28,7 @@
          [:opacity 1]))
      (>> banner
        [:position :fixed
+        :z-index 1000
         :bottom (px 0)
         :right (px 0)
         :color "#888"
