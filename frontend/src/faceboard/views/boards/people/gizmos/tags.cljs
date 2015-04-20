@@ -32,6 +32,10 @@
       (committer)
       (aset node "value" ""))))
 
+(defn clear-all-tags [tags committer]
+  (reset! tags [])
+  (committer))
+
 (defn handle-add-tag-key [adder e]
   (let [key (phalanges/key-set e)]
     (condp #(contains? %2 %1) key
@@ -63,7 +67,8 @@
           tags (person/tags person)
           live-tags (atom tags)                             ; contains latest local state, commit may be deferred for a while
           committer (handler (partial commit-tags-change person) 1000 live-tags)
-          adder (partial add-tag owner "focus" live-tags committer)]
+          add-tag-fn (partial add-tag owner "focus" live-tags committer)
+          clear-all-fn (partial clear-all-tags live-tags committer)]
       (dom/form {:class       "tags-gizmo"
                  :on-key-down gizmo-form-key-down
                  :on-submit   (fn [e] (.preventDefault e))}
@@ -82,7 +87,10 @@
             (dom/input {:ref         "focus"
                         :type        "text"
                         :placeholder "tag name"
-                        :on-key-down (partial handle-add-tag-key adder)})
+                        :on-key-down (partial handle-add-tag-key add-tag-fn)})
             (dom/button {:class    "add-tag-action"
-                         :on-click adder}
-              "↵")))))))
+                         :on-click add-tag-fn}
+              "↵")
+            (dom/button {:class    "clear-all-action"
+                         :on-click clear-all-fn}
+              "clear all")))))))
