@@ -179,19 +179,20 @@
                             :title country-name})))))
           (when extended?
             (dom/div {:class "right-part"}
+              (when (not editing?)
+                (dom/div {:class "person-buttons"}
+                  (dom/div {:class    "person-edit-button"
+                            :title    "edit the card"
+                            :on-click (fn [e]
+                                        (.stopPropagation e)
+                                        (if (.-altKey e)
+                                          (perform! :open-editor (om/path person) (.-shiftKey e))
+                                          (perform! :toggle-edit)))}
+                    (dom/i {:class "fa fa-wrench"}))))
               (om/build person-extended-info-component {:editing? editing?
                                                         :gizmo    gizmo
                                                         :people   people
-                                                        :person   person})))
-          (when (and extended? (not editing?))
-            (dom/div {:class    "person-edit-button"
-                      :title    "edit the card"
-                      :on-click (fn [e]
-                                  (.stopPropagation e)
-                                  (if (.-altKey e)
-                                    (perform! :open-editor (om/path person) (.-shiftKey e))
-                                    (perform! :toggle-edit)))}
-              (dom/i {:class "fa fa-wrench"}))))))))
+                                                        :person   person}))))))))
 
 (defn get-current-scroll-position []
   (if-let [contents-node (.item (.getElementsByClassName js/document "tab-contents") 0)]

@@ -52,7 +52,8 @@
          ; expanding animation
          (>> &.expanding
            (>> [person right-part]
-             [:transition (str "all " (ms person-expanding-sliding-delay) " " ease-in-quit)])
+             [:transition (str "all " (ms person-expanding-sliding-delay) " " ease-in-quit)
+              :overflow :hidden])
            (>> polaroid-frame
              [:transition (str "transform " (ms person-expanding-rotation-delay) " " ease-out-quit)]))
          (>> &.expanding-phase0
@@ -65,7 +66,8 @@
          ; shrinking animation
          (>> &.shrinking
            (>> [person right-part]
-             [:transition (str "all " (ms person-shrinking-sliding-delay) " " ease-in-quit)])
+             [:transition (str "all " (ms person-shrinking-sliding-delay) " " ease-in-quit)
+              :overflow :hidden])
            (>> polaroid-frame
              [:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)]))
          (>> &.shrinking-phase0
@@ -191,8 +193,10 @@
        [:transform-origin "70px 80px"
         :background-color "#f6f6f6"
         :border "1px solid #eee"
-        :padding (px 10 8)
+        :padding-left (px 8)
+        :padding-rigth (px 8)
         :padding-bottom (px 4)
+        :padding-top (px 0)
         :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"
         :transition "all .3s ease-in-out"
         :opacity 0.8
@@ -239,20 +243,24 @@
         :opacity 1
         :box-shadow "0px 0px 20px -1px rgba(0,0,0,0.2)"])
      (>> person
+       (>> person-buttons
+         [:position :relative])
        (>> person-edit-button
          [:position :absolute
-          :top (px 4)
-          :right (px 8)
+          :top (px -6)
+          :right (px 0)
           :padding (px 0 4)
           :z-index 10
           :color "#999"]
          (>> &:hover
            [:color signature-color]))
        (>> left-part
-         [:display :inline-block
+         [:padding-top (px 10)
+          :display :inline-block
           :vertical-align :top])
        (>> right-part
-         [:display :inline-block
+         [:padding-top (px 10)
+          :display :inline-block
           :overflow :hidden
           :visibility :visible]))
      (>> person-extended-info
@@ -279,7 +287,7 @@
            (>> info-title
              [:opacity 1]))
          (>> &:last-child
-           [:margin-bottom (px 14)])
+           [:margin-bottom (px 0)])
          (>> &.about
            [:white-space :normal])
          (>> &.tags
