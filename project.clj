@@ -5,7 +5,7 @@
   :jvm-opts ^:replace ["-Xms512m" "-Xmx512m" "-server"]
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-3196"]
+                 [org.clojure/clojurescript "0.0-3208"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.8.8" :exclusions [cljsjs/react]]
                  [cljsjs/react "0.13.1-0"]
@@ -75,6 +75,8 @@
                        {:source-paths ["frontend/src", "frontend/src-prod"]
                         :compiler     {:optimizations :advanced
                                        :pretty-print  false
+                                       :pseudo-names  false
+                                       :elide-asserts true
                                        :output-to     "resources/public/_generated/prod/faceboard/faceboard.js"
                                        :output-dir    "resources/public/_generated/prod/faceboard/"
                                        :preamble      ["public/js/platform.js"
@@ -87,6 +89,8 @@
                        {:source-paths ["frontend/src-editor", "frontend/src-prod"]
                         :compiler     {:optimizations :advanced
                                        :pretty-print  false
+                                       :pseudo-names  false
+                                       :elide-asserts true
                                        :output-to     "resources/public/_generated/prod/editor/editor.js"
                                        :output-dir    "resources/public/_generated/prod/editor/"
                                        :preamble      ["public/js/platform.js"
