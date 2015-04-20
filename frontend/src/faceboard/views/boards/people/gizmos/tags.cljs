@@ -42,7 +42,7 @@
       :enter (adder)
       nil)))
 
-(defcomponent tags-filter-item-component [data owner]
+(defcomponent tags-filter-item-component [data _]
   (render [_]
     (let [{:keys [tag tags report selected? committer add-input-resolver]} data
           count (:count report)

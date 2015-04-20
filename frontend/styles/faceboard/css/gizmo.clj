@@ -101,4 +101,31 @@
        (>> add-input
          [:white-space :nowrap]
          (>> :input
-           [:width (px 140)]))))])
+           [:width (px 140)])
+         (>> clear-all-action
+           [:float :right])))
+     (>> social-gizmo
+       [:width (px 400)]
+       (>> social-list
+         [:font-family board-font
+          :margin-bottom (px 8)
+          :padding-bottom (px 6)
+          :border-bottom "1px dashed #ddd"]
+         (>> no-social-avail
+           [:color "#999"])
+         (>> social-item
+           (>> icon
+             [:width (px 16)
+              :height (px 16)
+              :font-size (px 19)
+              :line-height (px 14)
+              :position :relative
+              :top (px 3)])
+           (>> :input
+             [:width (px 350)])))
+       (>> add-input
+         [:white-space :nowrap]
+         (>> :select
+           [:width (px 120)])
+         (>> clear-all-action
+           [:float :right]))))])

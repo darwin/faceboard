@@ -26,6 +26,12 @@
    "xing" "xing-square"
    "yahoo" "yelp" "youtube" "youtube-play" "youtube-square"])
 
+(defn strip-dash [s]
+  (let [parts (str/split s #"-" 2)]
+    (first parts)))
+
+(def known-services (distinct (map strip-dash known-icons)))
+
 (defn parse-social [data]
   (let [parts (str/split data #"\|" 2)]
     (cond
@@ -62,7 +68,7 @@
         last-match (last prefix-matches)]                   ; last match is usually -square version
     (if last-match
       (str "fa-" last-match)
-      "fa-external-link-square")))                          ; generic web icon if no match
+      "fa-link")))                          ; generic web icon if no match
 
 (defn social->label [[type _]]
   (str/replace type "-" " "))
