@@ -14,10 +14,12 @@
       :position :relative
       :top (px -15)
       :left (px -10)
-      :color gizmo-signature-color
+      :color gizmo-point-color
       :font-size (px 24)]
+     (>> &.active
+       [:color gizmo-point-active-color])
      (>> &:hover
-       [:color gizmo-signature-hovered-color]))
+       [:color gizmo-point-hovered-color]))
    (>> gizmo-frame-correction
      [:position :absolute
       :z-index 50]
@@ -29,7 +31,7 @@
       :min-width (px 300)
       :border-radius (px 2)
       :background-color "#f6f6f6"
-      :border (str "2px solid " gizmo-signature-color)
+      :border (str "2px solid " gizmo-border-color)
       :padding (px 10 10)
       :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"])
    (>> gizmo-content

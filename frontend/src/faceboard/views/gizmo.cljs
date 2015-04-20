@@ -43,8 +43,8 @@
                               :left  (if-not left? "0px")}}
               (dom/div {:class "gizmo-frame-placement"}
                 (om/build gizmo-content-component {:content content}))))
-          (dom/div {:class "pin-point"}
-            (dom/i {:class    (str "fa fa-" (or icon "dot-circle-o"))
+          (dom/div {:class (str "pin-point" (if active? " active"))}
+            (dom/i {:class    (str "fa fa-" icon)
                     :title    title
                     :on-click (fn [e]
                                 (.stopPropagation e)
