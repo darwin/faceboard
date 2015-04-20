@@ -248,7 +248,8 @@
                              (fn [e]
                                (.stopPropagation e)
                                (if-not editing?
-                                 (router/switch-person (if-not extended? id nil)))))}
+                                 (router/switch-person (if-not extended? id nil))
+                                 (perform! :toggle-gizmo))))}
         (dom/div {:class (str "person-card-zoom")
                   :style (css-transform zoom-transform)}
           (when layout
