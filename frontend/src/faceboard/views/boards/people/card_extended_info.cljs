@@ -28,11 +28,10 @@
 (defn has-socials? [person]
   (not (zero? (count (person/socials person)))))
 
-(defn has-icon? [social]
-  (if (str/contains? social "|") 0 1))
-
 (defn sort-social-icons-first [socials]
-  (sort #(compare (has-icon? %) (has-icon? %2)) socials))
+  (let [has-icon? #(str/contains? % "|")
+        priority #(if (has-icon? %) 0 1)]
+    (sort #(compare (priority %) (priority %2)) socials)))
 
 (defcomponent social-section-item-component [data _ _]
   (render [_]
@@ -55,7 +54,7 @@
           about (if need-placeholder? person/about-placeholder (person/about person))
           about-gizmo {:descriptor about-gizmo-descriptor
                        :state      gizmo
-                       :content    {:person person}}]
+                       :data       {:person person}}]
       (dom/div {:class (str "extended-info-section about clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
           (om/build gizmo-component about-gizmo))
@@ -71,7 +70,7 @@
           email (if need-placeholder? person/email-placeholder (person/email person))
           contact-gizmo {:descriptor contact-gizmo-descriptor
                          :state      gizmo
-                         :content    {:person person}}]
+                         :data       {:person person}}]
       (dom/div {:class (str "extended-info-section contact clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
           (om/build gizmo-component contact-gizmo))
@@ -92,7 +91,7 @@
           tags (if need-placeholder? person/tags-placeholder (person/tags person))
           tags-gizmo {:descriptor tags-gizmo-descriptor
                       :state      gizmo
-                      :content    {:person person
+                      :data       {:person person
                                    :people people}}]
       (dom/div {:class (str "extended-info-section tags clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
@@ -108,7 +107,7 @@
           socials (if need-placeholder? person/socials-placeholder (sort-social-icons-first (person/socials person)))
           social-gizmo {:descriptor social-gizmo-descriptor
                         :state      gizmo
-                        :content    {:person person}}]
+                        :data       {:person person}}]
       (dom/div {:class (str "extended-info-section social clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
           (om/build gizmo-component social-gizmo))
