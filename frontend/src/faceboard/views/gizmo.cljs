@@ -30,7 +30,7 @@
           base-icon "outdent"
           icon (if left? (str base-icon " fa-flip-horizontal") base-icon)
           tx (if active? (if left? -26 18) (if left? -17 9))   ; ad-hoc constants to fit our font size and icons
-          ty (if left? -2 2)
+          ty (if left? 0 0)
           gizmo-point-style (merge
                               (css-transform (str "translateX(" tx "px)" "translateY(" ty "px)"))
                               {:top "50%" :left (if left? "0%" "100%")})

@@ -33,7 +33,7 @@
 (def people-desk-background-color selected-tab-color)
 
 (def gizmo-border-color signature-color)
-(def gizmo-point-color "#444")
+(def gizmo-point-color "#aaa")
 (def gizmo-point-hovered-color signature-color)
 (def gizmo-point-active-color signature-color)
 
