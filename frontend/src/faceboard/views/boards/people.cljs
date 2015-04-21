@@ -4,7 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.boards.people.base :refer [is-person-filtered? person-card-z-level]]
-            [faceboard.views.boards.people.card :refer [person-component]]
+            [faceboard.views.boards.people.card :refer [card-component]]
             [faceboard.views.boards.people.filters :refer [filters-component build-filter-predicates]]
             [faceboard.helpers.underscore :refer [debounce]]
             [faceboard.state :refer [app-state]]
@@ -66,7 +66,7 @@
                         :extended? false
                         :filtered? filtered?
                         :anim      0}]
-              (om/build person-component data {:react-key person-id}))))))))
+              (om/build card-component data {:react-key person-id}))))))))
 
 (defcomponent people-layout-component [data _ _]
   (render [_]
@@ -89,7 +89,7 @@
                         :editing?  editing?
                         :gizmo     (:gizmo ui)
                         :anim      (:person anims)}]
-              (om/build person-component data {:react-key person-id}))))))))
+              (om/build card-component data {:react-key person-id}))))))))
 
 (defcomponent people-component [data _ _]
   (render [_]

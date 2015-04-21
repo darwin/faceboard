@@ -127,7 +127,7 @@
         (dom/div {:class "info-body"}
           (om/build-all social-section-item-component socials))))))
 
-(defcomponent person-extended-info-component [data _ _]
+(defcomponent extended-info-component [data _ _]
   (render [_]
     (let [{:keys [editing? person]} data]
       (dom/div {:class "person-extended-info"}
@@ -140,7 +140,7 @@
         (if (or editing? (has-socials? person))
           (om/build social-section-component data))))))
 
-(defcomponent person-info-component [data _ _]
+(defcomponent basic-info-component [data _ _]
   (render [_]
     (let [{:keys [person people extended? editing? gizmo]} data
           need-name-placeholder? (and editing? (not (has-name? person)))
@@ -189,10 +189,10 @@
                                           (perform! :open-editor (om/path person) (.-shiftKey e))
                                           (perform! :toggle-edit)))}
                     (dom/i {:class "fa fa-wrench"}))))
-              (om/build person-extended-info-component {:editing? editing?
-                                                        :gizmo    gizmo
-                                                        :people   people
-                                                        :person   person}))))))))
+              (om/build extended-info-component {:editing? editing?
+                                                 :gizmo    gizmo
+                                                 :people   people
+                                                 :person   person}))))))))
 
 (defn get-current-scroll-position []
   (if-let [contents-node (.item (.getElementsByClassName js/document "tab-contents") 0)]
@@ -202,7 +202,7 @@
 (defn get-current-window-dimensions []
   {:width (.-innerWidth js/window) :height (.-innerHeight js/window)})
 
-(defcomponent person-component [data _]
+(defcomponent card-component [data _]
   (render [_]
     (let [{:keys [person people filtered? editing? gizmo layout]} data
           id (:id person)
@@ -256,14 +256,14 @@
                   :style (css-transform zoom-transform)}
           (when layout
             (dom/div {:class "person-extended-wrapper"}
-              (om/build person-info-component {:hide?     (not extended?)
-                                               :extended? extended?
-                                               :editing?  editing?
-                                               :gizmo     gizmo
-                                               :id        id
-                                               :people    people
-                                               :person    person})))
+              (om/build basic-info-component {:hide?     (not extended?)
+                                              :extended? extended?
+                                              :editing?  editing?
+                                              :gizmo     gizmo
+                                              :id        id
+                                              :people    people
+                                              :person    person})))
           (dom/div {:class "person-essentials-wrapper"}
-            (om/build person-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
-                                             :id     id
-                                             :person person})))))))
+            (om/build basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
+                                            :id     id
+                                            :person person})))))))
