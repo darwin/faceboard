@@ -1,36 +1,23 @@
 (ns faceboard.views.gizmo
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
+            [faceboard.helpers.utils :refer [swallow css-transform]]
             [faceboard.controller :refer [perform!]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
-            [cuerdas.core :as str]
             [om.core :as om]))
 
 (def gizmo-frame-left-shift 39)
 (def gizmo-frame-right-shift 11)
 
-(defn toggle-gizmo-when-clicked-gizmo-background [e]
-  (.stopPropagation e)
-  (.preventDefault e)
-  (let [target (.-target e)
-        hit (keyword (.-tagName target))
-        class-name (.-className target)]
-    (if-not (or
-              (hit #{:SELECT :INPUT :TEXTAREA :BUTTON})
-              (str/contains? class-name "no-dismiss"))
-      (perform! :toggle-gizmo))))
-
 (defn toggle-gizmo-when-clicked-pin-point [id position e]
-  (.stopPropagation e)
-  (.preventDefault e)
+  (swallow e)
   (perform! :toggle-gizmo id position))
 
 (defcomponent gizmo-content-component [data _ _]
   (render [_]
     (let [{:keys [content]} data]
       (dom/div {:class    "gizmo-frame"
-                :on-click toggle-gizmo-when-clicked-gizmo-background}
+                :on-click swallow}
         (dom/div {:class "gizmo-content"} (content))))))
 
 ; NOTE: gizmo-component parent has to have :position :relative for gizmo-point to be properly vertically centered

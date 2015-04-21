@@ -34,3 +34,6 @@
                     (+ min (pprng/int random-generator range))))
   ([seed generation min max] (rng (+ seed generation) min max)))
 
+(defn swallow [e]
+  (.stopPropagation e)
+  (.preventDefault e))
