@@ -40,3 +40,8 @@
                         :value       phone
                         :placeholder "(optional)"
                         :on-change   (handler (partial handle-phone-change person))})))))))
+
+(def contact-gizmo-descriptor {:id       :contact
+                               :title    "edit contact section"
+                               :position :right
+                               :content  (partial om/build contact-gizmo-component)})

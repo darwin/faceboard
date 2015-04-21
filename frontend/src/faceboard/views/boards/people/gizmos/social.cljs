@@ -6,7 +6,6 @@
             [faceboard.helpers.social :refer [social-info known-services]]
             [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
-            [phalanges.core :as phalanges]
             [cuerdas.core :as str]))
 
 (def list-separator "---")
@@ -101,3 +100,8 @@
             (dom/button {:class    "clear-all-action"
                          :on-click clear-all-fn}
               "clear all")))))))
+
+(def social-gizmo-descriptor {:id       :social
+                              :title    "edit social section"
+                              :position :right
+                              :content  (partial om/build social-gizmo-component)})

@@ -96,3 +96,8 @@
             (dom/button {:class    "clear-all-action"
                          :on-click clear-all-fn}
               "clear all")))))))
+
+(def tags-gizmo-descriptor {:id       :tags
+                            :title    "edit interests section"
+                            :position :right
+                            :content  (partial om/build tags-gizmo-component)})

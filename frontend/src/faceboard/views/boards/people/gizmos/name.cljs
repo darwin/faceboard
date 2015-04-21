@@ -57,3 +57,8 @@
                          :on-change (handler (partial handle-country-change person))}
               (for [[code name] (country-list)]
                 (dom/option {:value code} name)))))))))
+
+(def name-gizmo-descriptor {:id       :name
+                            :title    "edit name and country"
+                            :position :left
+                            :content  (partial om/build name-gizmo-component)})

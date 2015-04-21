@@ -30,3 +30,8 @@
                         :value       url
                         :placeholder person/photo-url-placeholder
                         :on-change   (handler (partial commit-url-change person))})))))))
+
+(def photo-gizmo-descriptor {:id       :photo
+                             :title    "edit photo"
+                             :position :left
+                             :content  (partial om/build photo-gizmo-component)})

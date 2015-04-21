@@ -19,14 +19,12 @@
                                   class-name (.-className target)]
                               (if-not (or (hit #{:SELECT :INPUT :TEXTAREA :BUTTON}) (str/contains? class-name "no-dismiss"))
                                 (perform! :toggle-gizmo))))}
-        (dom/div {:class "gizmo-content"}
-          (if (fn? content)
-            (content)
-            (non-sanitized-div content)))))))
+        (dom/div {:class "gizmo-content"} (content))))))
 
 (defcomponent gizmo-component [data _ _]
   (render [_]
-    (let [{:keys [state id title content position]} data
+    (let [{:keys [descriptor state]} data
+          {:keys [id title content position]} descriptor
           active? (= (:active state) id)
           left? (= position :left)
           top "50%"
@@ -46,7 +44,7 @@
                               :right (if left? "31px")
                               :left  (if-not left? "11px")}}
               (dom/div {:class "gizmo-frame-placement"}
-                (om/build gizmo-content-component {:content content}))))
+                (om/build gizmo-content-component {:content (partial content (:data data))}))))
           (dom/div {:class (str "pin-point" (if active? " active"))}
             (dom/i {:class    (str "fa fa-" icon)
                     :title    title

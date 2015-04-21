@@ -6,12 +6,10 @@
             [faceboard.controller :refer [perform!]]
             [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.helpers.people :refer [person-card-z-level]]
-            [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
-            [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-component]]
-            [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
-            [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-component]]
-            [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-component]]
-            [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-component]]
+            [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-descriptor]]
+            [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-descriptor]]
+            [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-descriptor]]
+            [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-descriptor]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
@@ -51,11 +49,9 @@
           about (if need-placeholder? person/about-placeholder (person/about person))]
       (dom/div {:class (str "extended-info-section about clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:id       :about
-                                     :title    "edit about section"
-                                     :position :right
-                                     :state    gizmo
-                                     :content  (partial om/build about-gizmo-component {:person person})}))
+          (om/build gizmo-component {:descriptor about-gizmo-descriptor
+                                     :state      gizmo
+                                     :content    {:person person}}))
         (dom/div {:class "info-title"} "about")
         (dom/div {:class "info-body"}
           (non-sanitized-div about))))))
@@ -68,11 +64,9 @@
           email (if need-placeholder? person/email-placeholder (person/email person))]
       (dom/div {:class (str "extended-info-section contact clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:id       :contact
-                                     :title    "edit contact section"
-                                     :position :right
-                                     :state    gizmo
-                                     :content  (partial om/build contact-gizmo-component {:person person})}))
+          (om/build gizmo-component {:descriptor contact-gizmo-descriptor
+                                     :state      gizmo
+                                     :content    {:person person}}))
         (dom/div {:class "info-title"} "contact")
         (dom/div {:class "info-body"}
           (when email
@@ -90,12 +84,10 @@
           tags (if need-placeholder? person/tags-placeholder (person/tags person))]
       (dom/div {:class (str "extended-info-section tags clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:id       :tags
-                                     :title    "edit interests section"
-                                     :position :right
-                                     :state    gizmo
-                                     :content  (partial om/build tags-gizmo-component {:person person
-                                                                                       :people people})}))
+          (om/build gizmo-component {:descriptor tags-gizmo-descriptor
+                                     :state      gizmo
+                                     :content    {:person person
+                                                  :people people}}))
         (dom/div {:class "info-title"} "interests")
         (dom/div {:class "info-body"}
           (om/build-all tags-section-item-component tags))))))
@@ -113,11 +105,9 @@
           socials (if need-placeholder? person/socials-placeholder (sort-social-icons-first (person/socials person)))]
       (dom/div {:class (str "extended-info-section social clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:id       :social
-                                     :title    "edit social section"
-                                     :position :right
-                                     :state    gizmo
-                                     :content  (partial om/build social-gizmo-component {:person person})}))
+          (om/build gizmo-component {:descriptor social-gizmo-descriptor
+                                     :state      gizmo
+                                     :content    {:person person}}))
         (dom/div {:class "info-title"} "social")
         (dom/div {:class "info-body"}
           (om/build-all social-section-item-component socials))))))

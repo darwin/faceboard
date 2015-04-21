@@ -27,3 +27,8 @@
                            :value       about
                            :placeholder person/about-placeholder
                            :on-change   (handler (partial commit-about-change person))})))))))
+
+(def about-gizmo-descriptor {:id       :about
+                             :title    "edit about section"
+                             :position :right
+                             :content  (partial om/build about-gizmo-component)})
