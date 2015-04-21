@@ -71,6 +71,6 @@
                                           (perform! :toggle-edit)))}
                     (dom/i {:class "fa fa-wrench"}))))
               (om/build card-extended-info-component {:editing? editing?
-                                                 :gizmo    gizmo
-                                                 :people   people
-                                                 :person   person}))))))))
+                                                      :gizmo    gizmo
+                                                      :people   people
+                                                      :person   person}))))))))

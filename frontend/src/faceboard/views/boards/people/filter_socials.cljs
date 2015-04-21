@@ -32,9 +32,9 @@
         (when (> (count sorted-socials) 0)
           (dom/div {:class "socials-filter filter-section"}
             (om/build filters-header-component {:key       :socials
-                                                      :active?   (> (count selected-socials) 0)
-                                                      :expanded? expanded?
-                                                      :label     "social"})
+                                                :active?   (> (count selected-socials) 0)
+                                                :expanded? expanded?
+                                                :label     "social"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [social sorted-socials]
                 (let [report (get-in socials-tally [:tally social])

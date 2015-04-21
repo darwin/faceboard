@@ -31,9 +31,9 @@
         (when (> (count sorted-tags) 0)
           (dom/div {:class "tags-filter filter-section"}
             (om/build filters-header-component {:key       :tags
-                                                      :active?   (> (count selected-tags) 0)
-                                                      :expanded? expanded?
-                                                      :label     "interests"})
+                                                :active?   (> (count selected-tags) 0)
+                                                :expanded? expanded?
+                                                :label     "interests"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [tag sorted-tags]
                 (let [report (get-in tags-tally [:tally tag])

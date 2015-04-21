@@ -24,9 +24,9 @@
     (let [{:keys [person]} data
           email (get-in person email-path)
           phone (get-in person phone-path)]
-      (dom/form {:class "contact-gizmo"
+      (dom/form {:class       "contact-gizmo"
                  :on-key-down gizmo-form-key-down
-                 :on-submit (fn [e] (.preventDefault e))}
+                 :on-submit   (fn [e] (.preventDefault e))}
         (dom/div {:class "email-input"}
           (dom/label "Email:"
             (dom/input {:type        "text"

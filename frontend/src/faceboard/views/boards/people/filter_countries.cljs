@@ -36,9 +36,9 @@
         (when (> (count sorted-countries) 1)
           (dom/div {:class "countries-filter filter-section"}
             (om/build filters-header-component {:key       :countries
-                                                      :active?   (> (count selected-countries) 0)
-                                                      :expanded? expanded?
-                                                      :label     "countries"})
+                                                :active?   (> (count selected-countries) 0)
+                                                :expanded? expanded?
+                                                :label     "countries"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [country-code sorted-countries]
                 (let [report (get-in countries-tally [:tally country-code])

@@ -33,9 +33,9 @@
         (when (> (count sorted-groups) 0)
           (dom/div {:class "groups-filter filter-section"}
             (om/build filters-header-component {:key       :groups
-                                                      :active?   (> (count selected-groups) 0)
-                                                      :expanded? expanded?
-                                                      :label     "groups"})
+                                                :active?   (> (count selected-groups) 0)
+                                                :expanded? expanded?
+                                                :label     "groups"})
             (dom/div {:class (str "filter-section-body" (when expanded? " expanded"))}
               (for [group sorted-groups]
                 (let [report (get-in groups-tally [:tally group])

@@ -20,9 +20,9 @@
   (render [_]
     (let [{:keys [person]} data
           url (get-in person url-path)]
-      (dom/form {:class "photo-gizmo"
+      (dom/form {:class       "photo-gizmo"
                  :on-key-down gizmo-form-key-down
-                 :on-submit (fn [e] (.preventDefault e))}
+                 :on-submit   (fn [e] (.preventDefault e))}
         (dom/div {:class "url-input"}
           (dom/label "Photo URL:"
             (dom/input {:type        "text"

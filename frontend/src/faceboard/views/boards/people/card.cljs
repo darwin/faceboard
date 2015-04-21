@@ -82,13 +82,13 @@
           (when layout
             (dom/div {:class "person-extended-wrapper"}
               (om/build card-basic-info-component {:hide?     (not extended?)
-                                              :extended? extended?
-                                              :editing?  editing?
-                                              :gizmo     gizmo
-                                              :id        id
-                                              :people    people
-                                              :person    person})))
+                                                   :extended? extended?
+                                                   :editing?  editing?
+                                                   :gizmo     gizmo
+                                                   :id        id
+                                                   :people    people
+                                                   :person    person})))
           (dom/div {:class "person-essentials-wrapper"}
             (om/build card-basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
-                                            :id     id
-                                            :person person})))))))
+                                                 :id     id
+                                                 :person person})))))))
