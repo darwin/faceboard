@@ -6,8 +6,12 @@
   [(>> gizmo-point
      [:position :absolute
       :opacity "1 !important"
-      :z-index 200
+      :z-index 100
       :cursor :auto])
+   (>> &.active
+     [:z-index 200]
+     (>> pin-point
+       [:color gizmo-point-active-color]))
    (>> pin-point
      [:z-index 100
       :cursor :pointer
@@ -17,14 +21,22 @@
       :color gizmo-point-color
       :font-size (px 24)
       :padding (px 8 4)]
-     (>> &.active
-       [:color gizmo-point-active-color])
+     (>> mask
+       [:position :absolute
+        :top (px 4)
+        :width (px 8)
+        :height (px 34)
+        :background-color "#f6f6f6"])
+     (>> :i
+       [:background-color "#f6f6f6"
+        :padding (px 0 2)
+        :padding-top (px 1)])
      (>> &:hover
        [:color gizmo-point-hovered-color]))
    ; centering gizmo frame vertically to gizmo point is suprisingly hard, we need two divs
    (>> gizmo-frame-correction
      [:position :absolute
-      :z-index 50]
+      :z-index 150]
      (>> gizmo-frame-placement
        [:position :relative
         :transform "translateY(-50%)"]))
