@@ -12,7 +12,7 @@
             [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-descriptor]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
+            [faceboard.helpers.utils :refer [non-sanitized-div]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cuerdas.core :as str]))
 
@@ -27,6 +27,12 @@
 
 (defn has-socials? [person]
   (not (zero? (count (person/socials person)))))
+
+(defn has-icon? [social]
+  (if (str/contains? social "|") 0 1))
+
+(defn sort-social-icons-first [socials]
+  (sort #(compare (has-icon? %) (has-icon? %2)) socials))
 
 (defcomponent social-section-item-component [data _ _]
   (render [_]
@@ -46,12 +52,13 @@
   (render [_]
     (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-about? person))
-          about (if need-placeholder? person/about-placeholder (person/about person))]
+          about (if need-placeholder? person/about-placeholder (person/about person))
+          about-gizmo {:descriptor about-gizmo-descriptor
+                       :state      gizmo
+                       :content    {:person person}}]
       (dom/div {:class (str "extended-info-section about clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:descriptor about-gizmo-descriptor
-                                     :state      gizmo
-                                     :content    {:person person}}))
+          (om/build gizmo-component about-gizmo))
         (dom/div {:class "info-title"} "about")
         (dom/div {:class "info-body"}
           (non-sanitized-div about))))))
@@ -61,18 +68,19 @@
     (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-contact? person))
           phone (if need-placeholder? person/phone-placeholder (person/phone person))
-          email (if need-placeholder? person/email-placeholder (person/email person))]
+          email (if need-placeholder? person/email-placeholder (person/email person))
+          contact-gizmo {:descriptor contact-gizmo-descriptor
+                         :state      gizmo
+                         :content    {:person person}}]
       (dom/div {:class (str "extended-info-section contact clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:descriptor contact-gizmo-descriptor
-                                     :state      gizmo
-                                     :content    {:person person}}))
+          (om/build gizmo-component contact-gizmo))
         (dom/div {:class "info-title"} "contact")
         (dom/div {:class "info-body"}
-          (when email
+          (if email
             (dom/div {:class "email"}
               (dom/a {:href (str "mailto:" email)} email)))
-          (when phone
+          (if phone
             (dom/div {:class "phone"}
               (dom/span {} "phone: ")
               (dom/span {:class "number"} phone))))))))
@@ -81,33 +89,29 @@
   (render [_]
     (let [{:keys [person people editing? gizmo]} data
           need-placeholder? (not (has-tags? person))
-          tags (if need-placeholder? person/tags-placeholder (person/tags person))]
+          tags (if need-placeholder? person/tags-placeholder (person/tags person))
+          tags-gizmo {:descriptor tags-gizmo-descriptor
+                      :state      gizmo
+                      :content    {:person person
+                                   :people people}}]
       (dom/div {:class (str "extended-info-section tags clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:descriptor tags-gizmo-descriptor
-                                     :state      gizmo
-                                     :content    {:person person
-                                                  :people people}}))
+          (om/build gizmo-component tags-gizmo))
         (dom/div {:class "info-title"} "interests")
         (dom/div {:class "info-body"}
           (om/build-all tags-section-item-component tags))))))
-
-(defn has-icon? [social]
-  (if (str/contains? social "|") 0 1))
-
-(defn sort-social-icons-first [socials]
-  (sort #(compare (has-icon? %) (has-icon? %2)) socials))
 
 (defcomponent social-section-component [data _ _]
   (render [_]
     (let [{:keys [person editing? gizmo]} data
           need-placeholder? (not (has-socials? person))
-          socials (if need-placeholder? person/socials-placeholder (sort-social-icons-first (person/socials person)))]
+          socials (if need-placeholder? person/socials-placeholder (sort-social-icons-first (person/socials person)))
+          social-gizmo {:descriptor social-gizmo-descriptor
+                        :state      gizmo
+                        :content    {:person person}}]
       (dom/div {:class (str "extended-info-section social clearfix" (if need-placeholder? " has-placeholder"))}
         (if editing?
-          (om/build gizmo-component {:descriptor social-gizmo-descriptor
-                                     :state      gizmo
-                                     :content    {:person person}}))
+          (om/build gizmo-component social-gizmo))
         (dom/div {:class "info-title"} "social")
         (dom/div {:class "info-body"}
           (om/build-all social-section-item-component socials))))))
