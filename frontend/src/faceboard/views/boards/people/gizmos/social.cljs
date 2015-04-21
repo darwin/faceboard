@@ -50,7 +50,7 @@
           social (nth socials index)
           info (social-info social)
           {:keys [icon content url type]} info]
-      (dom/div {:class "social-item"}
+      (dom/div {:class "social-row"}
         (dom/i {:class (str "icon fa " icon)})
         (dom/input {:type        "text"
                     :value       content
@@ -59,7 +59,7 @@
                     :on-change   (partial update-social index socials updater)})
         (dom/button {:class    "remove-action"
                      :on-click (partial remove-social index socials updater)}
-          "-")))))
+          "✘")))))
 
 (defn full-list []
   (concat
@@ -92,17 +92,17 @@
               (om/build social-item-component {:index   index
                                                :socials socials
                                                :updater updater}))))
-        (dom/div {:class "add-input"}
-          (dom/label "Add link:"
+        (dom/div {:class "controls-row"}
+          (dom/label "Add a new link:"
             (dom/select {:ref "focus"}
               (for [id (full-list)]
                 (dom/option {:value id} id)))
             (dom/button {:class    "add-tag-action"
                          :on-click add-social-handler}
-              "↵")
-            (dom/button {:class    "clear-all-action"
-                         :on-click clear-all-handler}
-              "clear all")))))))
+              "⏎"))
+          (dom/button {:class    "clear-all-action fix-float-button"
+                       :on-click clear-all-handler}
+            "clear all"))))))
 
 (def social-gizmo-descriptor {:id       :social
                               :title    "edit social section"

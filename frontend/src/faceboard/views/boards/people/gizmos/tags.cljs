@@ -89,8 +89,8 @@
                                                       :updater   updater
                                                       :selected? (boolean (some #(= tag %) tags))
                                                       :report    (get-in tags-tally [:tally tag])})))))
-        (dom/div {:class "add-input"}
-          (dom/label "Add interest:"
+        (dom/div {:class "controls-row"}
+          (dom/label "Add a new interest:"
             (dom/input {:ref         "focus"
                         :type        "text"
                         :value       (:add state)
@@ -99,8 +99,8 @@
                         :on-key-down (partial handle-add-input-keys add-tag-handler)})
             (dom/button {:class    "add-tag-action"
                          :on-click add-tag-handler}
-              "↵"))
-          (dom/button {:class    "clear-all-action"
+              "⏎"))
+          (dom/button {:class    "clear-all-action fix-float-button"
                        :on-click clear-all-handler}
             "clear all"))))))
 

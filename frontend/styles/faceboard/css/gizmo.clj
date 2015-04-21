@@ -29,7 +29,7 @@
        [:position :relative
         :transform "translateY(-50%)"]))
    (>> gizmo-frame
-     [:cursor :pointer
+     [:cursor :default
       :min-width (px 300)
       :border-radius (px 2)
       :background-color "#f6f6f6"
@@ -38,7 +38,8 @@
       :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"])
    (>> gizmo-content
      [:font-family gizmo-font
-      :font-size (px 12)]
+      :font-size (px 12)
+      :line-height (px 16)]
      (>> :form
        (>> [> *]
          [:margin-bottom (px 4)]
@@ -57,6 +58,17 @@
         :width (px 200)
         :font-size (px 10)
         :font-family gizmo-font])
+     (>> :input :select
+       [:height (px 10)])
+     (>> :button
+       [:font-size (px 8)
+        :cursor :pointer
+        :position :relative
+        :top (px -2)
+        :height (px 16)])
+     (>> fix-float-button
+       [:position :relative
+        :top (px 0)])
      (>> photo-gizmo
        (>> url-input
          (>> :input
@@ -102,10 +114,13 @@
              [:background-color filter-item-background-hovered-color
               :border-color :white
               :color people-desk-background-color])))
-       (>> add-input
+       (>> controls-row
          [:white-space :nowrap]
+         (>> :label
+           (>> :span
+             [:width (px 120)]))
          (>> :input
-           [:width (px 140)])
+           [:width (px 180)])
          (>> clear-all-action
            [:float :right])))
      (>> social-gizmo
@@ -116,18 +131,22 @@
           :border-bottom "1px dashed #ddd"]
          (>> no-socials-avail
            [:color "#999"])
-         (>> social-item
+         (>> social-row
            (>> icon
              [:width (px 16)
               :height (px 16)
               :font-size (px 19)
               :line-height (px 14)
+              :color "#aaa"
               :position :relative
               :top (px 3)])
            (>> :input
              [:width (px 350)])))
-       (>> add-input
+       (>> controls-row
          [:white-space :nowrap]
+         (>> :label
+           (>> :span
+             [:width (px 100)]))
          (>> :select
            [:width (px 120)])
          (>> clear-all-action
