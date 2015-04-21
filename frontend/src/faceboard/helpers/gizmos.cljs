@@ -4,10 +4,12 @@
             [phalanges.core :as phalanges]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
-(def default-handler-debounce-time 1000)
+(def default-gizmo-commit-debounce-time 1000)
+
+(defn debounce-commit [f] (debounce f default-gizmo-commit-debounce-time))
 
 (defn handler
-  ([commit-fn] (handler commit-fn default-handler-debounce-time))
+  ([commit-fn] (handler commit-fn default-gizmo-commit-debounce-time))
   ([commit-fn time]
    (let [debounced-commit-fn (debounce commit-fn time)]
      (fn [e]
