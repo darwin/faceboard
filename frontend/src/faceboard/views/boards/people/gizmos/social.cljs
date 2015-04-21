@@ -31,8 +31,11 @@
   (committer))
 
 (defn reassembly [social value]
-  (let [info (social-info social)]
-    (str (:type info) "|" value)))
+  (let [info (social-info social)
+        {:keys [type]} info]
+    (if type
+      (str (:type info) "|" value)
+      value)))
 
 (defn update-social [state socials committer e]
   (let [value (.. e -target -value)
@@ -53,12 +56,12 @@
     (let [{:keys [social socials committer]} data
           info (social-info social)
           state (atom social)
-          {:keys [icon url]} info]
+          {:keys [icon url type]} info]
       (dom/div {:class "social-item"}
         (dom/i {:class (str "icon fa " icon)})
         (dom/input {:type        "text"
                     :value       url
-                    :placeholder "user profile url"
+                    :placeholder (if type "user profile url" "web url")
                     :on-change   (partial update-social state socials committer)})
         (dom/button {:class    "remove-action"
                      :on-click (partial remove-social social socials committer)}
