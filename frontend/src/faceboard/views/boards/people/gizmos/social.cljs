@@ -27,8 +27,8 @@
       (let [suitable-value (if (= value web-link-id) "" (str value "|"))]
         (updater {:socials (append-social suitable-value socials)})))))
 
-(defn remove-social [social socials updater]
-  (updater {:socials (remove #(= social %) socials)}))
+(defn remove-social [index socials updater]
+  (updater {:socials (remove nil? (assoc (vec socials) index nil))}))
 
 (defn reassembly [social value]
   (let [info (social-info social)
@@ -37,16 +37,17 @@
       (str (:type info) "|" value)
       value)))
 
-(defn update-social [social socials updater e]
+(defn update-social [index socials updater e]
   (let [value (.. e -target -value)]
-    (updater {:socials (map #(if (= social %) (reassembly % value) %) socials)})))
+    (updater {:socials (update (vec socials) index #(reassembly % value))})))
 
 (defn clear-all-socials [updater]
   (updater {:socials []}))
 
 (defcomponent social-item-component [data _]
   (render [_]
-    (let [{:keys [social socials updater]} data
+    (let [{:keys [index socials updater]} data
+          social (nth socials index)
           info (social-info social)
           {:keys [icon content url type]} info]
       (dom/div {:class "social-item"}
@@ -55,9 +56,9 @@
                     :value       content
                     :placeholder (if type "user profile url" "web url")
                     :title       url
-                    :on-change   (partial update-social social socials updater)})
+                    :on-change   (partial update-social index socials updater)})
         (dom/button {:class    "remove-action"
-                     :on-click (partial remove-social social socials updater)}
+                     :on-click (partial remove-social index socials updater)}
           "-")))))
 
 (defn full-list []
@@ -87,8 +88,8 @@
         (dom/div {:class "social-list clearfix no-dismiss"}
           (if (zero? (count socials))
             (dom/div {:class "no-socials-avail"} "Add some links below...")
-            (for [social socials]
-              (om/build social-item-component {:social  social
+            (for [index (range (count socials))]
+              (om/build social-item-component {:index   index
                                                :socials socials
                                                :updater updater}))))
         (dom/div {:class "add-input"}
