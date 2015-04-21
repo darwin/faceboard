@@ -10,6 +10,7 @@
 
 (defcomponent filters-component [data _ _]
   (render [_]
+
     (dom/div {:class    "people-filters no-select"
               :on-click #(.stopPropagation %)}
       (om/build filter-groups-component data)

@@ -94,18 +94,30 @@
            [:cursor :pointer
             :font-weight :bold
             :color "#999"]
-           (>> :span
-             [:margin-right (px 4)])
-           (>> fa-filter
-             [:color "#ccc"])
+           (>> &.expanded
+             (>> filter-indicator
+               [:position :relative
+                :top (px 2)
+                :float :right]))
+           (>> caret
+             [:margin-right (px 6)
+              :font-size (px 16)
+              :font-weight :bold
+              :position :relative
+              :top (px 1)])
            (>> &.active-filter
+             (>> filter-indicator
+               (>> fa-filter
+                 [:color filter-item-background-selected-color])))
+           (>> filter-indicator
+             [:display :inline-block]
              (>> fa-filter
-               [:color filter-item-background-selected-color]))
-           (>> filter-clear
-             [:color filter-item-background-selected-color
-              :font-weight :normal]
-             (>> &:hover
-               [:text-decoration :underline])))
+               [:color "#ccc"])
+             (>> filter-clear
+               [:color filter-item-background-selected-color
+                :font-weight :normal]
+               (>> &:hover
+                 [:text-decoration :underline]))))
          (>> filter-section-body
            [:margin-left (px 14)
             :border-top "2px solid transparent"

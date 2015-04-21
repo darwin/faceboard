@@ -7,15 +7,16 @@
 (defcomponent filters-header-component [data _ _]
   (render [_]
     (let [{:keys [expanded? active? key label title]} data]
-      (dom/div {:class    (str "filter-section-label " (name key) "-filter-section-label" (when active? " active-filter"))
+      (dom/div {:class    (str "filter-section-label " (name key) "-filter-section-label" (if active? " active-filter") (if expanded? " expanded"))
                 :title    (or title (str "filtering by " label))
                 :on-click #(perform! :toggle-filter-expansion key)}
-        (dom/span {:class (str "fa" (if expanded? " fa-arrow-circle-down" " fa-arrow-circle-right"))})
+        (dom/span {:class (str "caret fa" (if expanded? " fa-caret-down" " fa-caret-right"))})
         (dom/span label)
-        (dom/span {:class "fa fa-filter"})
-        (when active?
-          (dom/span {:class    "filter-clear"
-                     :on-click (fn [e]
-                                 (.stopPropagation e)
-                                 (perform! :clear-filter key))}
-            "clear filter"))))))
+        (dom/div {:class "filter-indicator"}
+          (dom/span {:class "fa fa-filter"})
+          (when active?
+            (dom/span {:class    "filter-clear"
+                       :on-click (fn [e]
+                                   (.stopPropagation e)
+                                   (perform! :clear-filter key))}
+              "clear filter")))))))
