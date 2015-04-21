@@ -70,7 +70,7 @@
   (s (get-in person [:bio :about])))
 
 (defn tags [person]
-  (get-in person [:tags] []))
+  (distinct (remove empty? (get-in person [:tags] []))))
 
 (defn socials [person]
-  (get-in person [:social] []))
+  (distinct (remove empty? (get-in person [:social] []))))
