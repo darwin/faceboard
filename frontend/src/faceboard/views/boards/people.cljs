@@ -7,9 +7,11 @@
             [faceboard.views.boards.people.card :refer [card-component]]
             [faceboard.views.boards.people.filters :refer [filters-component]]
             [faceboard.helpers.underscore :refer [debounce]]
+            [faceboard.helpers.utils :refer [swallow]]
             [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
-            [faceboard.helpers.person :as person]))
+            [faceboard.helpers.person :as person]
+            [faceboard.router :as router]))
 
 (extend-type js/NodeList
   ISeqable
@@ -61,10 +63,9 @@
             (dom/div {:class "separator clear"})
             (let [person (:person item)
                   id (:id person)
-                  filtered? (:filtered? item)
                   data {:person    person
                         :extended? false
-                        :filtered? filtered?
+                        :filtered? (:filtered? item)
                         :anim      0}]
               (om/build card-component data {:react-key id}))))))))
 
@@ -91,15 +92,15 @@
               (om/build card-component data {:react-key id}))))))))
 
 (defn toggle-editing-when-clicked-edit-background [e]
-  (.stopPropagation e)
-  (.preventDefault e)
+  (swallow e)
   (perform! :toggle-editing))
 
 (defcomponent people-component [data _ _]
   (render [_]
     (let [static-data (apply dissoc data [:transient :anims :cache])
           editing? (:editing? (:ui data))]
-      (dom/div {:class (str "desktop no-select" (if editing? " editing"))}
+      (dom/div {:class    (str "desktop no-select" (if editing? " editing"))
+                :on-click #(router/switch-person nil)}
         (om/build filters-component static-data)
         (om/build people-layout-component data)
         (om/build people-scaffold-component static-data)

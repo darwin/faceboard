@@ -49,19 +49,21 @@
                                   window-width (:width (get-current-window-dimensions))
                                   left? (and (:active gizmo) (= (:position gizmo) :left))
                                   right? (and (:active gizmo) (= (:position gizmo) :right))
-                                  left-padding 20
+                                  left-padding 40
                                   top-padding 40
                                   posx (cond
                                          right? left-padding ; move card left
-                                         left? (- window-width (+ card-width left-padding)) ; move card to the right
-                                         :else (.round js/Math (/ (- window-width card-width) 2)))] ; center card horizontally
+                                         left? (- window-width (+ card-width left-padding)) ; move card right
+                                         :else (/ (- window-width card-width) 2))] ; center card horizontally
                              (str
-                               "translateX(" posx "px)"
-                               "translateY(" (+ scroll-top top-padding) "px)"
+                               "translateX(" (.round js/Math posx) "px)"
+                               ;"translateY(" (+ scroll-top top-padding) "px)"
+                               "translateY(" (:top layout) "px)"
                                "translateZ(" (- person-card-z-level) "px)"))
           zoom-transform (when layout
                            (str
-                             "translateZ(" (if extended? person-card-z-level 0) "px)"))]
+                             "translateZ(" (if extended? person-card-z-level 0) "px)"))
+          transform (css-transform (if (and extended? editing?) (snappy-transform) (normal-transform)))]
       (dom/div {:class     (str "person-card"
                              (when layout " has-layout")
                              (anim-class expansion-anim " expanding")
@@ -69,7 +71,7 @@
                              (when extended? " extended")
                              (when (:extended? data) " top-z")
                              (if filtered? " filtered" " expandable"))
-                :style     (css-transform (if (and extended? editing?) (snappy-transform) (normal-transform)))
+                :style     transform
                 :data-fbid id
                 :on-click  (when interactive?
                              (fn [e]

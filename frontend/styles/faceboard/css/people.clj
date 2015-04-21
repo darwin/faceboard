@@ -8,16 +8,16 @@
      [:padding (px 0)]
      (>> desktop
        [:padding (px 0)
-        :padding-right (px 280)                             ; leave room for expanded cards
         :perspective (px 2000)
-        :perspective-origin "50% 50%"]
+        :perspective-origin "50% 50%"
+        ]
        (>> edit-background
-         [:opacity 0.5
-          :background-color gizmo-border-color
+         [:opacity 0.7
+          :background-color "#000"
           :position :fixed
           :top (px 0)
           ;:bottom (px 0) this does not work for small boards
-          :height "100000%"                                 ; HACK IT
+          :min-height "10000px"                                 ; HACK IT
           :left (px 0)
           :right (px 0)
           :z-index 11])
@@ -26,13 +26,16 @@
            (>> right-part
              [:overflow :visible]))))                       ; for gizmos
      (>> people-scaffold
-       [:visibility :hidden])
+       [:visibility :hidden
+        :padding-right (px 280) ; leave room for expanded cards
+        ])
      (>> separator
        [:margin-top (px 100)])
      (>> people-layout
        (>> person-card
          [:position :absolute
           :z-index 10
+          :transform-style :preserve-3d
           :transition (str "transform 1s " ease-in-out-cubic)]
          (>> person-card-zoom
            [:transition (str "transform 0.3s " ease-out-back)])
@@ -194,8 +197,7 @@
        [:position :relative
         :float :left
         :margin (px 20 20)
-        :opacity 1
-        :transform-style :preserve-3d]
+        :opacity 1]
        (>> has-placeholder
          [:border "1px dashed #ddd !important"
           :border-radius (px 2)]

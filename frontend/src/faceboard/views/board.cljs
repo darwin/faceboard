@@ -47,8 +47,7 @@
 (defcomponent board-content-component [data _ _]
   (render [_]
     (let [{:keys [ui anims selected-tab]} data]
-      (dom/div {:class    "tab-view"
-                :on-click #(router/switch-person nil)}
+      (dom/div {:class    "tab-view"}
         (let [kind (or (:kind selected-tab) "generic")
               id (:id selected-tab)]
           (dom/div {:class (str "board " kind "-board " (when id (str "id-" (:id selected-tab))))}

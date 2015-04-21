@@ -3,6 +3,7 @@
                    [cljs.core.async.macros :refer [go]])
   (:require [clojure.set :refer [difference]]
             [cljs-http.client :as http]
+            [cljs.core.async :refer [put! <! chan timeout close!]]
             [goog.window]
             [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
@@ -198,9 +199,19 @@
     (model/set [:ui :gizmo :active] nil)))
 
 (defmethod handle-command :toggle-gizmo [_ gizmo-id position]
-  (if (= (get-in @app-state [:ui :gizmo :active]) gizmo-id)
+  (let [prev-gizmo-id (get-in @app-state [:ui :gizmo :active])
+        prev-position (get-in @app-state [:ui :gizmo :position])]
     (transform-app-state
-      (model/set [:ui :gizmo :active] nil))
-    (transform-app-state
-      (model/set [:ui :gizmo :active] gizmo-id)
-      (model/set [:ui :gizmo :position] position))))
+      (model/set [:ui :gizmo :active] nil)
+      (model/set [:ui :gizmo :position] nil))
+    (if-not (= prev-gizmo-id gizmo-id)
+      (if gizmo-id
+        (if (= prev-position position)
+          (transform-app-state
+            (model/set [:ui :gizmo :active] gizmo-id)
+            (model/set [:ui :gizmo :position] position))
+          (go ; fight Blink bug: perspective + animations
+            (<! (timeout 1200))
+            (transform-app-state
+              (model/set [:ui :gizmo :active] gizmo-id)
+              (model/set [:ui :gizmo :position] position))))))))
