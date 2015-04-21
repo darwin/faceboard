@@ -31,15 +31,15 @@
     (when-not (= (pr-str current-layout) (pr-str layout))
       (perform! :update-people-layout (:id data) layout))))
 
-(def throttled-recompute-layout (debounce recompute-layout 200))
+(def debounced-recompute-layout (debounce recompute-layout 200))
 
 (defcomponent people-scaffold-component [data owner _]
   (did-mount [_]
     (let [node (om/get-node owner "desk")
           addResizeListener (aget js/window "addResizeListener")]
-      (.call addResizeListener js/window node #(throttled-recompute-layout node data))))
+      (.call addResizeListener js/window node #(debounced-recompute-layout node data))))
   (did-update [_ _ _]
-    (throttled-recompute-layout (om/get-node owner "desk") data))
+    (debounced-recompute-layout (om/get-node owner "desk") data))
   (render [_]
     (let [people (get-in data [:content :people])
           people-comparator #(compare (person/name %) (person/name %2))
@@ -60,36 +60,40 @@
           (if (:separator item)
             (dom/div {:class "separator clear"})
             (let [person (:person item)
-                  person-id (:id person)
+                  id (:id person)
                   filtered? (:filtered? item)
                   data {:person    person
                         :extended? false
                         :filtered? filtered?
                         :anim      0}]
-              (om/build card-component data {:react-key person-id}))))))))
+              (om/build card-component data {:react-key id}))))))))
 
 (defcomponent people-layout-component [data _ _]
   (render [_]
     (let [{:keys [ui anims transient]} data
-          extended-set (:extended-set ui)
-          editing? (:editing? ui)
+          {:keys [extended-set editing? filters]} ui
           people (get-in data [:content :people])
           layout (get-in transient [:layout])
-          active-filters (get-in ui [:filters :active])
+          active-filters (:active filters)
           filter-predicates (build-filter-predicates active-filters data)]
       (dom/div {:class "people-desk people-layout clearfix"}
-        (when layout
+        (if layout
           (for [person people]
-            (let [person-id (:id person)
+            (let [id (:id person)
                   data {:person    person
                         :people    people
-                        :layout    (get layout person-id)
-                        :extended? (contains? extended-set person-id)
+                        :layout    (get layout id)
+                        :extended? (contains? extended-set id)
                         :filtered? (is-person-filtered? filter-predicates person)
                         :editing?  editing?
                         :gizmo     (:gizmo ui)
                         :anim      (:person anims)}]
-              (om/build card-component data {:react-key person-id}))))))))
+              (om/build card-component data {:react-key id}))))))))
+
+(defn toggle-editing-when-clicked-edit-background [e]
+  (.stopPropagation e)
+  (.preventDefault e)
+  (perform! :toggle-editing))
 
 (defcomponent people-component [data _ _]
   (render [_]
@@ -99,9 +103,6 @@
         (om/build filters-component static-data)
         (om/build people-layout-component data)
         (om/build people-scaffold-component static-data)
-        (when editing?
-          (dom/div {:class "edit-background"
-                    :on-click (fn [e]
-                                (.stopPropagation e)
-                                (.preventDefault e)
-                                (perform! :toggle-edit))}))))))
+        (if editing?
+          (dom/div {:class    "edit-background"
+                    :on-click toggle-editing-when-clicked-edit-background}))))))

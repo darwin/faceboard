@@ -192,7 +192,7 @@
   (transform-app-state
     (model/set [:transient tab-id :layout] layout)))
 
-(defmethod handle-command :toggle-edit [_]
+(defmethod handle-command :toggle-editing [_]
   (transform-app-state
     (model/toggle [:ui :editing?])
     (model/set [:ui :gizmo :active] nil)))
