@@ -4,8 +4,6 @@
             [om-tools.dom :as dom]
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
-            [faceboard.shared.anims :as anims]
-            [faceboard.router :as router]
             [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.views.boards.people.base :refer [person-card-z-level]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
@@ -18,8 +16,7 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
-            [cuerdas.core :as str]))
+            [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defn has-name? [person]
   (boolean (person/name person)))

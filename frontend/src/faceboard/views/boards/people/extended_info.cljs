@@ -4,8 +4,6 @@
             [om-tools.dom :as dom]
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
-            [faceboard.shared.anims :as anims]
-            [faceboard.router :as router]
             [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.views.boards.people.base :refer [person-card-z-level]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
