@@ -56,12 +56,13 @@
     (let [{:keys [social socials committer]} data
           info (social-info social)
           state (atom social)
-          {:keys [icon url type]} info]
+          {:keys [icon content url type]} info]
       (dom/div {:class "social-item"}
         (dom/i {:class (str "icon fa " icon)})
         (dom/input {:type        "text"
-                    :value       url
+                    :value       content
                     :placeholder (if type "user profile url" "web url")
+                    :title       url
                     :on-change   (partial update-social state socials committer)})
         (dom/button {:class    "remove-action"
                      :on-click (partial remove-social social socials committer)}
