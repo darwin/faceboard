@@ -21,6 +21,7 @@
        [:color gizmo-point-active-color])
      (>> &:hover
        [:color gizmo-point-hovered-color]))
+   ; centering gizmo frame vertically to gizmo point is suprisingly hard, we need two divs
    (>> gizmo-frame-correction
      [:position :absolute
       :z-index 50]
