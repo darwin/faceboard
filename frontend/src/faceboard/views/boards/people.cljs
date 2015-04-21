@@ -3,7 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.controller :refer [perform!]]
-            [faceboard.views.boards.people.base :refer [is-person-filtered? person-card-z-level build-filter-predicates]]
+            [faceboard.helpers.people :refer [is-person-filtered? person-card-z-level build-filter-predicates]]
             [faceboard.views.boards.people.card :refer [card-component]]
             [faceboard.views.boards.people.filters :refer [filters-component]]
             [faceboard.helpers.underscore :refer [debounce]]

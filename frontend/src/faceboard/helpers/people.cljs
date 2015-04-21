@@ -1,4 +1,4 @@
-(ns faceboard.views.boards.people.base
+(ns faceboard.helpers.people
   (:require [faceboard.helpers.filters.groups :refer [groups-filter-predicate]]
             [faceboard.helpers.filters.countries :refer [countries-filter-predicate]]
             [faceboard.helpers.filters.tags :refer [tags-filter-predicate]]

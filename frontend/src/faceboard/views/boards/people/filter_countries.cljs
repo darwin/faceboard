@@ -3,7 +3,7 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.controller :refer [perform!]]
-            [faceboard.views.boards.people.base :refer [filter-people-except]]
+            [faceboard.helpers.people :refer [filter-people-except]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.views.boards.people.filters-header :refer [filters-header-component]]
             [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]

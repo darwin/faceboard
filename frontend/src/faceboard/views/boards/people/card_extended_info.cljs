@@ -1,11 +1,11 @@
-(ns faceboard.views.boards.people.extended-info
+(ns faceboard.views.boards.people.card-extended-info
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.gizmo :refer [gizmo-component]]
-            [faceboard.views.boards.people.base :refer [person-card-z-level]]
+            [faceboard.helpers.people :refer [person-card-z-level]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
             [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-component]]
             [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
@@ -122,7 +122,7 @@
         (dom/div {:class "info-body"}
           (om/build-all social-section-item-component socials))))))
 
-(defcomponent extended-info-component [data _ _]
+(defcomponent card-extended-info-component [data _ _]
   (render [_]
     (let [{:keys [editing? person]} data]
       (dom/div {:class "person-extended-info"}

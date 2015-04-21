@@ -7,14 +7,14 @@
             [faceboard.shared.anims :as anims]
             [faceboard.router :as router]
             [faceboard.views.gizmo :refer [gizmo-component]]
-            [faceboard.views.boards.people.base :refer [person-card-z-level]]
+            [faceboard.helpers.people :refer [person-card-z-level]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
             [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-component]]
             [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
             [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-component]]
             [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-component]]
             [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-component]]
-            [faceboard.views.boards.people.basic-info :refer [basic-info-component]]
+            [faceboard.views.boards.people.card-basic-info :refer [card-basic-info-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
@@ -81,7 +81,7 @@
                   :style (css-transform zoom-transform)}
           (when layout
             (dom/div {:class "person-extended-wrapper"}
-              (om/build basic-info-component {:hide?     (not extended?)
+              (om/build card-basic-info-component {:hide?     (not extended?)
                                               :extended? extended?
                                               :editing?  editing?
                                               :gizmo     gizmo
@@ -89,6 +89,6 @@
                                               :people    people
                                               :person    person})))
           (dom/div {:class "person-essentials-wrapper"}
-            (om/build basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
+            (om/build card-basic-info-component {:hide?  extended? ; acts as a hidden placeholder when extended
                                             :id     id
                                             :person person})))))))

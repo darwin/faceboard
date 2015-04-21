@@ -1,18 +1,18 @@
-(ns faceboard.views.boards.people.basic-info
+(ns faceboard.views.boards.people.card-basic-info
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.gizmo :refer [gizmo-component]]
-            [faceboard.views.boards.people.base :refer [person-card-z-level]]
+            [faceboard.helpers.people :refer [person-card-z-level]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
             [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-component]]
             [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
             [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-component]]
             [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-component]]
             [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-component]]
-            [faceboard.views.boards.people.extended-info :refer [extended-info-component]]
+            [faceboard.views.boards.people.card-extended-info :refer [card-extended-info-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
@@ -21,7 +21,7 @@
 (defn has-name? [person]
   (boolean (person/name person)))
 
-(defcomponent basic-info-component [data _ _]
+(defcomponent card-basic-info-component [data _ _]
   (render [_]
     (let [{:keys [person people extended? editing? gizmo]} data
           need-name-placeholder? (and editing? (not (has-name? person)))
@@ -70,7 +70,7 @@
                                           (perform! :open-editor (om/path person) (.-shiftKey e))
                                           (perform! :toggle-edit)))}
                     (dom/i {:class "fa fa-wrench"}))))
-              (om/build extended-info-component {:editing? editing?
+              (om/build card-extended-info-component {:editing? editing?
                                                  :gizmo    gizmo
                                                  :people   people
                                                  :person   person}))))))))
