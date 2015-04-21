@@ -40,10 +40,10 @@
       (dom/div {:class "gizmo-point"
                 :style gizmo-point-style}
         (dom/div {:class "gizmo-wrapper"}
-          (dom/div {:class (str "pin-point" (if active? " active"))}
+          (dom/div {:class (str "pin-point" (if active? " active"))
+                    :on-click (partial toggle-gizmo-when-clicked-pin-point id position)}
             (dom/i {:class    (str "fa fa-" icon)
-                    :title    title
-                    :on-click (partial toggle-gizmo-when-clicked-pin-point id position)}))
+                    :title    title}))
           (if active?
             (dom/div {:class "gizmo-frame-correction"
                       :style frame-correction-style}
