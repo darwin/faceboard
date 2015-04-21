@@ -4,7 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.social :refer [social-info known-services]]
-            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
+            [faceboard.helpers.gizmos :refer [debounce-commit gizmo-form-key-down]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [cuerdas.core :as str]))
 
@@ -15,20 +15,20 @@
 (defn commit-socials-change [person value]
   (om/update! person socials-path value))
 
-(defn insert-social [social socials]
+(def debounced-commit-socials-change (debounce-commit commit-socials-change))
+
+(defn append-social [social socials]
   (concat socials [social]))
 
-(defn add-social [owner name socials committer]
+(defn add-social [owner name socials updater]
   (let [node (om/get-node owner name)
         value (str/trim (str (.-value node)))]
     (when-not (= value list-separator)
       (let [suitable-value (if (= value web-link-id) "" (str value "|"))]
-        (swap! socials (partial insert-social suitable-value))
-        (committer)))))
+        (updater {:socials (append-social suitable-value socials)})))))
 
-(defn remove-social [social socials committer]
-  (swap! socials (fn [old-socials] (remove #(= social %) old-socials)))
-  (committer))
+(defn remove-social [social socials updater]
+  (updater {:socials (remove #(= social %) socials)}))
 
 (defn reassembly [social value]
   (let [info (social-info social)
@@ -37,25 +37,17 @@
       (str (:type info) "|" value)
       value)))
 
-(defn update-social [state socials committer e]
-  (let [value (.. e -target -value)
-        social @state]
-    (swap! socials (fn [old-socials] (doall
-                                       (map #(if (= social %)
-                                              (reset! state (reassembly % value)) ; TODO: find a better solution
-                                              %)
-                                         old-socials))))
-    (committer)))
+(defn update-social [social socials updater e]
+  (let [value (.. e -target -value)]
+    (updater {:socials (map #(if (= social %) (reassembly % value) %) socials)})))
 
-(defn clear-all-socials [socials committer]
-  (reset! socials [])
-  (committer))
+(defn clear-all-socials [updater]
+  (updater {:socials []}))
 
 (defcomponent social-item-component [data _]
   (render [_]
-    (let [{:keys [social socials committer]} data
+    (let [{:keys [social socials updater]} data
           info (social-info social)
-          state (atom social)
           {:keys [icon content url type]} info]
       (dom/div {:class "social-item"}
         (dom/i {:class (str "icon fa " icon)})
@@ -63,9 +55,9 @@
                     :value       content
                     :placeholder (if type "user profile url" "web url")
                     :title       url
-                    :on-change   (partial update-social state socials committer)})
+                    :on-change   (partial update-social social socials updater)})
         (dom/button {:class    "remove-action"
-                     :on-click (partial remove-social social socials committer)}
+                     :on-click (partial remove-social social socials updater)}
           "-")))))
 
 (defn full-list []
@@ -73,16 +65,22 @@
     [web-link-id list-separator] (sort known-services)))
 
 (defcomponent social-gizmo-component [data owner]
+  (init-state [_]
+    (let [{:keys [person]} data]
+      {:socials (person/socials person)}))
   (did-mount [_]
     (let [focus-node (om/get-node owner "focus")]
       (.focus focus-node)))
-  (render [_]
+  (render-state [_ state]
     (let [{:keys [person]} data
-          socials (person/socials person)
-          live-socials (atom socials)                       ; contains latest local state, commit may be deferred for a while
-          committer (handler (partial commit-socials-change person) 1000 live-socials)
-          add-tag-fn (partial add-social owner "focus" live-socials committer)
-          clear-all-fn (partial clear-all-socials live-socials committer)]
+          socials (:socials state)
+          updater (fn [state-patch]
+                    (om/update-state! owner (fn [old-state]
+                                              (let [new-state (merge old-state state-patch)]
+                                                (debounced-commit-socials-change person (:socials new-state))
+                                                new-state))))
+          add-social-handler (partial add-social owner "focus" socials updater)
+          clear-all-handler (partial clear-all-socials updater)]
       (dom/form {:class       "social-gizmo"
                  :on-key-down gizmo-form-key-down
                  :on-submit   (fn [e] (.preventDefault e))}
@@ -90,19 +88,19 @@
           (if (zero? (count socials))
             (dom/div {:class "no-socials-avail"} "Add some links below...")
             (for [social socials]
-              (om/build social-item-component {:social    social
-                                               :socials   live-socials
-                                               :committer committer}))))
+              (om/build social-item-component {:social  social
+                                               :socials socials
+                                               :updater updater}))))
         (dom/div {:class "add-input"}
           (dom/label "Add link:"
             (dom/select {:ref "focus"}
               (for [id (full-list)]
                 (dom/option {:value id} id)))
             (dom/button {:class    "add-tag-action"
-                         :on-click add-tag-fn}
+                         :on-click add-social-handler}
               "↵")
             (dom/button {:class    "clear-all-action"
-                         :on-click clear-all-fn}
+                         :on-click clear-all-handler}
               "clear all")))))))
 
 (def social-gizmo-descriptor {:id       :social

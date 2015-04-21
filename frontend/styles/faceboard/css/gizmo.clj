@@ -74,12 +74,14 @@
      (>> tags-gizmo
        [:width (px 400)]
        (>> tags-selector
-         [:font-family board-font
-          :margin-bottom (px 10)]
+         [:margin-bottom (px 8)
+          :padding-bottom (px 6)
+          :border-bottom "1px dashed #ddd"]
          (>> no-tags-avail
            [:color "#999"])
          (>> tag-item
-           [:float :left
+           [:font-family board-font
+            :float :left
             :padding (px 0 3)
             :color "#999"
             :margin-bottom (px 2)
@@ -109,8 +111,7 @@
      (>> social-gizmo
        [:width (px 400)]
        (>> social-list
-         [:font-family board-font
-          :margin-bottom (px 8)
+         [:margin-bottom (px 8)
           :padding-bottom (px 6)
           :border-bottom "1px dashed #ddd"]
          (>> no-socials-avail
