@@ -2,6 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.router :refer [embedded?]]
             [faceboard.animator :refer [animate anim-phase anim-class]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.gizmo :refer [gizmo-component]]
@@ -64,13 +65,14 @@
           (when extended?
             (dom/div {:class "right-part"}
               (if editing?
-                (om/build card-controls-component {:person person
+                (om/build card-controls-component {:person   person
                                                    :is-last? (= (count people) 1)})
-                (dom/div {:class "person-buttons"}
-                  (dom/div {:class    "person-edit-button"
-                            :title    "edit the card"
-                            :on-click (partial toggle-editing-when-clicked-edit-button person)}
-                    (dom/i {:class "fa fa-wrench"}))))
+                (if-not (embedded?)
+                  (dom/div {:class "person-buttons"}
+                    (dom/div {:class    "person-edit-button"
+                              :title    "edit the card"
+                              :on-click (partial toggle-editing-when-clicked-edit-button person)}
+                      (dom/i {:class "fa fa-wrench"})))))
               (om/build card-extended-info-component {:editing? editing?
                                                       :gizmo    gizmo
                                                       :people   people ; needed for tags gizmo

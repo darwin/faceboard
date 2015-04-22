@@ -33,6 +33,12 @@
 
 (defn current-route-info [] *current-route-info*)
 
+(defn embedded? []
+  (let [current-route-name (:name (current-route-info))]
+    (or (= current-route-name :embed)
+      (= current-route-name :embed-tab)
+      (= current-route-name :embed-tab-person))))
+
 (defn current-url []
   (let [info (current-route-info)
         route (:route info)
@@ -66,25 +72,39 @@
   (switch-board-tab id tab)
   (perform! :change-extended-set #{person}))
 
+(defn route-variant [route-name]
+  (if-not (embedded?)
+    route-name
+    (condp = route-name
+      :board :embed
+      :board-tab :embed-tab
+      :board-tab-person :embed-tab-person
+      (do
+        (log-err "rounte-variant cannot handle " route-name)
+        route-name))))
+
 (defn switch-tab [tab]
-  (update-params! {:tab tab} (route :board-tab)))
+  (update-params! {:tab tab} (route (route-variant :board-tab))))
 
 (defn switch-person [person]
   (let [current-tab-id (:id (current-tab))]
     (if person
-      (update-params! {:tab current-tab-id :person person} (route :board-people-person))
-      (update-params! {:tab current-tab-id} (route :board-tab)))))
+      (update-params! {:tab current-tab-id :person person} (route (route-variant :board-tab-person)))
+      (update-params! {:tab current-tab-id} (route (route-variant :board-tab))))))
 
 (defn define-normal-routes! []
   (defroute-with-info :home "/" [] (perform! :switch-view :welcome))
-  (defroute-with-info :board-people-person "/board/:id/:tab/:person" [id tab person] (switch-board-tab-person id tab person))
+  (defroute-with-info :board-tab-person "/board/:id/:tab/:person" [id tab person] (switch-board-tab-person id tab person))
   (defroute-with-info :board-tab "/board/:id/:tab" [id tab] (switch-board-tab id tab))
   (defroute-with-info :board "/board/:id" [id] (switch-board-tab id nil))
+  (defroute-with-info :embed-tab-person "/embed/:id/:tab/:person" [id tab person] (switch-board-tab-person id tab person))
+  (defroute-with-info :embed-tab "/embed/:id/:tab" [id tab] (switch-board-tab id tab))
+  (defroute-with-info :embed "/embed/:id" [id] (switch-board-tab id nil))
   (defroute-with-info :catch "*" [] (perform! :switch-view :error {:message "This page does not exist."})))
 
 (defn define-whitelabel-routes! [id]
   (log-info (str "Detected white-label site: implicit board-id is '" id "'"))
-  (defroute-with-info :board-people-person "/:tab/:person" [tab person] (switch-board-tab-person id tab person))
+  (defroute-with-info :board-tab-person "/:tab/:person" [tab person] (switch-board-tab-person id tab person))
   (defroute-with-info :board-tab "/:tab" [tab] (switch-board-tab id tab))
   (defroute-with-info :board "/" [] (switch-board-tab id nil))
   (defroute-with-info :catch "*" [] (perform! :switch-view :error {:message "This page does not exist."})))

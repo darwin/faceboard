@@ -4,7 +4,7 @@
             [om-tools.dom :as dom]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
-            [faceboard.router :as router]
+            [faceboard.router :as router :refer [embedded?]]
             [faceboard.page :as page]
             [faceboard.views.logo :refer [small-logo-component]]
             [faceboard.views.menu :refer [menu-component]]
@@ -47,15 +47,15 @@
 (defcomponent board-content-component [data _ _]
   (render [_]
     (let [{:keys [ui anims selected-tab]} data]
-      (dom/div {:class    "tab-view"}
+      (dom/div {:class "tab-view"}
         (let [kind (or (:kind selected-tab) "generic")
               id (:id selected-tab)]
           (dom/div {:class (str "board " kind "-board " (when id (str "id-" (:id selected-tab))))}
-            (om/build (tab->component selected-tab) {:anims   anims
-                                                     :ui      ui
-                                                     :id      id
-                                                     :content (:content selected-tab)
-                                                     :cache   (get-in data [:cache :tabs id])
+            (om/build (tab->component selected-tab) {:anims     anims
+                                                     :ui        ui
+                                                     :id        id
+                                                     :content   (:content selected-tab)
+                                                     :cache     (get-in data [:cache :tabs id])
                                                      :transient (get-in data [:transient id])})))))))
 
 (defcomponent board-component [data _ _]
@@ -66,15 +66,16 @@
           selected-tab (router/lookup-tab selected-tab-id tabs)
           is-loading? (> loading? 0)]
       (page/page-skeleton
-        (dom/div {:class (str "loading-indicator" (when is-loading? " visible"))
-                  :title (when is-loading? "Waiting for network response...")}
-          (dom/i {:class "fa fa-refresh fa-spin"}))
-        (dom/div {:class "top-bar no-select"}
-          (om/build small-logo-component {})
-          (om/build board-label-component {:board-label (get-in model [:board :name] "")
-                                           :board-url   (router/current-url)})
-          (om/build board-tabs-component {:tabs tabs :selected-tab selected-tab})
-          (om/build menu-component ui))
+        (if-not (embedded?)
+          (dom/div {:class "top-bar no-select"}
+            (dom/div {:class (str "loading-indicator" (when is-loading? " visible"))
+                      :title (when is-loading? "Waiting for network response...")}
+              (dom/i {:class "fa fa-refresh fa-spin"}))
+            (om/build small-logo-component {})
+            (om/build board-label-component {:board-label (get-in model [:board :name] "")
+                                             :board-url   (router/current-url)})
+            (om/build board-tabs-component {:tabs tabs :selected-tab selected-tab})
+            (om/build menu-component ui)))
         (dom/div {:class "tab-contents"}
           (om/build board-content-component {:ui           ui
                                              :anims        anims

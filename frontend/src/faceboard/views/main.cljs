@@ -2,6 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.router :refer [embedded?]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.board :refer [board-component]]
@@ -14,7 +15,7 @@
 (defcomponent main-component [data _ _]
   (render [_]
     (let [iframe-editor-shown (get-in data [:ui :show-editor])]
-      (dom/div {:class    "main-box"
+      (dom/div {:class (str "main-box" (if (embedded?) " embedded"))
                 :on-click #(if iframe-editor-shown (perform! :hide-editor))}
         (if-let [editor-path (get-in data [:ui :editor-path])]
           (om/build editor-bridge-component {:editor-path    editor-path

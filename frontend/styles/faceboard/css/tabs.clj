@@ -32,4 +32,7 @@
       :top header-height
       :left (px 0)
       :right (px 0)
-      :bottom (px 0)])])
+      :bottom (px 0)])
+   (>> embedded
+     (>> tab-contents
+       [:top (px 0)]))])

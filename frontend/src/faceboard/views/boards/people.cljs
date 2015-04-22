@@ -2,6 +2,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.router :refer [embedded?]]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.people :refer [is-person-filtered? person-card-z-level build-filter-predicates]]
             [faceboard.views.boards.people.card :refer [card-component]]
@@ -103,7 +104,8 @@
           editing? (:editing? (:ui data))]
       (dom/div {:class    (str "desktop no-select" (if editing? " editing"))
                 :on-click #(router/switch-person nil)}
-        (om/build filters-component static-data)
+        (if-not (embedded?)
+          (om/build filters-component static-data))
         (om/build people-layout-component data)
         (om/build people-scaffold-component static-data)
         (if editing?

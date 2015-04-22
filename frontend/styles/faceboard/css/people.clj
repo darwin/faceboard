@@ -4,7 +4,11 @@
   (:require [faceboard.lib.helpers :refer [>> mv px ms]]))
 
 (def styles
-  [(>> people-board
+  [(>> embedded
+     (>> people-board
+       (>> people-scaffold
+         [:padding-right (px 0)])))
+   (>> people-board
      [:padding (px 0)]
      (>> desktop
        [:padding (px 0)
