@@ -61,8 +61,8 @@
 (defn provide-unique-human-friendly-id [prefix existing-ids]
   (let [ids (remove #(not (str/starts-with? % prefix)) existing-ids)
         non-colliding-id? (fn [id] (if (not-any? #(= % id) ids) id))
-        suggest-id (fn [num] (if (zero? num) prefix (str prefix num)))
-        suggestions (map #(suggest-id %) (iterate inc 0))]
+        suggest-id (fn [num] (str prefix num))
+        suggestions (concat [prefix] (map #(suggest-id %) (iterate inc 2)))]
     (some non-colliding-id? suggestions)))
 
 (defn generate-board-id []
