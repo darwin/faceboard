@@ -247,6 +247,7 @@
             :top (px 1)])
          (>> name
            [:font-size (px 18)
+            :max-width (px 130)
             :text-align :center
             :font-weight :bold
             :white-space :nowrap

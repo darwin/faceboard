@@ -83,6 +83,10 @@
      (>> fix-float-button
        [:position :relative
         :top (px 0)])
+     (>> name-gizmo
+       (>> id-section
+         (>> :input
+           [:width (px 100)])))
      (>> photo-gizmo
        (>> url-input
          (>> :input

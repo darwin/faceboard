@@ -17,7 +17,8 @@
             [faceboard.animator :refer [animate invalidate-animations]]
             [faceboard.helpers.utils :refer [json->model provide-unique-human-friendly-id]]
             [faceboard.helpers.people :refer [is-person-filtered? build-filter-predicates]]
-            [cuerdas.core :as str]))
+            [cuerdas.core :as str]
+            [faceboard.helpers.person :as person]))
 
 (defmulti handle-command (fn [command & _] command))
 
@@ -224,9 +225,12 @@
   (transform-app-state
     (model/update path (fn [person] {:id (:id person)}))))
 
+(defn rtrim-digits [s]
+  (str/rtrim s "0123456789"))
+
 (defn make-person-clone [person people]
   (let [all-ids (map :id people)
-        id-prefix (str/rtrim (:id person) "0123456789")
+        id-prefix (rtrim-digits (:id person))
         new-id (provide-unique-human-friendly-id id-prefix all-ids)]
     (assoc person :id new-id)))
 
@@ -239,6 +243,13 @@
 (defn duplicate-layout-item-for-id [layout id new-id]
   (if-let [item (get layout id)]
     (assoc layout new-id item)
+    layout))
+
+(defn rename-layout-item-for-id [layout id new-id]
+  (if-let [item (get layout id)]
+    (do
+      (dissoc layout id)
+      (assoc layout new-id item))
     layout))
 
 (defmethod handle-command :duplicate-card [_ path]
@@ -259,6 +270,25 @@
         (model/update [:transient (:id tab) :layout] (fn [old-layout]
                                                        (duplicate-layout-item-for-id old-layout (:id person) (:id person-clone)))))
       ; groups are defined in terms of ids, newly created person can be filtered out
+      ; TODO: should we assign clone to the same groups automatically?
       (when-not (person-filtered? person-clone)
         (<! (timeout 1000))
         (router/switch-person (:id person-clone))))))
+
+(defmethod handle-command :reset-slug [_ path]
+  (let [person (get-in @app-state path)
+        tab-path (take 3 path)
+        tab (get-in @app-state tab-path)
+        people-path (pop path)
+        people (get-in @app-state people-path)
+        id (:id person)
+        all-ids (remove #(= id %) (map :id people))
+        id-prefix (rtrim-digits (str/replace (str/lower (str/trim (person/name person))) #"[^a-zA-Z0-9]" ""))
+        new-id (provide-unique-human-friendly-id id-prefix all-ids)]
+    (when-not (= id new-id)
+      (transform-app-state
+        ; TODO: rename also in groups?
+        (model/update path (fn [old-person] (assoc old-person :id new-id)))
+        (model/update [:transient (:id tab) :layout] (fn [old-layout]
+                                                       (rename-layout-item-for-id old-layout id new-id))))
+      (router/switch-person new-id))))

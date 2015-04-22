@@ -3,6 +3,8 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.helpers.utils :refer [swallow]]
+            [faceboard.controller :refer [perform!]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [country-names]]
             [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]))
@@ -20,6 +22,10 @@
 (defn handle-country-change [person value]
   (om/update! person country-path (if (= value "--") nil value)))
 
+(defn reset-slug-handler [person e]
+  (swallow e)
+  (perform! :reset-slug (om/path person)))
+
 (defn country-list []
   (cons
     ["--" "--- none ---"]
@@ -34,8 +40,9 @@
     (let [{:keys [person]} data
           name (get-in person name-path)
           nick (get-in person nick-path)
+          id (:id person)
           country-code (get-in person country-path)]
-      (dom/form {:class       "name-country-gizmo"
+      (dom/form {:class       "name-gizmo"
                  :on-key-down gizmo-form-key-down
                  :on-submit   (fn [e] (.preventDefault e))}
         (dom/div {:class "name-input"}
@@ -56,7 +63,16 @@
             (dom/select {:value     country-code
                          :on-change (handler (partial handle-country-change person))}
               (for [[code name] (country-list)]
-                (dom/option {:value code} name)))))))))
+                (dom/option {:value code} name)))))
+        (dom/div {:class "id-section"}
+          (dom/label "Slug (id):"
+            (dom/input {:type     "text"
+                        :disabled true
+                        :value    id}))
+          (dom/button {:class    "reset-slug-action"
+                       :title    "this will rename id (slug) of this card according to person's current name"
+                       :on-click (partial reset-slug-handler person)}
+            "reset"))))))
 
 (def name-gizmo-descriptor {:id       :name
                             :title    "edit name and country"
