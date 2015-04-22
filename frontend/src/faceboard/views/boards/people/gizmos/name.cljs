@@ -8,7 +8,7 @@
             [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]))
 
 (def name-path [:bio :name])
-(def nick-path [:bio :nick])
+(def nick-path [:bio :nickname])
 (def country-path [:bio :country])
 
 (defn commit-name-change [person value]
@@ -46,7 +46,7 @@
                         :placeholder person/full-name-placeholder
                         :on-change   (handler (partial commit-name-change person))})))
         (dom/div {:class "nick-input"}
-          (dom/label "Nick:"
+          (dom/label "Nickname:"
             (dom/input {:type        "text"
                         :value       nick
                         :placeholder "(optional)"

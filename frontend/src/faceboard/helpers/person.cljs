@@ -22,13 +22,15 @@
     (if (zero? (count sv)) nil sv)))
 
 (defn name [person]
-  (let [name (str/trim (first-word (str (get-in person [:bio :name]))))]
+  (let [source (or (get-in person [:bio :nickname]) (get-in person [:bio :name]))
+        name (str/trim (first-word (str source)))]
     (s name)))
 
 (defn full-name [person]
   (s (or
        (get-in person [:bio :full-name])
-       (get-in person [:bio :name]))))
+       (get-in person [:bio :name])
+       (get-in person [:bio :nickname]))))
 
 (defn photo-url [person]
   (or (get-in person [:bio :photo :url] nil) "/images/unknown.jpg"))
