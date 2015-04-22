@@ -91,9 +91,11 @@
                         :anim      (:person anims)}]
               (om/build card-component data {:react-key id}))))))))
 
-(defn toggle-editing-when-clicked-edit-background [e]
+(defn toggle-editing-when-clicked-edit-background [data e]
   (swallow e)
-  (perform! :toggle-editing))
+  (if (get-in data [:ui :show-editor])
+    (perform! :hide-editor)
+    (perform! :toggle-editing)))
 
 (defcomponent people-component [data _ _]
   (render [_]
@@ -106,4 +108,4 @@
         (om/build people-scaffold-component static-data)
         (if editing?
           (dom/div {:class    "edit-background"
-                    :on-click toggle-editing-when-clicked-edit-background}))))))
+                    :on-click (partial toggle-editing-when-clicked-edit-background data)}))))))

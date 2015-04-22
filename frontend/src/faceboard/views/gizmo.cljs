@@ -43,7 +43,8 @@
           (dom/div {:class "pin-point"
                     :on-click (partial toggle-gizmo-when-clicked-pin-point id position)}
             (dom/i {:class    (str "fa fa-" icon)
-                    :title    title}))
+                    :title    title}
+              (dom/span {:class "border"})))
           (if active?
             (dom/div {:class "gizmo-frame-correction"
                       :style frame-correction-style}

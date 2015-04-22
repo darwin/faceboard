@@ -21,16 +21,18 @@
       :color gizmo-point-color
       :font-size (px 24)
       :padding (px 8 4)]
-     (>> mask
-       [:position :absolute
-        :top (px 4)
-        :width (px 8)
-        :height (px 34)
-        :background-color "#f6f6f6"])
      (>> :i
        [:background-color "#f6f6f6"
         :padding (px 0 2)
-        :padding-top (px 1)])
+        :padding-top (px 1)]
+       (>> border
+         [:position :absolute
+          :top (px 0)
+          :right (px -4)
+          :background-color gizmo-border-color
+          :display :inline-block
+          :width (px 4)
+          :height "100%"]))
      (>> &:hover
        [:color gizmo-point-hovered-color]))
    ; centering gizmo frame vertically to gizmo point is suprisingly hard, we need two divs

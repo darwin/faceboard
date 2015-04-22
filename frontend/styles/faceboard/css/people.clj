@@ -9,15 +9,14 @@
      (>> desktop
        [:padding (px 0)
         :perspective (px 2000)
-        :perspective-origin "50% 50%"
-        ]
+        :perspective-origin "50% 50%"]
        (>> edit-background
          [:opacity 0.7
           :background-color "#000"
           :position :fixed
           :top (px 0)
           ;:bottom (px 0) this does not work for small boards
-          :min-height "10000px"                                 ; HACK IT
+          :min-height "10000px"                             ; HACK IT
           :left (px 0)
           :right (px 0)
           :z-index 11])
@@ -26,9 +25,8 @@
            (>> right-part
              [:overflow :visible]))))                       ; for gizmos
      (>> people-scaffold
-       [:visibility :hidden
-        :padding-right (px 280) ; leave room for expanded cards
-        ])
+       [:padding-right (px 280)                             ; leave room for expanded cards
+        :visibility :hidden])
      (>> separator
        [:margin-top (px 100)])
      (>> people-layout
@@ -276,7 +274,39 @@
          [:padding-top (px 10)
           :display :inline-block
           :overflow :hidden
-          :visibility :visible]))
+          :visibility :visible]
+         (>> card-controls
+           [:position :absolute]
+           (>> &.bottom-right
+             [:bottom (px -22)
+              :right (px -1)])
+           (>> &.top-left
+             [:top (px -22)
+              :left (px -11)])
+           (>> &.top-right
+             [:top (px -22)
+              :right (px -1)]))
+         (>> card-control
+           [:background-color "#f6f6f6"
+            :cursor :pointer
+            :font-weight :bold
+            :font-family gizmo-font
+            :font-size (px 10)
+            :display :inline-block
+            :padding (px 2 6)
+            :margin-left (px 10)]
+           (>> &:hover
+             [:color signature-color])
+           (>> :i
+             [:margin-right (px 4)])
+           (>> &.done-control
+             [:border-top "4px solid #66ff66"])
+           (>> &.delete-control &.clear-control
+             [:border-top "4px solid #ff6666"])
+           (>> &.duplicate-control
+             [:border-top (str "4px solid " gizmo-border-color)])
+           (>> &.json-control
+             [:border-bottom "4px solid #999"]))))
      (>> person-extended-info
        [:min-width (px 300)
         :vertical-align :top

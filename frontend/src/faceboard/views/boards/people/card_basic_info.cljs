@@ -9,16 +9,17 @@
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-descriptor]]
             [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-descriptor]]
             [faceboard.views.boards.people.card-extended-info :refer [card-extended-info-component]]
+            [faceboard.views.boards.people.card-controls :refer [card-controls-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
+            [faceboard.helpers.utils :refer [swallow css-transform]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defn has-name? [person]
   (boolean (person/name person)))
 
 (defn toggle-editing-when-clicked-edit-button [person e]
-  (.stopPropagation e)
+  (swallow e)
   (if (.-altKey e)
     (perform! :open-editor (om/path person) (.-shiftKey e))
     (perform! :toggle-editing)))
@@ -62,7 +63,8 @@
                             :title country-name})))))
           (when extended?
             (dom/div {:class "right-part"}
-              (when (not editing?)
+              (if editing?
+                (om/build card-controls-component {:person person})
                 (dom/div {:class "person-buttons"}
                   (dom/div {:class    "person-edit-button"
                             :title    "edit the card"
