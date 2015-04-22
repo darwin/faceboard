@@ -2,6 +2,7 @@
   (:require [om-tools.dom :as dom]
             [cemerick.pprng :as pprng]
             [cuerdas.core :as str]
+            [cljs-uuid.core :as uuid]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (defn model->json [model]
@@ -63,3 +64,7 @@
         suggest-id (fn [num] (if (zero? num) prefix (str prefix num)))
         suggestions (map #(suggest-id %) (iterate inc 0))]
     (some non-colliding-id? suggestions)))
+
+(defn generate-board-id []
+  (let [guid (str/ireplace (str (uuid/make-random)) #"-" "")]
+    (str/slice guid 0 20)))

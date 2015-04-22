@@ -2,10 +2,10 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [cljs-uuid.core :as uuid]
             [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.logo :as logo]
+            [faceboard.helpers.utils :refer [generate-board-id]]
             [faceboard.page :as page]))
 
 (defcomponent welcome-component [_ _ _]
@@ -17,4 +17,4 @@
           (dom/img {:src "images/faceboard-teaser.jpg"}))
         (dom/div {:class "buttons"}
           (dom/span {:class    "button"
-                     :on-click #(perform! :create-board (str (uuid/make-random)))} "Create a new board"))))))
+                     :on-click #(perform! :create-board (generate-board-id))} "Create a new board"))))))
