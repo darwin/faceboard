@@ -33,20 +33,23 @@
           extended? (and
                       (not filtered?)
                       (or (:extended? data) (= (anim-phase shrinking-anim) 0) (= (anim-phase shrinking-anim) 1)))
+          window-width (:width (get-current-window-dimensions))
+          padding 20
+          extended-card-width 480
+          cpx (:left layout)
+          card-right-edge (+ cpx extended-card-width)
+          card-left-edge cpx
           normal-transform #(when layout
-                             (str
-                               "translateX(" (:left layout) "px)"
-                               "translateY(" (:top layout) "px)"
-                               "translateZ(" (:z layout) "px)"))
+                             (let [corr-right (- card-right-edge (- window-width padding))
+                                   fixed-cpx-right (if (pos? corr-right) (- cpx corr-right) cpx)
+                                   fixed-cpx (if (neg? fixed-cpx-right) padding fixed-cpx-right)]
+                               (str
+                                 "translateX(" (if extended? fixed-cpx cpx) "px)"
+                                 "translateY(" (:top layout) "px)"
+                                 "translateZ(" (:z layout) "px)")))
           ; snappy transform is active in editing mode the goal is to keep one card in the center of attention
           ; also moving it left/right to make room for currently opened gizmo
-          snappy-transform #(let [padding 40
-                                  card-width 480
-                                  cpx (:left layout)
-                                  card-right-edge (+ cpx card-width)
-                                  card-left-edge cpx
-                                  window-width (:width (get-current-window-dimensions))
-                                  left? (and (:active gizmo) (= (:position gizmo) :left))
+          snappy-transform #(let [left? (and (:active gizmo) (= (:position gizmo) :left))
                                   right? (and (:active gizmo) (= (:position gizmo) :right))
                                   diff-right (- (+ card-right-edge max-gizmo-width-right) (- window-width padding))
                                   diff-left (- card-left-edge max-gizmo-width-left)
