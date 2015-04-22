@@ -1,6 +1,7 @@
 (ns faceboard.helpers.filters.countries
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
-  (:require [cuerdas.core :as str]))
+  (:require [cuerdas.core :as str]
+            [faceboard.helpers.person :as person]))
 
 (defn- add-person-to-country-report [report person-id]
   (if-not report
@@ -10,7 +11,7 @@
 
 (defn- countries-tally-reducer [tally person]
   (let [id (:id person)
-        country-code (get-in person [:bio :country])]
+        country-code (person/country-code person)]
     (update tally country-code #(add-person-to-country-report % id))))
 
 (defn- sorted-list-of-countries-by-size [tally]

@@ -17,20 +17,20 @@
                           "instagram|some-instagram-user-id"
                           "http://www.yourweb.com"])
 
-(defn s [v]
-  (let [sv (str v)]
-    (if (zero? (count sv)) nil sv)))
+(defn sanitize [v]
+  (let [sv (str/trim (str v))]
+    (if (empty? sv) nil sv)))
 
 (defn name [person]
   (let [source (or (get-in person [:bio :nickname]) (get-in person [:bio :name]))
         name (str/trim (first-word (str source)))]
-    (s name)))
+    (sanitize name)))
 
 (defn full-name [person]
-  (s (or
-       (get-in person [:bio :full-name])
-       (get-in person [:bio :name])
-       (get-in person [:bio :nickname]))))
+  (sanitize (or
+              (get-in person [:bio :full-name])
+              (get-in person [:bio :name])
+              (get-in person [:bio :nickname]))))
 
 (defn photo-url [person]
   (or (get-in person [:bio :photo :url] nil) "/images/unknown.jpg"))
@@ -57,22 +57,26 @@
   (or (get-in person [:bio :photo :displace :z]) 0))        ; 0px unless requested by data
 
 (defn country-code [person]
-  (s (get-in person [:bio :country])))
+  (sanitize (get-in person [:bio :country])))
 
 (defn country-name [person]
   (lookup-country-name (country-code person)))
 
 (defn email [person]
-  (s (get-in person [:bio :email])))
+  (sanitize (get-in person [:bio :email])))
 
 (defn phone [person]
-  (s (get-in person [:bio :phone])))
+  (sanitize (get-in person [:bio :phone])))
 
 (defn about [person]
-  (s (get-in person [:bio :about])))
+  (sanitize (get-in person [:bio :about])))
 
 (defn tags [person]
-  (distinct (remove empty? (get-in person [:tags] []))))
+  (let [source (get-in person [:tags] [])
+        sanitized-list (map #(sanitize (str/lower %)) source)]
+    (distinct (remove nil? sanitized-list))))
 
 (defn socials [person]
-  (distinct (remove empty? (get-in person [:social] []))))
+  (let [source (get-in person [:social] [])
+        sanitized-list (map #(sanitize (str/lower %)) source)]
+    (distinct (remove nil? sanitized-list))))

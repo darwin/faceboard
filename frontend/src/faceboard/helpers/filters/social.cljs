@@ -2,7 +2,8 @@
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cuerdas.core :as str]
             [clojure.set :refer [subset?]]
-            [faceboard.helpers.social :refer [social-info]]))
+            [faceboard.helpers.social :refer [social-info]]
+            [faceboard.helpers.person :as person]))
 
 (defn- known-labels [data]
   (let [{:keys [type label icon]} (social-info data)]
@@ -11,7 +12,7 @@
       [])))
 
 (defn- person->socials [person]
-  (mapcat known-labels (:social person)))
+  (mapcat known-labels (person/socials person)))
 
 (defn- add-person-to-social-report [report person-id icon]
   (if-not report

@@ -1,7 +1,8 @@
 (ns faceboard.helpers.filters.tags
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cuerdas.core :as str]
-            [clojure.set :refer [subset?]]))
+            [clojure.set :refer [subset?]]
+            [faceboard.helpers.person :as person]))
 
 (defn- add-person-to-tag-report [report person-id]
   (if-not report
@@ -11,7 +12,7 @@
 
 (defn- tags-tally-reducer [tally person]
   (let [id (:id person)
-        tags (:tags person)
+        tags (person/tags person)
         reducer (fn [tally tag]
                   (update tally tag #(add-person-to-tag-report % id)))]
     (reduce reducer tally tags)))
