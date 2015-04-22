@@ -15,6 +15,7 @@
 (def firebase-db (get env :firebase-db "blinding-heat-4410"))
 (def domain (.-host js/location))
 (def instrument? false)
+(def simple-profile? true)
 
 (defn init! []
   (enable-console-print!)

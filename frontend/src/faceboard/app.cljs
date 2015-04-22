@@ -29,19 +29,14 @@
   (turn-all-hrefs-to-external-links)
   (dispatcher/start-handling-commands))
 
-(defn app-opts []
+(def app-opts
   (merge
     {:target (root-app-element)}
     (if env/instrument?
-      {:descriptor (instrumentation/patch-om)})
-    #_(if env/instrument?
-      {:instrument (fn [f cursor m]
-                     (let [new-m (assoc m :descriptor instrumentation-methods)]
-                       (log "!" cursor new-m)
-                       (om/build* f cursor new-m)))})))
+      {:descriptor (instrumentation/patch-om!)})))
 
 (defn mount! []
-  (om/root main-component app-state (app-opts)))
+  (om/root main-component app-state app-opts))
 
 (when env/local?
   (aset js/window "faceboard_reloader" mount!))

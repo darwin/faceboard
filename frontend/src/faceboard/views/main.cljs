@@ -10,12 +10,23 @@
             [faceboard.views.welcome :refer [welcome-component]]
             [faceboard.views.loading :refer [loading-component]]
             [faceboard.views.test :refer [test-component]]
-            [faceboard.views.error :refer [error-component]]))
+            [faceboard.views.error :refer [error-component]]
+            [faceboard.env :as env]))
 
 (defcomponent main-component [data _ _]
+  (will-update [_ _ _]
+    (if env/simple-profile?
+      (.time js/console "main render")))
+  (did-mount [_]
+    (if env/simple-profile?
+      (log "faceboard: main component mounted")
+      (.time js/console "main render")))
+  (did-update [_ _ _]
+    (if env/simple-profile?
+      (.timeEnd js/console "main render")))
   (render [_]
     (let [iframe-editor-shown (get-in data [:ui :show-editor])]
-      (dom/div {:class (str "main-box" (if (embedded?) " embedded"))
+      (dom/div {:class    (str "main-box" (if (embedded?) " embedded"))
                 :on-click #(if iframe-editor-shown (perform! :hide-editor))}
         (if-let [editor-path (get-in data [:ui :editor-path])]
           (om/build editor-bridge-component {:editor-path    editor-path

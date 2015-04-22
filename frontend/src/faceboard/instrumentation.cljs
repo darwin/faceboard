@@ -31,7 +31,7 @@
       (update-in [:componentDidUpdate] wrap-did-update)
       (clj->js))))
 
-(defn patch-om []
+(defn patch-om! []
   (let [orig-will-update (aget om/pure-descriptor "componentWillUpdate")
         orig-did-update (aget om/pure-descriptor "componentDidUpdate")]
     (aset om/pure-descriptor "componentWillUpdate" (wrap-will-update orig-will-update))
