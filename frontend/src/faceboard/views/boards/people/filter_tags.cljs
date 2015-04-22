@@ -20,10 +20,9 @@
 (defcomponent filter-tags-component [data _ _]
   (render [_]
     (let [people (get-in data [:content :people])
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :tags)
+          expanded? (contains? (:expanded data) :tags)
           tags-tally (build-tags-tally people)
-          filter-path [:ui :filters :active :tags]
-          selected-tags (get-in data filter-path)
+          selected-tags (get-in data [:active :tags])
           sorted-tags (:tags-by-size tags-tally)
           prefiltered-people (filter-people-except :tags data)
           people-filtered-out? (fn [tag] (every? #(not (tags-filter-predicate #{tag} %)) prefiltered-people))]

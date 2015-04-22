@@ -17,6 +17,7 @@
                  [cljs-uuid "0.0.4"]
                  [cljs-http "0.1.30"]
                  [cuerdas "0.3.2"]
+                 [com.sgrove/cljs-time "0.3.5"]
                  [markdown-clj "0.9.65"]
                  [garden "1.2.5"]
                  [figwheel "0.2.6"]

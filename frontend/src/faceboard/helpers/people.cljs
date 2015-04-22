@@ -41,6 +41,6 @@
 
 (defn filter-people-except [except-filter data]
   (let [people (get-in data [:content :people])
-        active-filters (dissoc (get-in data [:ui :filters :active]) except-filter)
+        active-filters (dissoc (:active data) except-filter)
         filter-predicates (build-filter-predicates active-filters data)]
     (remove #(is-person-filtered? filter-predicates %) people)))

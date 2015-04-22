@@ -22,10 +22,9 @@
   (render [_]
     (let [people (get-in data [:content :people])
           groups (get-in data [:content :groups])
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :groups)
+          expanded? (contains? (:expanded data) :groups)
           groups-tally (build-groups-tally people groups)
-          filter-path [:ui :filters :active :groups]
-          selected-groups (get-in data filter-path)
+          selected-groups (get-in data [:active :groups])
           sorted-groups (:ordered-groups groups-tally)
           prefiltered-people (filter-people-except :groups data)
           people-filtered-out? (fn [group] (every? #(not (groups-filter-predicate groups #{group} %)) prefiltered-people))]

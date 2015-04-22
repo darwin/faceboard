@@ -16,12 +16,12 @@
         (when label
           (dom/span {:class "label"} label))))))
 
-(defcomponent menu-component [data _ _]
+(defcomponent menu-component [_ _ _]
   (render [_]
     (let [buttons [{:icon    "cogs"
                     :title   "edit source data"
                     :class   "model-button"
-                    :active? (:model-editing? data)
+                    :active? true
                     :handler #(perform! :open-editor [:model] (.-shiftKey %))}]]
       (dom/div {:class "menu"}
         (om/build-all menu-button-component buttons)))))

@@ -6,6 +6,7 @@
             [faceboard.state :refer [app-state]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.main :refer [main-component]]
+            [faceboard.instrumentation :as instrumentation]
             [faceboard.dispatcher :as dispatcher]))
 
 (defn- root-app-element []
@@ -28,8 +29,19 @@
   (turn-all-hrefs-to-external-links)
   (dispatcher/start-handling-commands))
 
+(defn app-opts []
+  (merge
+    {:target (root-app-element)}
+    (if env/instrument?
+      {:descriptor (instrumentation/patch-om)})
+    #_(if env/instrument?
+      {:instrument (fn [f cursor m]
+                     (let [new-m (assoc m :descriptor instrumentation-methods)]
+                       (log "!" cursor new-m)
+                       (om/build* f cursor new-m)))})))
+
 (defn mount! []
-  (om/root main-component app-state {:target (root-app-element)}))
+  (om/root main-component app-state (app-opts)))
 
 (when env/local?
   (aset js/window "faceboard_reloader" mount!))

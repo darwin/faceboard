@@ -24,10 +24,8 @@
 (defcomponent filter-countries-component [data _ _]
   (render [_]
     (let [people (get-in data [:content :people])
-          expanded-filters (get-in data [:ui :filters :expanded-set])
-          expanded? (contains? expanded-filters :countries)
-          filter-path [:ui :filters :active :countries]
-          selected-countries (get-in data filter-path)
+          expanded? (contains? (:expanded data) :countries)
+          selected-countries (get-in data [:active :countries])
           countries-tally (build-countries-tally people)
           sorted-countries (:countries-by-size countries-tally)
           prefiltered-people (filter-people-except :countries data)

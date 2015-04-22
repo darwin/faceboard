@@ -75,7 +75,7 @@
             (om/build board-label-component {:board-label (get-in model [:board :name] "")
                                              :board-url   (router/current-url)})
             (om/build board-tabs-component {:tabs tabs :selected-tab selected-tab})
-            (om/build menu-component ui)))
+            (om/build menu-component {})))
         (dom/div {:class "tab-contents"}
           (om/build board-content-component {:ui           ui
                                              :anims        anims

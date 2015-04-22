@@ -44,10 +44,10 @@
   (did-update [_ _ _]
     (debounced-recompute-layout (om/get-node owner "desk") data))
   (render [_]
-    (let [people (get-in data [:content :people])
+    (let [{:keys [content active-filters]} data
+          people (:people content)
           people-comparator #(compare (person/name %) (person/name %2))
           sorted-people (sort people-comparator people)
-          active-filters (get-in data [:ui :filters :active])
           filter-predicates (build-filter-predicates active-filters data)
           person->item (fn [person] (hash-map :person person :filtered? (is-person-filtered? filter-predicates person)))
           sorted-people-with-filter-status (map person->item sorted-people)
@@ -66,8 +66,7 @@
                   id (:id person)
                   data {:person    person
                         :extended? false
-                        :filtered? (:filtered? item)
-                        :anim      0}]
+                        :filtered? (:filtered? item)}]
               (om/build card-component data {:react-key id}))))))))
 
 (defcomponent people-layout-component [data _ _]
@@ -89,7 +88,8 @@
                         :filtered? (is-person-filtered? filter-predicates person)
                         :editing?  editing?
                         :gizmo     (:gizmo ui)
-                        :anim      (:person anims)}]
+                        :anim      (:person anims)
+                        }]
               (om/build card-component data {:react-key id}))))))))
 
 (defn toggle-editing-when-clicked-edit-background [data e]
@@ -105,9 +105,14 @@
       (dom/div {:class    (str "desktop no-select" (if editing? " editing"))
                 :on-click #(router/switch-person nil)}
         (if-not (embedded?)
-          (om/build filters-component static-data))
+          ; filters component is slow, be careful to pass only relevant data
+          (om/build filters-component {:content (:content data)
+                                       :expanded (get-in data [:ui :filters :expanded-set])
+                                       :active (get-in data [:ui :filters :active])}))
         (om/build people-layout-component data)
-        (om/build people-scaffold-component static-data)
+        (om/build people-scaffold-component {:id (:id data)
+                                             :content (:content data)
+                                             :active-filters (get-in data [:ui :filters :active])})
         (if editing?
           (dom/div {:class    "edit-background"
                     :on-click (partial toggle-editing-when-clicked-edit-background data)}))))))

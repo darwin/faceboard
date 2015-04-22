@@ -21,10 +21,9 @@
 (defcomponent filter-socials-component [data _ _]
   (render [_]
     (let [people (get-in data [:content :people])
-          expanded? (contains? (get-in data [:ui :filters :expanded-set]) :socials)
+          expanded? (contains? (:expanded data) :socials)
           socials-tally (build-socials-tally people)
-          filter-path [:ui :filters :active :socials]
-          selected-socials (get-in data filter-path)
+          selected-socials (get-in data [:active :socials])
           sorted-socials (:socials-by-size socials-tally)
           prefiltered-people (filter-people-except :socials data)
           people-filtered-out? (fn [social] (every? #(not (socials-filter-predicate #{social} %)) prefiltered-people))]

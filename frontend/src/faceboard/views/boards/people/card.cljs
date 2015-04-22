@@ -61,9 +61,10 @@
                                "translateX(" (.round js/Math posx) "px)"
                                "translateY(" (:top layout) "px)"
                                "translateZ(" (- person-card-z-level) "px)"))
-          zoom-transform (when layout
-                           (str
-                             "translateZ(" (if extended? person-card-z-level 0) "px)"))
+          zoom-transform #(when layout
+                           (css-transform
+                             (str
+                               "translateZ(" (if extended? person-card-z-level 0) "px)")))
           transform (css-transform (if (and extended? editing?) (snappy-transform) (normal-transform)))]
       (dom/div {:class     (str "person-card"
                              (when layout " has-layout")
@@ -81,7 +82,7 @@
                                  (router/switch-person (if-not extended? id nil))
                                  (perform! :toggle-gizmo))))}
         (dom/div {:class (str "person-card-zoom")
-                  :style (css-transform zoom-transform)}
+                  :style (zoom-transform)}
           (when layout
             (dom/div {:class "person-extended-wrapper"}
               (om/build card-basic-info-component {:hide?     (not extended?)
