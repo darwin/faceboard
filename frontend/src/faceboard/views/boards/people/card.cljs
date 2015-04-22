@@ -8,6 +8,7 @@
             [faceboard.router :as router]
             [faceboard.views.gizmo :refer [gizmo-component]]
             [faceboard.helpers.people :refer [person-card-z-level]]
+            [faceboard.helpers.gizmos :refer [max-gizmo-width-left max-gizmo-width-right]]
             [faceboard.views.boards.people.gizmos.name :refer [name-gizmo-component]]
             [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-component]]
             [faceboard.views.boards.people.gizmos.about :refer [about-gizmo-component]]
@@ -18,11 +19,6 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
             [faceboard.logging :refer [log log-err log-warn log-info]]))
-
-(defn get-current-scroll-position []
-  (if-let [contents-node (.item (.getElementsByClassName js/document "tab-contents") 0)]
-    {:top (.-scrollTop contents-node) :left (.-scrollLeft contents-node)}
-    {:top 0 :left 0}))
 
 (defn get-current-window-dimensions []
   {:width (.-innerWidth js/window) :height (.-innerHeight js/window)})
@@ -44,20 +40,22 @@
                                "translateZ(" (:z layout) "px)"))
           ; snappy transform is active in editing mode the goal is to keep one card in the center of attention
           ; also moving it left/right to make room for currently opened gizmo
-          snappy-transform #(let [card-width 480
-                                  scroll-top (:top (get-current-scroll-position))
+          snappy-transform #(let [padding 40
+                                  card-width 480
+                                  cpx (:left layout)
+                                  card-right-edge (+ cpx card-width)
+                                  card-left-edge cpx
                                   window-width (:width (get-current-window-dimensions))
                                   left? (and (:active gizmo) (= (:position gizmo) :left))
                                   right? (and (:active gizmo) (= (:position gizmo) :right))
-                                  left-padding 40
-                                  top-padding 40
+                                  diff-right (- (+ card-right-edge max-gizmo-width-right) (- window-width padding))
+                                  diff-left (- card-left-edge max-gizmo-width-left)
                                   posx (cond
-                                         right? left-padding ; move card left
-                                         left? (- window-width (+ card-width left-padding)) ; move card right
-                                         :else (/ (- window-width card-width) 2))] ; center card horizontally
+                                         right? (if (pos? diff-right) (- cpx diff-right) cpx) ; move card left
+                                         left? (if (neg? diff-left) (- cpx diff-left) cpx) ; move card right
+                                         :else cpx)]        ; center card horizontally
                              (str
                                "translateX(" (.round js/Math posx) "px)"
-                               ;"translateY(" (+ scroll-top top-padding) "px)"
                                "translateY(" (:top layout) "px)"
                                "translateZ(" (- person-card-z-level) "px)"))
           zoom-transform (when layout

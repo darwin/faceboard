@@ -5,6 +5,8 @@
             [faceboard.logging :refer [log log-err log-warn log-info]]))
 
 (def default-gizmo-commit-debounce-time 1000)
+(def max-gizmo-width-left 500)
+(def max-gizmo-width-right 500)
 
 (defn debounce-commit [f] (debounce f default-gizmo-commit-debounce-time))
 
