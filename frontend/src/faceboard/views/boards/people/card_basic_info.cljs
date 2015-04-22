@@ -1,4 +1,5 @@
 (ns faceboard.views.boards.people.card-basic-info
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -13,8 +14,7 @@
             [faceboard.views.boards.people.card-controls :refer [card-controls-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.utils :refer [swallow css-transform]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.utils :refer [swallow css-transform]]))
 
 (defn has-name? [person]
   (boolean (person/name person)))

@@ -1,4 +1,5 @@
 (ns faceboard.views.boards.people.filter-countries
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -6,8 +7,7 @@
             [faceboard.helpers.people :refer [filter-people-except]]
             [faceboard.helpers.countries :refer [lookup-country-name]]
             [faceboard.views.boards.people.filters-header :refer [filters-header-component]]
-            [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.filters.countries :refer [build-countries-tally countries-filter-predicate]]))
 
 (defcomponent countries-filter-item-component [data _ _]
   (render [_]

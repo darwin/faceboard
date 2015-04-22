@@ -1,4 +1,5 @@
 (ns faceboard.views.boards.people.card-extended-info
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -13,7 +14,6 @@
             [faceboard.helpers.social :refer [parse-social social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [cuerdas.core :as str]))
 
 (defn has-about? [person]

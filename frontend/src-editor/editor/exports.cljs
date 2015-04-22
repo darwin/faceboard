@@ -1,6 +1,6 @@
 (ns editor.exports
-  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
-            [editor.state :refer [app-state]]
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [editor.state :refer [app-state]]
             [editor.helpers.utils :refer [json->model]]))
 
 (defn ^:export drive [json]

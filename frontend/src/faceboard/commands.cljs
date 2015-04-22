@@ -1,12 +1,12 @@
 (ns faceboard.commands
   (:require-macros [faceboard.macros.model :refer [transform-app-state]]
-                   [cljs.core.async.macros :refer [go]])
+                   [cljs.core.async.macros :refer [go]]
+                   [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [clojure.set :refer [difference]]
             [cljs-http.client :as http]
             [cljs.core.async :refer [put! <! chan timeout close!]]
             [goog.window]
             [faceboard.state :refer [app-state]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.model :as model]
             [faceboard.router :as router]
             [faceboard.firebase :as db]

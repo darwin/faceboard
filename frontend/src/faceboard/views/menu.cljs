@@ -1,9 +1,9 @@
 (ns faceboard.views.menu
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.controller :refer [perform!]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.controller :refer [perform!]]))
 
 (defcomponent menu-button-component [data _ _]
   (render [_]

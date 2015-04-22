@@ -1,6 +1,6 @@
 (ns faceboard.state
-  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
-            [faceboard.data.sample_board :refer [sample-board]]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [faceboard.data.sample_board :refer [sample-board]]))
 
 (defonce app-state
   (atom

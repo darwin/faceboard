@@ -1,9 +1,9 @@
 (ns faceboard.helpers.people
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [faceboard.helpers.filters.groups :refer [groups-filter-predicate]]
             [faceboard.helpers.filters.countries :refer [countries-filter-predicate]]
             [faceboard.helpers.filters.tags :refer [tags-filter-predicate]]
-            [faceboard.helpers.filters.social :refer [socials-filter-predicate]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.filters.social :refer [socials-filter-predicate]]))
 
 (def person-card-z-level 100)
 

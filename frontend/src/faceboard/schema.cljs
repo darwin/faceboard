@@ -1,8 +1,8 @@
 (ns faceboard.schema
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [faceboard.controller :refer [perform!]]
             [faceboard.migrations.m001_add_version :refer [add-version]]
-            [faceboard.migrations.m002_people_board_content_object :refer [convert-people-content-to-object]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.migrations.m002_people_board_content_object :refer [convert-people-content-to-object]]))
 
 (def current-version 3)
 

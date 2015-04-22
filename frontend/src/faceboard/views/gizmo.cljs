@@ -1,9 +1,9 @@
 (ns faceboard.views.gizmo
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.utils :refer [swallow css-transform]]
             [faceboard.controller :refer [perform!]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [om.core :as om]))
 
 (def gizmo-frame-left-shift 44)

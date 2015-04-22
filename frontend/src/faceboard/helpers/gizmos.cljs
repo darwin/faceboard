@@ -1,8 +1,8 @@
 (ns faceboard.helpers.gizmos
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [faceboard.helpers.underscore :refer [debounce]]
             [faceboard.controller :refer [perform!]]
-            [phalanges.core :as phalanges]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [phalanges.core :as phalanges]))
 
 (def default-gizmo-commit-debounce-time 1000)
 (def max-gizmo-width-left 500)

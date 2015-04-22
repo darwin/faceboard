@@ -1,6 +1,6 @@
 (ns editor.core
-  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
-            [editor.env :as env]
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [editor.env :as env]
             [editor.exports]
             [editor.app :as app]))
 

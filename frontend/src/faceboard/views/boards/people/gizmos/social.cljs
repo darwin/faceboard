@@ -1,11 +1,11 @@
 (ns faceboard.views.boards.people.gizmos.social
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.social :refer [social-info known-services]]
             [faceboard.helpers.gizmos :refer [debounce-commit gizmo-form-key-down]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [cuerdas.core :as str]))
 
 (def list-separator "---")

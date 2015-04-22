@@ -1,8 +1,8 @@
 (ns faceboard.app
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [faceboard.env :as env]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.state :refer [app-state]]
             [faceboard.controller :refer [perform!]]
             [faceboard.views.main :refer [main-component]]

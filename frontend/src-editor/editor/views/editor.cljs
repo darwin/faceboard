@@ -1,5 +1,6 @@
 (ns editor.views.editor
-  (:require-macros [cljs.core.async.macros :refer [go]])
+  (:require-macros [cljs.core.async.macros :refer [go]]
+                   [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cljs.core.async :refer [put! <! chan]]
             [clojure.set :refer [subset?]]
             [om.core :as om]
@@ -8,8 +9,7 @@
             [editor.helpers.utils :as utils]
             [editor.state :refer [app-state]]
             [phalanges.core :as phalanges]
-            [editor.env :refer [mac?]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [editor.env :refer [mac?]]))
 
 (def ^:dynamic *codemirror*)
 (def ^:dynamic *path*)

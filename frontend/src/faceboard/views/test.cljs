@@ -1,7 +1,7 @@
 (ns faceboard.views.test
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.page :as page]))
 
 (defn- link [url]

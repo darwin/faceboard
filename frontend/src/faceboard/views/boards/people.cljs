@@ -1,4 +1,5 @@
 (ns faceboard.views.boards.people
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -10,7 +11,6 @@
             [faceboard.helpers.underscore :refer [debounce]]
             [faceboard.helpers.utils :refer [swallow]]
             [faceboard.state :refer [app-state]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.helpers.person :as person]
             [faceboard.router :as router]))
 

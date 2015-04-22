@@ -1,6 +1,5 @@
 (ns faceboard.router
   (:require [secretary.core :as secretary :refer-macros [defroute]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
             [faceboard.env :refer [local?]]
             [faceboard.firebase :as db]
@@ -9,7 +8,8 @@
             [goog.events])
   (:import goog.History
            goog.history.EventType)
-  (:require-macros [faceboard.macros.router :refer [defroute-with-info]]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]]
+                   [faceboard.macros.router :refer [defroute-with-info]]))
 
 (defonce history (History.))
 

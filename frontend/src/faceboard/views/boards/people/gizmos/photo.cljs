@@ -1,11 +1,11 @@
 (ns faceboard.views.boards.people.gizmos.photo
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.countries :refer [country-names]]
-            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.gizmos :refer [handler gizmo-form-key-down]]))
 
 (def url-path [:bio :photo :url])
 

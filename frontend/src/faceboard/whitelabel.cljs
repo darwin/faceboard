@@ -1,9 +1,9 @@
 (ns faceboard.whitelabel
-  (:require-macros [faceboard.macros.model :refer [transform-app-state]])
+  (:require-macros [faceboard.macros.model :refer [transform-app-state]]
+                   [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [faceboard.env :as env]
             [faceboard.model :as model]
-            [faceboard.helpers.utils :as utils]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.utils :as utils]))
 
 (def domain-mappings
   [[#"fb\.local.*" "test-localhost-whitelabel"]             ; just a test local host

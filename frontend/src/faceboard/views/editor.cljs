@@ -1,10 +1,10 @@
 (ns faceboard.views.editor
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [om.core :as om]
             [faceboard.controller :refer [perform!]]
-            [faceboard.editor :refer [adopt-iframe]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.editor :refer [adopt-iframe]]))
 
 (defcomponent editor-bridge-component [_ _]
   (did-update [_ _ _]

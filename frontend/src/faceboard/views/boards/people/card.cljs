@@ -1,4 +1,5 @@
 (ns faceboard.views.boards.people.card
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
@@ -17,8 +18,7 @@
             [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-component]]
             [faceboard.views.boards.people.card-basic-info :refer [card-basic-info-component]]
             [faceboard.helpers.social :refer [parse-social social-info]]
-            [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]))
 
 (defn get-current-window-dimensions []
   {:width (.-innerWidth js/window) :height (.-innerHeight js/window)})

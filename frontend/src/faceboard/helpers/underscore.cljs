@@ -1,7 +1,7 @@
 (ns faceboard.helpers.underscore
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [cljs.core.async :refer [put! <! chan timeout close!]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+  (:require-macros [cljs.core.async.macros :refer [go]]
+                   [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [cljs.core.async :refer [put! <! chan timeout close!]]))
 
 ; underscore-like debounce
 (defn debounce [f wait]

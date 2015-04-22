@@ -1,10 +1,10 @@
 (ns faceboard.views.boards.gist
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [cuerdas.core :as str]
             [markdown.core :refer [md->html]]
             [faceboard.controller :refer [perform!]]
-            [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.utils :refer [non-sanitized-div]]))
 
 (def gists-api-endpoint "https://api.github.com/gists/")
 

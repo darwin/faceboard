@@ -1,6 +1,6 @@
 (ns faceboard.helpers.social
-  (:require [cuerdas.core :as str]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [cuerdas.core :as str]))
 
 (def known-icons
   ["adn" "android" "angellist" "apple"

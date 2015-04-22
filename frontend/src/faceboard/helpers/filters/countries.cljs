@@ -1,6 +1,6 @@
 (ns faceboard.helpers.filters.countries
-  (:require [cuerdas.core :as str]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [cuerdas.core :as str]))
 
 (defn- add-person-to-country-report [report person-id]
   (if-not report

@@ -1,7 +1,7 @@
 (ns editor.app
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [editor.state :refer [app-state]]
             [editor.helpers.utils :refer [json->model]]
             [editor.views.main :refer [main-component]]))

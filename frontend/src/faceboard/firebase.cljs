@@ -1,9 +1,9 @@
 (ns faceboard.firebase
   (:require-macros [cljs.core.async.macros :refer [go go-loop]]
-                   [faceboard.macros.model :refer [transform-app-state]])
+                   [faceboard.macros.model :refer [transform-app-state]]
+                   [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cljs.core.async :refer [<! >! chan put!]]
             [faceboard.state :refer [app-state]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.env :as env]
             [faceboard.model :as model]
             [faceboard.schema :as schema]

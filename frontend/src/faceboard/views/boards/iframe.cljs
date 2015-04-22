@@ -1,6 +1,6 @@
 (ns faceboard.views.boards.iframe
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [faceboard.controller :refer [perform!]]
             [om.core :as om]
             [om-tools.dom :as dom]))

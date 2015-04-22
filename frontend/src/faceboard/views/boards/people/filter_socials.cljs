@@ -1,12 +1,12 @@
 (ns faceboard.views.boards.people.filter-socials
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.people :refer [filter-people-except]]
             [faceboard.views.boards.people.filters-header :refer [filters-header-component]]
-            [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.filters.social :refer [build-socials-tally socials-filter-predicate]]))
 
 (defcomponent socials-filter-item-component [data _ _]
   (render [_]

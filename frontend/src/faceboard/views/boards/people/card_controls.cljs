@@ -1,10 +1,10 @@
 (ns faceboard.views.boards.people.card-controls
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.utils :refer [swallow]]
-            [faceboard.controller :refer [perform!]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.controller :refer [perform!]]))
 
 (defn toggle-editing-handler [e]
   (swallow e)

@@ -1,8 +1,8 @@
 (ns faceboard.views.boards.people.filters-header
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
-            [faceboard.controller :refer [perform!]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.controller :refer [perform!]]))
 
 (defcomponent filters-header-component [data _ _]
   (render [_]

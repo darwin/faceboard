@@ -1,6 +1,6 @@
 (ns editor.env
-  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
-            [faceboard.devtools :as devtools]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [faceboard.devtools :as devtools]))
 
 (defn defined? [v]
   (not (nil? v)))

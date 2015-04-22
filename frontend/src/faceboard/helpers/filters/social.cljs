@@ -1,8 +1,8 @@
 (ns faceboard.helpers.filters.social
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cuerdas.core :as str]
             [clojure.set :refer [subset?]]
-            [faceboard.helpers.social :refer [social-info]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.social :refer [social-info]]))
 
 (defn- known-labels [data]
   (let [{:keys [type label icon]} (social-info data)]

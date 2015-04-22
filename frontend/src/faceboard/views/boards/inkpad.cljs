@@ -1,8 +1,8 @@
 (ns faceboard.views.boards.inkpad
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [faceboard.controller :refer [perform!]]
-            [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [faceboard.helpers.utils :refer [non-sanitized-div]]))
 
 (def inkpad-api-endpoint "https://www.inkpad.io/")
 

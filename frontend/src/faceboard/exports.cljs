@@ -1,6 +1,6 @@
 (ns faceboard.exports
-  (:require [faceboard.logging :refer [log log-err log-warn log-info]]
-            [faceboard.state :refer [app-state]]
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [faceboard.state :refer [app-state]]
             [faceboard.controller :refer [perform!]]
             [faceboard.helpers.utils :as utils]))
 

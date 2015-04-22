@@ -1,11 +1,11 @@
 (ns faceboard.views.boards.people.gizmos.tags
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.filters.tags :refer [build-tags-tally]]
             [faceboard.helpers.gizmos :refer [debounce-commit gizmo-form-key-down]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]
             [phalanges.core :as phalanges]
             [cuerdas.core :as str]))
 

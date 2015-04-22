@@ -1,5 +1,5 @@
 (ns faceboard.helpers.filters.groups
-  (:require [faceboard.logging :refer [log log-err log-warn log-info]]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]]))
 
 (defn known-person-id? [people id]
   (some #(= (:id %) id) people))

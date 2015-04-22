@@ -1,6 +1,6 @@
 (ns faceboard.figwheel
-  (:require [figwheel.client :as fw]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
+  (:require [figwheel.client :as fw]))
 
 ; figwheel does not play well with advanced optimizations
 ; this is our workaround to include it only in dev builds

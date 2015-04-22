@@ -1,10 +1,10 @@
 (ns editor.views.main
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [editor.views.editor :refer [editor-component]]
-            [editor.views.status :refer [status-component]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [editor.views.status :refer [status-component]]))
 
 (defn popup-blocked? []
   (try                                                      ; json is provided by user, can be broken

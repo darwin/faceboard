@@ -1,9 +1,9 @@
 (ns faceboard.helpers.utils
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.dom :as dom]
             [cemerick.pprng :as pprng]
             [cuerdas.core :as str]
-            [cljs-uuid.core :as uuid]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [cljs-uuid.core :as uuid]))
 
 (defn model->json [model]
   (.stringify js/JSON (clj->js model) nil 2))

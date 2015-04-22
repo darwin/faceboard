@@ -1,7 +1,7 @@
 (ns faceboard.helpers.filters.tags
+  (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cuerdas.core :as str]
-            [clojure.set :refer [subset?]]
-            [faceboard.logging :refer [log log-err log-warn log-info]]))
+            [clojure.set :refer [subset?]]))
 
 (defn- add-person-to-tag-report [report person-id]
   (if-not report
