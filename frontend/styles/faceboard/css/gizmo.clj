@@ -52,7 +52,7 @@
       :box-shadow "0px 0px 10px -1px rgba(0,0,0,0.2)"])
    (>> gizmo-content
      [:font-family gizmo-font
-      :font-size (px 12)
+      :font-size (px 10)
       :line-height (px 16)]
      (>> :form
        (>> [> *]

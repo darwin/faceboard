@@ -11,7 +11,7 @@
         :perspective (px 2000)
         :perspective-origin "50% 50%"]
        (>> edit-background
-         [:opacity 0.7
+         [:opacity 0.5
           :background-color "#000"
           :position :fixed
           :top (px 0)
