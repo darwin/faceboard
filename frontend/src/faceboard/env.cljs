@@ -14,8 +14,8 @@
 (def local? (not (defined? (:production env))))
 (def firebase-db (get env :firebase-db "blinding-heat-4410"))
 (def domain (.-host js/location))
-(def instrument? false)
-(def simple-profile? true)
+(def instrument? (and local? false))
+(def simple-profile? (and local? true))
 
 (defn init! []
   (enable-console-print!)
