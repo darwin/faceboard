@@ -54,6 +54,7 @@
 
   :figwheel {:http-server-root "public"                     ;; this will be in resources/
              :server-port      3000
+             :nrepl-port       7888
              :css-dirs         ["resources/public/css"]
              :ring-handler     server.core/app}
 
