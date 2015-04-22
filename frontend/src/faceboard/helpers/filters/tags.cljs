@@ -26,5 +26,5 @@
      :tags-by-size (sorted-list-of-tags-by-size tally)}))
 
 (defn tags-filter-predicate [selected-tags person]
-  (let [person-tags (set (:tags person))]
+  (let [person-tags (set (person/tags person))]
     (subset? selected-tags person-tags)))
