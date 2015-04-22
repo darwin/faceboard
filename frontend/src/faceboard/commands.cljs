@@ -211,9 +211,14 @@
         (model/set [:ui :gizmo :position] position)))))
 
 (defmethod handle-command :delete-card [_ path]
-  (transform-app-state
-    (model/set [:ui :editing?] false)
-    (model/dissoc path)))
+  (go
+    (transform-app-state
+      (model/set [:ui :editing?] false))
+    (<! (timeout 1000))
+    (router/switch-person nil)
+    (<! (timeout 1000))
+    (transform-app-state
+      (model/dissoc path))))
 
 (defmethod handle-command :clear-card [_ path]
   (transform-app-state
