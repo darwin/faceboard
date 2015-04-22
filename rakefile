@@ -95,7 +95,7 @@ def patch_build!
       }"]]
     patch("index.html", env)
     patch("editor.html", env)
-    sys('echo "fb.binaryage.com" > CNAME') # TODO: support hacker paradise
+    sys('echo "faceboard.io" > CNAME')
   end
 end
 
