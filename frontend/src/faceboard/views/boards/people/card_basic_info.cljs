@@ -64,7 +64,8 @@
           (when extended?
             (dom/div {:class "right-part"}
               (if editing?
-                (om/build card-controls-component {:person person})
+                (om/build card-controls-component {:person person
+                                                   :is-last? (= (count people) 1)})
                 (dom/div {:class "person-buttons"}
                   (dom/div {:class    "person-edit-button"
                             :title    "edit the card"
