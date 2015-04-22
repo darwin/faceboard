@@ -16,15 +16,15 @@
 
 (defn duplicate-card-handler [person e]
   (swallow e)
-  (perform! :duplicate-card (:id person)))
+  (perform! :duplicate-card (om/path person)))
 
 (defn clear-card-handler [person e]
   (swallow e)
-  (perform! :clear-card (:id person)))
+  (perform! :clear-card (om/path person)))
 
 (defn delete-card-handler [person e]
   (swallow e)
-  (perform! :delete-card (:id person)))
+  (perform! :delete-card (om/path person)))
 
 (defcomponent card-controls-component [data _ _]
   (render [_]

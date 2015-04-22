@@ -1,8 +1,8 @@
 (ns faceboard.model
-  (:refer-clojure :exclude [get set update inc dec])
+  (:refer-clojure :exclude [get set update inc dec dissoc])
   (:require [faceboard.state :refer [app-state]]
             [faceboard.logging :refer [log log-err log-warn log-info]]
-            [faceboard.helpers.utils :refer [json->model]]))
+            [faceboard.helpers.utils :refer [dissoc-path json->model]]))
 
 (defn update
   ([state path fn] (update-in state path fn))
@@ -55,3 +55,14 @@
 (defn dec-clamp-zero
   ([state path] (update state path dec-if-pos))
   ([path] (update @app-state path dec-if-pos)))
+
+(defn- remove-record-with-id [data id]
+  (remove #(= (:id %) id) data))
+
+(defn remove-record
+  ([state path id] (assoc-in state path (remove-record-with-id (get-in state path) id)))
+  ([path id] (remove-record @app-state path id)))
+
+(defn dissoc
+  ([state path] (dissoc-path state path))
+  ([path] (dissoc @app-state path)))

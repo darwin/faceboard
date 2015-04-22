@@ -4,24 +4,13 @@
 ; initial board data when user creates a board from scratch
 
 (def example-people
-  {:people [{:id  "adam"
-             :bio {:name "Adam"}}
-            {:id  "eve"
-             :bio {:name "Eve"}}]})
-
-(def example-places
-  [{:id   :place1
-    :name "An's"}])
+  {:people [{:id "person"}]})
 
 (defn initial-board []
   (schema/upgrade-schema-if-needed
     {:version 3
-     :board   {:name "our group"}
+     :board   {:name "my faceboard"}
      :tabs    [{:id      "people"
                 :label   "People"
                 :kind    "people"
-                :content example-people}
-               {:id      "places"
-                :label   "Places"
-                :kind    "places"
-                :content example-places}]}))
+                :content example-people}]}))

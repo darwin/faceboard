@@ -15,7 +15,9 @@
             [faceboard.data.initial_board :refer [initial-board]]
             [faceboard.shared.anims :as anims]
             [faceboard.animator :refer [animate invalidate-animations]]
-            [faceboard.helpers.utils :refer [json->model]]))
+            [faceboard.helpers.utils :refer [json->model provide-unique-human-friendly-id]]
+            [faceboard.helpers.people :refer [is-person-filtered? build-filter-predicates]]
+            [cuerdas.core :as str]))
 
 (defmulti handle-command (fn [command & _] command))
 
@@ -210,8 +212,56 @@
           (transform-app-state
             (model/set [:ui :gizmo :active] gizmo-id)
             (model/set [:ui :gizmo :position] position))
-          (go ; fight Blink bug: perspective + animations
+          (go                                               ; fight Blink bug: perspective + animations
             (<! (timeout 1200))
             (transform-app-state
               (model/set [:ui :gizmo :active] gizmo-id)
               (model/set [:ui :gizmo :position] position))))))))
+
+(defmethod handle-command :delete-card [_ path]
+  (transform-app-state
+    (model/set [:ui :editing?] false)
+    (model/dissoc path)))
+
+(defmethod handle-command :clear-card [_ path]
+  (transform-app-state
+    (model/update path (fn [person] {:id (:id person)}))))
+
+(defn make-person-clone [person people]
+  (let [all-ids (map :id people)
+        id-prefix (str/rtrim (:id person) "0123456789")
+        new-id (provide-unique-human-friendly-id id-prefix all-ids)]
+    (assoc person :id new-id)))
+
+(defn person-filtered? [person]
+  (let [data (:model @app-state)
+        active-filters (get-in @app-state [:ui :filters :active])
+        filter-predicates (build-filter-predicates active-filters data)]
+    (is-person-filtered? filter-predicates person)))
+
+(defn duplicate-layout-item-for-id [layout id new-id]
+  (if-let [item (get layout id)]
+    (assoc layout new-id item)
+    layout))
+
+(defmethod handle-command :duplicate-card [_ path]
+  (let [person (get-in @app-state path)
+        tab-path (take 3 path)
+        tab (get-in @app-state tab-path)
+        people-path (pop path)
+        people (get-in @app-state people-path)
+        person-clone (make-person-clone person people)]
+    (go
+      (transform-app-state
+        (model/set [:ui :editing?] false))
+      (<! (timeout 1000))
+      (router/switch-person nil)
+      (<! (timeout 1000))
+      (transform-app-state
+        (model/update people-path (fn [old-people] (conj old-people person-clone)))
+        (model/update [:transient (:id tab) :layout] (fn [old-layout]
+                                                       (duplicate-layout-item-for-id old-layout (:id person) (:id person-clone)))))
+      ; groups are defined in terms of ids, newly created person can be filtered out
+      (when-not (person-filtered? person-clone)
+        (<! (timeout 1000))
+        (router/switch-person (:id person-clone))))))
