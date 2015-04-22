@@ -22,7 +22,7 @@
                  [garden "1.2.5"]
                  [figwheel "0.2.6"]
                  [com.cemerick/pprng "0.0.3"]
-                 [org.webjars/codemirror "5.1"]
+                 [org.webjars/codemirror "5.2"]
                  [compojure "1.3.3"]
                  [ring "1.3.2"]
                  [ring/ring-jetty-adapter "1.3.2"]
