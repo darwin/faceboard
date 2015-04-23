@@ -40,17 +40,12 @@ end
 
 def patch(path, replacers)
   puts "Patching #{path.blue}"
-  lines = []
-  File.open(path, "r") do |f|
-  f.each do |line|
-    replacers.each do |r|
-    line.gsub!(r[0], r[1])
-    end
-    lines << line
-  end
+  content = File.read(path)
+  replacers.each do |r|
+    content.gsub!(r[0], r[1])
   end
   File.open(path, "w") do |f|
-    f << lines.join
+    f << content
   end
 end
 
@@ -77,15 +72,16 @@ end
 
 def patch_build!
   chdir(".build") do
+    sys("cp css/static.css .")
     sys("rm -rf css")
     sys("mkdir css && mv _generated/faceboard.css css")
+    sys("mv static.css css/")
     sys("rm -rf js")
     sys("mkdir js")
     sys("mv _generated/prod/faceboard/faceboard.js js")
     sys("mv _generated/prod/editor/editor.js js")
     sys("rm -rf _generated")
     sys("rm -rf codemirror")
-    sys("mv index-production.html index.html")
     sys("mv editor-production.html editor.html")
     env = [["window.faceboard_env = {}", 
       "window.faceboard_env = {
@@ -95,6 +91,9 @@ def patch_build!
       }"]]
     patch("index.html", env)
     patch("editor.html", env)
+    
+    dev=[[/<!-- DEV MODE START -->.*?<!-- DEV MODE END -->/m, ""]]
+    patch("index.html", dev)
     sys('echo "faceboard.io" > CNAME')
   end
 end
@@ -111,11 +110,12 @@ end
 desc "prepare build for github pages"
 task :prepare_build do
   skip_build = ENV["skipbuild"] || false
+  skip_reset = ENV["skipreset"] || false
   read_git_revision()
   puts "Git revision for the build is #{$short_revision.yellow}"
   puts "---"
 
-  reset_build_dir!
+  reset_build_dir! unless skip_reset
   build! unless skip_build
   copy_build!
   patch_build!

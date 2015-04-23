@@ -55,7 +55,7 @@ body {
 #static .tag-line {
   font-size: 14px;
   margin-bottom: 10px;
-  text-shadow: 0 0 3px #999;
+  text-shadow: 0 0 1px #999;
   color: #555;
 }
 
