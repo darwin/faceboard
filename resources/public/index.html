@@ -78,21 +78,12 @@
           document.getElementsByTagName('body')[0].appendChild(script);
         }
 
-        function addJavascriptCode(code) {
-          var script = document.createElement('script');
-          script.setAttribute("type","text/javascript");
-          script.innerHTML = code;
-          document.getElementsByTagName('body')[0].appendChild(script);
-        }
-
         this.bootstrap = function() {
-          console.log('bootstrapping...');
-
           var cssFiles = [
             "css/faceboard.css"
           ];
           var jsFiles = [
-            "js/faceboard.css"
+            "js/faceboard.js"
           ];
           for (var i=0; i<cssFiles.length; i++) {
             addCSS(cssFiles[i]);
@@ -112,7 +103,6 @@
     <script type="text/javascript">
       setTimeout(function() {
         var socialButtons = document.getElementById('social-buttons');
-        console.log(socialButtons);
         socialButtons.style.opacity = 0;
         socialButtons.style.display = "block";
         setTimeout(function() {
