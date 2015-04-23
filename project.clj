@@ -22,16 +22,7 @@
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "5.2"]
                  [garden "1.2.5"]
-                 [figwheel "0.2.6"]
-                 ;[compojure "1.3.3"]
-                 ;[ring "1.3.2"]
-                 ;[ring/ring-jetty-adapter "1.3.2"]
-                 ;[ring/ring-defaults "0.1.4"]
-                 ;[rm-hull/ring-gzip-middleware "0.1.7"]
-                 ;[org.clojure/data.json "0.2.6"]
-                 ;[enlive "1.1.5"]
-                 ;[environ "1.0.0"]
-                 ]
+                 [figwheel "0.2.6"]]
 
   :min-lein-version "2.0.0"
 

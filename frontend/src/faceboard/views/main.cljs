@@ -13,6 +13,10 @@
             [faceboard.views.error :refer [error-component]]
             [faceboard.env :as env]))
 
+(defn hide-static-site []
+  (if-let [container (.getElementById js/document "static")]
+    (aset (.-style container) "display" "none")))
+
 (defcomponent main-component [data _ _]
   (will-update [_ _ _]
     (if env/simple-profile?
@@ -34,10 +38,11 @@
         (if iframe-editor-shown (om/build editor-iframe-component {}))
         (let [view (get-in data [:ui :view] :view-key-not-found)
               view-params (get-in data [:ui :view-params] {})]
+          (if-not (or (= view :blank) (= view :welcome)) (hide-static-site))
           (condp = view                                     ; app-level view switching logic
             :blank ""                                       ; blank view is rendered before router dispatches url
-            :test (om/build test-component view-params)
             :welcome (om/build welcome-component view-params)
+            :test (om/build test-component view-params)
             :loading (om/build loading-component view-params)
             :error (om/build error-component view-params)
             :board (om/build board-component data)          ; pass full data cursor
