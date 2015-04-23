@@ -15,7 +15,7 @@
 
 (defn hide-static-site []
   (if-let [container (.getElementById js/document "static")]
-    (aset (.-style container) "display" "none")))
+    (aset (aget container "style") "display" "none")))
 
 (defcomponent main-component [data _ _]
   (will-update [_ _ _]
