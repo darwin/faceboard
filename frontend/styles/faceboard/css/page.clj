@@ -3,18 +3,12 @@
   (:require [faceboard.lib.helpers :refer [>> mv px]]))
 
 (def styles
-  [(>> :body
-     [:margin (px 0)
-      :padding (px 0)])
-   #_(>> :html :body :#app main-box page [page page-content]
-     [:height "100%"])
-   (>> :body
-     [:font-size (px 14)
+  [(>> :#app
+     [:display "block !important"
+      :font-size (px 14)
       :line-height 1.4
       :font-family base-font
       :background-color selected-tab-color])
-   (>> :#app
-     [:display "block !important"])
    (>> page
      (>> loading-indicator
        [:position :absolute
@@ -53,7 +47,11 @@
         :border-radius (px 2)
         :border "2px solid #3a4d81"
         :transition "color .3s ease-in-out"
+        :margin-left (px 10)
         :box-shadow "0px 0px 10px 0px rgba(0,0,0,0.5)"]
+       (>> &.disabled
+         [:cursor :default
+          :opacity 0.5])
        (>> &:hover
          [:color "#fff"
           :border-color signature-color])))

@@ -12,9 +12,11 @@
   (render [_]
     (page/page-skeleton
       (dom/div {:class "standard-page slim-layout welcome-page"}
-        (om/build logo/big-logo-component {})
-        (dom/div {:class "teaser no-select"}
-          (dom/img {:src "images/faceboard-teaser.jpg"}))
+        ;(om/build logo/big-logo-component {})
+        ;(dom/div {:class "teaser no-select"}
+        ;  (dom/img {:src "images/faceboard-teaser.jpg"}))
         (dom/div {:class "buttons"}
+          (dom/span {:class    "button disabled"
+                     :on-click #()} "Visit a sample board")
           (dom/span {:class    "button"
                      :on-click #(perform! :create-board (generate-board-id))} "Create a new board"))))))

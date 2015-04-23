@@ -6,8 +6,9 @@
 (defn defined? [v]
   (not (nil? v)))
 
+(def js-env (aget js/window "faceboard_env"))
 (def platform (js->clj js/platform :keywordize-keys true))
-(def env (js->clj js/faceboard-env :keywordize-keys true))
+(def env (js->clj js-env :keywordize-keys true))
 
 (def mac? (= (get-in platform [:os :family]) "OS X"))
 (def git-revision (:git-revision env))
