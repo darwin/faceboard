@@ -61,7 +61,9 @@
     </div>
     <script type="text/javascript">
       if (location.pathname.length<=1 && location.hash.length==0) {
-        document.getElementById('static').style.display = "block";
+        if (!location.host.match(/hackerparadise\.org/)) { // whitelabel site hack
+          document.getElementById('static').style.display = "block";
+        }
       }
     </script>
     <script type="text/javascript">window.faceboard_env = {}</script>
