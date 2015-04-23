@@ -92,8 +92,11 @@ def patch_build!
     patch("index.html", env)
     patch("editor.html", env)
     
-    dev=[[/<!-- DEV MODE START -->.*?<!-- DEV MODE END -->/m, ""]]
-    patch("index.html", dev)
+    dev=[
+      [/<!-- DEV MODE START -->.*?<!-- DEV MODE END -->/m, ""],
+      ["<!-- PLACE PRODUCTION JS HERE -->", '<script src="js/faceboard.js" type="text/javascript"></script>'],
+      ["<!-- PLACE PRODUCTION CSS HERE -->", '<link rel="stylesheet" href="css/faceboard.css">']]
+      patch("index.html", dev)
     sys('echo "faceboard.io" > CNAME')
   end
 end
