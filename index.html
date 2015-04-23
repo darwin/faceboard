@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/static.css">
     
   <body>
-    <div id="static">
+    <div id="static" style="display:none">
       <div class="intro-box">
         <h1 class="intro-logo">FACEBOARD</h1>
 
@@ -53,10 +53,15 @@
         </ul>
       </div>
     </div>
+    <script type="text/javascript">
+      if (location.pathname.length<=1 && location.hash.length==0) {
+        document.getElementById('static').style.display = "block";
+      }
+    </script>
     <script type="text/javascript">window.faceboard_env = {
         "production": true, 
         "github-pages": true, 
-        "git-revision": "f76f8e970477ce325dd63d741e29f485ca990c2e"
+        "git-revision": "085ec53ae023e4abe766985e2b6af76ef98cbbcb"
       }</script>
     <div id="app" style="display:none"></div>
 
@@ -108,7 +113,7 @@
         setTimeout(function() {
           socialButtons.style.opacity = 1;
         }, 0);
-      }, 2000);
+      }, 5000);
 
       (function() {
         var currentImage = 0;
