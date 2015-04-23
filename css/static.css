@@ -1,0 +1,137 @@
+@import "http://fonts.googleapis.com/css?family=Exo:800";
+
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../fonts/fontawesome-webfont.eot?v=4.3.0');
+  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #eee;
+  margin-bottom: 100px;
+}
+
+#static {
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: 'Lucida Sans Unicode', 'Lucida Grande', Verdana, sans-serif;
+}
+
+#static h1 {
+  margin: 0;
+  padding: 0;
+}
+
+#static h2 {
+  margin: 0;
+  padding: 0;
+}
+
+#static .intro-box {
+  width: 700px;
+  margin: 30px auto;
+  margin-top: 20px;
+  text-align: center;
+}
+
+#static .intro-logo {
+  font-family: 'Exo', sans-serif;
+  font-size: 48px;
+  line-height: 48px;
+  padding: 10px 0px;
+  text-align: center;
+  background-color: #3a5795;
+  color: white;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  display: inline-block;
+  width: 450px;
+}
+
+#static .tag-line {
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 1px #999;
+  color: #555;
+}
+
+#static .social-buttons-placeholder {
+  width: 700px;
+  margin: 0px auto;
+  position: relative;
+}
+
+#static #social-buttons {
+  -webkit-transition: opacity 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
+  list-style: none;
+  position: absolute;
+  top: -70px;
+  left: 100px;
+}
+
+#static #social-buttons li {
+  display: inline-block;
+  padding: 5px 2px;
+  line-height: 1;
+}
+
+#static .gallery {
+  position: relative;
+}
+
+#static .gallery .gimg {
+  position: absolute;
+  z-index: 0;
+  -webkit-transition: opacity 0.5s linear;
+  -moz-transition: opacity 0.5s linear;
+  transition: opacity 0.5s linear;
+}
+
+#static .gallery .gimg.placeholder {
+  position: relative;
+}
+
+#static .gallery .arrow {
+  position: absolute;
+  font-size: 3em;
+  top: 170px;
+  color: #999;
+  cursor: pointer;
+  z-index: 10;
+}
+
+#static .gallery .arrow:hover {
+  color: #3a5795;
+}
+
+#static .gallery .left.arrow {
+  left: 10px;
+}
+
+#static .gallery .right.arrow {
+  left: 650px;
+}
+
+#static .fa {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transform: translate(0, 0);
+}
+
+#static .fa-chevron-circle-left:before {
+  content: "\f137";
+}
+
+#static .fa-chevron-circle-right:before {
+  content: "\f138";
+}
