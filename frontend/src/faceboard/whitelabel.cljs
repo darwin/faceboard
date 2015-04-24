@@ -5,9 +5,12 @@
             [faceboard.model :as model]
             [faceboard.helpers.utils :as utils]))
 
+(def hackerparadise-board-id "3a8450f9a0cb45d99c1a")
+(def test-localhost-board-id "test-localhost-whitelabel")
+
 (def domain-mappings
-  [[#"fb\.local.*" "test-localhost-whitelabel"]             ; just a test local host
-   [#".*hackerparadise\.org" "3a8450f9a0cb45d99c1a"]])      ; http://faceboard.hackerparadise.org
+  [[#"fb\.local.*" test-localhost-board-id]                 ; just a test local host
+   [#".*hackerparadise\.org" hackerparadise-board-id]])
 
 (defn domain->boad-id [domain]
   (if-let [match (utils/find-first #(re-matches (first %) domain) domain-mappings)]
@@ -25,6 +28,6 @@
 
 (defn init! []
   (condp = (domain->boad-id env/domain)
-    "test-localhost-whitelabel" (init-test-localhost!)
-    "hp" (init-hp!)
+    test-localhost-board-id (init-test-localhost!)
+    hackerparadise-board-id (init-hp!)
     nil))
