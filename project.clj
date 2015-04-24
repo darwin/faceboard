@@ -10,7 +10,7 @@
                  [org.omcljs/om "0.8.8" :exclusions [cljsjs/react]]
                  [cljsjs/react "0.13.1-0"]
                  [prismatic/om-tools "0.3.11"]
-                 [binaryage/devtools "0.2.0"]
+                 [binaryage/devtools "0.2.1"]
                  [spellhouse/phalanges "0.1.6"]
                  [secretary "1.2.3"]
                  [matchbox "0.0.6" :exclusions [commons-codec]]
