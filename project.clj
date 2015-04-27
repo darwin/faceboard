@@ -22,13 +22,13 @@
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "5.2"]
                  [garden "1.2.5"]
-                 [figwheel "0.2.6"]]
+                 [figwheel "0.2.7"]]
 
   :min-lein-version "2.0.0"
 
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-garden "0.2.5"]
-            [lein-figwheel "0.2.6"]
+            [lein-figwheel "0.2.7"]
             [lein-ring "0.9.3"]
             [environ/environ.lein "0.2.1"]
             [lein-aggravate "0.1.2-SNAPSHOT"]]
