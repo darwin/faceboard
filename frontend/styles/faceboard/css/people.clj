@@ -196,7 +196,7 @@
      (>> person-card
        [:position :relative
         :float :left
-        :margin (px 20 20)
+        :margin (px 18 18)
         :opacity 1]
        (>> has-placeholder
          [:border "1px dashed #ddd !important"
