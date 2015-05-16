@@ -2,13 +2,13 @@
   :description "FIXME: write this!"
   :url "http://example.com/FIXME"
 
-  :dependencies [[org.clojure/clojure "1.7.0-beta2"]
-                 [org.clojure/clojurescript "0.0-3211"]
+  :dependencies [[org.clojure/clojure "1.7.0-beta3"]
+                 [org.clojure/clojurescript "0.0-3269"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [org.omcljs/om "0.8.8" :exclusions [cljsjs/react]]
-                 [cljsjs/react "0.13.1-0"]
+                 [cljsjs/react "0.13.3-0"]
                  [prismatic/om-tools "0.3.11"]
-                 [binaryage/devtools "0.2.1"]
+                 [binaryage/devtools "0.2.2"]
                  [spellhouse/phalanges "0.1.6"]
                  [secretary "1.2.3"]
                  [matchbox "0.0.6" :exclusions [commons-codec]]
@@ -16,11 +16,11 @@
                  [cljs-http "0.1.30"]
                  [cuerdas "0.3.2"]
                  [com.sgrove/cljs-time "0.3.5"]
-                 [markdown-clj "0.9.65"]
+                 [markdown-clj "0.9.66"]
                  [com.cemerick/pprng "0.0.3"]
                  [org.webjars/codemirror "5.2"]
                  [garden "1.2.5"]
-                 [figwheel "0.2.7"]]
+                 [figwheel "0.3.1"]]
 
   :min-lein-version "2.0.0"
 
