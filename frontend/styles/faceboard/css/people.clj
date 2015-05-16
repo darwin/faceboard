@@ -63,11 +63,11 @@
              [:transition (str "transform " (ms person-expanding-rotation-delay) " " ease-out-quit)]))
          (>> &.expanding-phase0
            (>> [person right-part]
-             [:width "0px"
+             [:width (px 0)
               :visibility :hidden]))
          (>> &.expanding-phase1
            (>> [person right-part]
-             [:width "300px"]))
+             [:width (px 310)]))                            ; ***
          ; shrinking animation
          (>> &.shrinking
            (>> [person right-part]
@@ -77,13 +77,11 @@
              [:transition (str "transform " (ms person-shrinking-rotation-delay) " " ease-out-quit)]))
          (>> &.shrinking-phase0
            (>> [person right-part]
-             [:width (px 300)]))
+             [:width (px 0)]))
          (>> &.shrinking-phase1
            (>> [person right-part]
-             [:width (px 0)]))
-         (>> &.shrinking-phase2
-           (>> [person right-part]
-             [:visibility :hidden]))))
+             [:visibility :hidden
+              :width (px 0)]))))
      (>> people-desk
        [:background-color people-desk-background-color])
      (>> people-filters
@@ -279,6 +277,7 @@
          [:padding-top (px 10)
           :display :inline-block
           :overflow :hidden
+          :width (px 310)                                   ; ***
           :visibility :visible]
          (>> card-controls
            [:position :absolute]
@@ -314,9 +313,9 @@
              [:border-bottom "4px solid #999"]))))
      (>> person-extended-info
        [:min-width (px 300)
+        :margin-left (px 10)                                ; 300+10 => ***
         :vertical-align :top
         :min-height (px 150)
-        :margin-left (px 10)
         :line-height (px 16)
         :font-size (px 12)]
        (>> :a

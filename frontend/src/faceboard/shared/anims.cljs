@@ -20,6 +20,4 @@
 
 (defn person-shrinking [index]
   {:path   [:anims :person :person-shrinking index]
-   ; initial delay, for initial width reset auto->300px
-   ; problem: auto values can't be animated http://n12v.com/css-transition-to-from-auto/
-   :timing [100 person-shrinking-sliding-delay person-shrinking-rotation-delay]})
+   :timing [person-shrinking-sliding-delay person-shrinking-rotation-delay]})
