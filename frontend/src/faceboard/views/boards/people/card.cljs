@@ -43,7 +43,6 @@
                              (let [corr-right (- card-right-edge (- window-width screen-edge-padding))
                                    fixed-cpx-right (if (pos? corr-right) (- card-pos-x corr-right) card-pos-x)
                                    fixed-cpx (if (neg? fixed-cpx-right) screen-edge-padding fixed-cpx-right)]
-                               (log id card-right-edge window-width corr-right fixed-cpx)
                                (str
                                  "translateX(" (if extended? fixed-cpx card-pos-x) "px)"
                                  "translateY(" (:top layout) "px)"
