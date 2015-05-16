@@ -29,7 +29,7 @@
            (>> right-part
              [:overflow :visible]))))                       ; for gizmos
      (>> people-scaffold
-       [:padding-right (px 280)                             ; leave room for expanded cards
+       [:padding-right (px 330)                             ; leave room for expanded cards
         :visibility :hidden])
      (>> separator
        [:margin-top (px 100)])
@@ -88,7 +88,7 @@
        [:font-size (px 12)
         :position :absolute
         :right (px 0)
-        :width (px 260)
+        :width (px 300)
         :height "100%"
         :padding (px 10) (px 20)]
        (>> filter-section
