@@ -1,4 +1,4 @@
-(ns faceboard.migrations.m001_add_version
+(ns faceboard.migrations.m001-add-version
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]]))
 
 (defn add-version [model]

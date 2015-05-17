@@ -11,10 +11,9 @@
             [faceboard.views.boards.people.gizmos.contact :refer [contact-gizmo-descriptor]]
             [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-descriptor]]
             [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-descriptor]]
-            [faceboard.helpers.social :refer [parse-social social-info]]
+            [faceboard.helpers.social :refer [detect-type social-info]]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.utils :refer [non-sanitized-div]]
-            [cuerdas.core :as str]))
+            [faceboard.helpers.utils :refer [non-sanitized-div]]))
 
 (defn has-about? [person]
   (boolean (person/about person)))
@@ -29,7 +28,7 @@
   (not (zero? (count (person/socials person)))))
 
 (defn sort-social-icons-first [socials]
-  (let [has-icon? #(str/contains? % "|")
+  (let [has-icon? #(boolean (detect-type %))
         priority #(if (has-icon? %) 0 1)]
     (sort #(compare (priority %) (priority %2)) socials)))
 

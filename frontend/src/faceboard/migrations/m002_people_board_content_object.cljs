@@ -1,4 +1,4 @@
-(ns faceboard.migrations.m002_people_board_content_object
+(ns faceboard.migrations.m002-people-board-content-object
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]]))
 
 (defn- convert-people-content-from-array-to-object [content]

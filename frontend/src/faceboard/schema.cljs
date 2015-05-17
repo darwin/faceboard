@@ -1,10 +1,11 @@
 (ns faceboard.schema
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [faceboard.controller :refer [perform!]]
-            [faceboard.migrations.m001_add_version :refer [add-version]]
-            [faceboard.migrations.m002_people_board_content_object :refer [convert-people-content-to-object]]))
+            [faceboard.migrations.m001-add-version :refer [add-version]]
+            [faceboard.migrations.m002-people-board-content-object :refer [convert-people-content-to-object]]
+            [faceboard.migrations.m003-socials-to-full-links :refer [convert-socials-to-links]]))
 
-(def current-version 3)
+(def current-version 4)
 
 (defmulti migrate-model (fn [_ version] version))
 
@@ -17,6 +18,9 @@
 
 (defmethod migrate-model 2 [model _]
   (convert-people-content-to-object model))
+
+(defmethod migrate-model 3 [model _]
+  (convert-socials-to-links model))
 
 (defn convert-model-to-plain-objects [model]
   (js->clj (clj->js model) :keywordize-keys true))          ; TODO: there must be a better way

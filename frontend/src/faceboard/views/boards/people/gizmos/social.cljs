@@ -4,12 +4,11 @@
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
             [faceboard.helpers.person :as person]
-            [faceboard.helpers.social :refer [social-info known-services]]
+            [faceboard.helpers.social :refer [social-info]]
             [faceboard.helpers.gizmos :refer [debounce-commit gizmo-form-key-down]]
-            [cuerdas.core :as str]))
+            [cuerdas.core :as str]
+            [phalanges.core :as phalanges]))
 
-(def list-separator "---")
-(def web-link-id "a web link")
 (def socials-path [:social])
 
 (defn commit-socials-change [person value]
@@ -23,23 +22,14 @@
 (defn add-social [owner name socials updater]
   (let [node (om/get-node owner name)
         value (str/trim (str (.-value node)))]
-    (when-not (= value list-separator)
-      (let [suitable-value (if (= value web-link-id) "" (str value "|"))]
-        (updater {:socials (append-social suitable-value socials)})))))
+    (updater {:socials (append-social value socials)})))
 
 (defn remove-social [index socials updater]
   (updater {:socials (remove nil? (assoc (vec socials) index nil))}))
 
-(defn reassembly [social value]
-  (let [info (social-info social)
-        {:keys [type]} info]
-    (if type
-      (str (:type info) "|" value)
-      value)))
-
 (defn update-social [index socials updater e]
-  (let [value (.. e -target -value)]
-    (updater {:socials (update (vec socials) index #(reassembly % value))})))
+  (let [value (str/trim (.. e -target -value))]
+    (updater {:socials (assoc (vec socials) index value)})))
 
 (defn clear-all-socials [updater]
   (updater {:socials []}))
@@ -61,14 +51,17 @@
                      :on-click (partial remove-social index socials updater)}
           "✘")))))
 
-(defn full-list []
-  (concat
-    [web-link-id list-separator] (sort known-services)))
+(defn handle-add-input-keys [adder e]
+  (let [key (phalanges/key-set e)]
+    (condp #(contains? %2 %1) key
+      :enter (adder)
+      nil)))
 
 (defcomponent social-gizmo-component [data owner]
   (init-state [_]
     (let [{:keys [person]} data]
-      {:socials (person/socials person)}))
+      {:socials (person/socials person)
+       :add     ""}))
   (did-mount [_]
     (let [focus-node (om/get-node owner "focus")]
       (.focus focus-node)))
@@ -93,11 +86,14 @@
                                                :socials socials
                                                :updater updater}))))
         (dom/div {:class "controls-row"}
-          (dom/label "Add a new link:"
-            (dom/select {:ref "focus"}
-              (for [id (full-list)]
-                (dom/option {:value id} id)))
-            (dom/button {:class    "add-tag-action"
+          (dom/label "Add:"
+            (dom/input {:ref         "focus"
+                        :type        "text"
+                        :value       (:add state)
+                        :placeholder "a web link"
+                        :on-change   #()
+                        :on-key-down (partial handle-add-input-keys add-social-handler)})
+            (dom/button {:class    "add-social-action"
                          :on-click add-social-handler}
               "⏎"))
           (dom/button {:class    "clear-all-action fix-float-button"

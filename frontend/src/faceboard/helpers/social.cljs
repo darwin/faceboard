@@ -1,6 +1,7 @@
 (ns faceboard.helpers.social
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
-  (:require [cuerdas.core :as str]))
+  (:require [cuerdas.core :as str]
+            [goog.Uri :as uri]))
 
 (def known-icons
   ["adn" "android" "angellist" "apple"
@@ -30,55 +31,44 @@
   (let [parts (str/split s #"-" 2)]
     (first parts)))
 
-(def known-services (distinct (map strip-dash known-icons)))
+(defn parse-domain [url]
+  (let [parsed-url (goog.Uri. url)]
+    (.getDomain parsed-url)))
 
-(defn parse-social [data]
-  (let [parts (str/split data #"\|" 2)]
-    (cond
-      (< (count parts) 1) [nil data]
-      (< (count parts) 2) [nil (first parts)]
-      :else [(str/lower (first parts)) (str/lower (second parts))])))
-
-(defn build-known-url [type id]
-  ; TODO: add more services
-  (condp #(str/starts-with? %2 %1) type                     ; recognized urls from id
-    "facebook" (str "https://www.facebook.com/" id)
-    "twitter" (str "https://twitter.com/" id)
-    "github" (str "https://github.com/" id)
-    "linkedin" (str "https://www.linkedin.com/in/" id)
-    "flickr" (str "https://www.flickr.com/people/" id)
-    "lastfm" (str "http://www.last.fm/user/" id)
-    "hacker-news" (str "https://news.ycombinator.com/user?id=" id)
-    "reddit" (str "http://www.reddit.com/user/" id)
-    "instagram" (str "https://instagram.com/" id)
+; some icon names do not map well to second level domains, handle known cases here
+(defn special-case-mappings [domain]
+  (condp = domain
+    "ycombinator" "hacker-news"
+    "last" "lastfm"
     nil))
 
-(defn decorate-with-http-if-needed [url]
-  (if (str/empty? url)
-    url
-    (if (str/starts-with? url "http")
-      url
-      (str "http://" url))))
+(defn match-known-icon [domain]
+  (let [candidates (filter #(= domain %) known-icons)
+        sorted (reverse (sort #(compare (count %1) (count %2)) candidates))]
+    (first sorted)))
 
-(defn social->url [[type id]]
-  (if (str/starts-with? id "http")
-    id
-    (or (build-known-url type id) (decorate-with-http-if-needed id))))
+(defn detect-type [url]
+  (let [full-domain-name (parse-domain url)
+        parts (str/split full-domain-name "\\.")
+        second-level-domain (nth parts (- (count parts) 2))]
+    (or
+      (special-case-mappings second-level-domain)
+      (match-known-icon second-level-domain))))
 
-(defn social->icon [[type _]]
+(defn social->icon [type]
   (let [prefix-matches (filter #(str/starts-with? % type) known-icons)
         last-match (last prefix-matches)]                   ; last match is usually -square version
     (if last-match
       (str "fa-" last-match)
       "fa-link")))                                          ; generic web icon if no match
 
-(defn social->label [[type _]]
+(defn social->label [type]
   (str/replace type "-" " "))
 
-(defn social-info [data]
-  (let [item (parse-social data)]
-    {:type    (first item)
-     :content (second item)
-     :label   (social->label item)
-     :url     (social->url item)
-     :icon    (social->icon item)}))
+(defn social-info [url]
+  (let [type (detect-type url)]
+    {:type    type
+     :content url
+     :url     url
+     :label   (social->label type)
+     :icon    (social->icon type)}))

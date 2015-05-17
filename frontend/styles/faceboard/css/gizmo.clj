@@ -164,8 +164,8 @@
          [:white-space :nowrap]
          (>> :label
            (>> :span
-             [:width (px 100)]))
-         (>> :select
-           [:width (px 120)])
+             [:width (px 30)]))
+         (>> :input
+           [:width (px 280)])
          (>> clear-all-action
            [:float :right]))))])

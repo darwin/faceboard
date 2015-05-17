@@ -51,7 +51,7 @@
              :tags ["python" "ruby" "coffeescript"]}
             {:id   "casey"
              :bio  {:name  "Casey"
-                    :photo {:url "https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xfa1/v/t1.0-1/p320x320/10922481_10203659752437972_2370943592623339289_n.jpg?oh=1ac1307dfc8d82940d72d88180647a99&oe=55596ACD&__gda__=1430872829_0a138cd9d51b45e5a64ecab91eb7c6ed"}}
+                    :photo {:url "https://some-invalid-url"}}
              :tags ["go"]}
             {:id   "nicole"
              :bio  {:name    "Nicole"
