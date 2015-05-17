@@ -13,10 +13,10 @@
         (dom/span {:class (str "caret fa" (if expanded? " fa-caret-down" " fa-caret-right"))})
         (dom/span label)
         (dom/div {:class "filter-indicator"}
-          (dom/span {:class "fa fa-filter"})
           (when active?
             (dom/span {:class    "filter-clear"
                        :on-click (fn [e]
                                    (.stopPropagation e)
                                    (perform! :clear-filter key))}
-              "clear filter")))))))
+              (str "clear " label " filter")))
+          (dom/span {:class "fa fa-filter"}))))))

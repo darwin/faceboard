@@ -118,6 +118,9 @@
                [:color "#ccc"])
              (>> filter-clear
                [:color filter-item-background-selected-color
+                :position :relative
+                :top (px 1)
+                :padding-right (px 6)
                 :font-weight :normal]
                (>> &:hover
                  [:text-decoration :underline]))))
