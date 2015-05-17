@@ -34,7 +34,7 @@
   (let [parsed-url (goog.Uri. url)]
     (or
       (non-empty (.getDomain parsed-url))
-      (non-empty (.getScheme parsed-url)) ; support also urls in form skype:someone, bitcoin:address, etc.
+      (non-empty (.getScheme parsed-url))                   ; support also urls in form skype:someone, bitcoin:address, etc.
       url)))
 
 ; some icon names do not map well to second level domains, handle known cases here
@@ -69,10 +69,13 @@
 (defn social->label [type]
   (str/replace type "-" " "))
 
+(defn social->content [url]
+  (str/rstrip url "/"))                                     ; strip trailing slashes
+
 (defn social-info [url]
   (let [type (detect-type url)]
     {:type    type
-     :content url
      :url     url
+     :content (social->content url)
      :label   (social->label type)
      :icon    (social->icon type)}))

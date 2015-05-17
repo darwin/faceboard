@@ -42,8 +42,8 @@
                       "flickr|woid"
                       "lastfm|woid"
                       "skype:antonin.hildebrand"
-                      "http://about.me/darwin"
-                      "http://www.binaryage.com"]}
+                      "http://about.me/darwin/"
+                      "http://www.binaryage.com/"]}
             {:id   "alexey"
              :bio  {:name      "Alexey"
                     :full-name "Alexey Komissarouk"
