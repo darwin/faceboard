@@ -20,14 +20,13 @@
 (def menu-button-text-color "white")
 (def pressed-menu-button-text-color "yellow")
 
-(def social-badge-background-color "#aaa")
-(def social-badge-text-color "#fff")
-(def social-badge-background-hovered-color signature-color)
+(def taglike-background-color "#aaa")
+(def taglike-text-color "#fff")
+(def taglike-background-hovered-color signature-color)
 
 (def filter-item-background-normal-color "#aaa")
 (def filter-item-background-hovered-color signature-color)
 (def filter-item-background-selected-color signature-color)
-
 (def filter-item-background-deselected-color "#ddd")
 
 (def people-desk-background-color selected-tab-color)

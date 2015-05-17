@@ -45,7 +45,9 @@
 (defcomponent tags-section-item-component [data _ _]
   (render [_]
     (let [tag data]
-      (dom/span {:class "tags-item"} tag))))
+      (dom/span {:class "tags-item"
+                 :on-click #(perform! (if (.-shiftKey %) :filter-shift-select-tag :filter-select-tag) tag)}
+        tag))))
 
 (defcomponent about-section-component [data _ _]
   (render [_]

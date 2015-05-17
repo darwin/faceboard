@@ -342,7 +342,7 @@
          (>> &.about
            [:white-space :normal])
          (>> &.tags
-           [:color social-badge-text-color
+           [:color taglike-text-color
             :line-height (px 18)
             :white-space :normal])
          (>> info-title
@@ -358,12 +358,12 @@
           :border-radius (px 2)]
          (>> &:hover
            (>> icon
-             [:color social-badge-background-hovered-color]))
+             [:color taglike-background-hovered-color]))
          (>> content
            [:display :none])
          (>> icon
            [:font-size (px 20)
-            :color social-badge-background-color])
+            :color taglike-background-color])
          (>> &.link
            [:clear :both
             :margin (px 0)]
@@ -379,4 +379,6 @@
           :margin-right (px 3)
           :white-space :nowrap
           :border-radius (px 2)
-          :background-color social-badge-background-color])))])
+          :background-color taglike-background-color]
+         (>> &:hover
+           [:background-color taglike-background-hovered-color]))))])
