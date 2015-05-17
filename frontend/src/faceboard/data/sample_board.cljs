@@ -41,6 +41,7 @@
                       "hacker-news|dr_win"
                       "flickr|woid"
                       "lastfm|woid"
+                      "skype:antonin.hildebrand"
                       "http://about.me/darwin"
                       "http://www.binaryage.com"]}
             {:id   "alexey"

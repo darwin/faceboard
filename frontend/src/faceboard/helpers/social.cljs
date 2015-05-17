@@ -1,7 +1,7 @@
 (ns faceboard.helpers.social
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [cuerdas.core :as str]
-            [goog.Uri :as uri]))
+            [goog.Uri]))
 
 (def known-icons
   ["adn" "android" "angellist" "apple"
@@ -27,19 +27,23 @@
    "xing" "xing-square"
    "yahoo" "yelp" "youtube" "youtube-play" "youtube-square"])
 
-(defn strip-dash [s]
-  (let [parts (str/split s #"-" 2)]
-    (first parts)))
+(defn non-empty [v]
+  (if (empty? v) nil v))
 
 (defn parse-domain [url]
   (let [parsed-url (goog.Uri. url)]
-    (.getDomain parsed-url)))
+    (or
+      (non-empty (.getDomain parsed-url))
+      (non-empty (.getScheme parsed-url)) ; support also urls in form skype:someone, bitcoin:address, etc.
+      url)))
 
 ; some icon names do not map well to second level domains, handle known cases here
 (defn special-case-mappings [domain]
   (condp = domain
-    "ycombinator" "hacker-news"
-    "last" "lastfm"
+    "news.ycombinator.com" "hacker-news"
+    "plus.google.com" "google-plus"
+    "www.last.fm" "lastfm"
+    "last.fm" "lastfm"
     nil))
 
 (defn match-known-icon [domain]
@@ -52,7 +56,7 @@
         parts (str/split full-domain-name "\\.")
         second-level-domain (nth parts (- (count parts) 2) (first parts))]
     (or
-      (special-case-mappings second-level-domain)
+      (special-case-mappings full-domain-name)
       (match-known-icon second-level-domain))))
 
 (defn social->icon [type]
