@@ -12,7 +12,7 @@
             [faceboard.views.boards.people.gizmos.photo :refer [photo-gizmo-descriptor]]
             [faceboard.views.boards.people.card-extended-info :refer [card-extended-info-component]]
             [faceboard.views.boards.people.card-controls :refer [card-controls-component]]
-            [faceboard.helpers.social :refer [parse-social social-info]]
+            [faceboard.helpers.social :refer [social-info]]
             [faceboard.helpers.person :as person]
             [faceboard.helpers.utils :refer [swallow css-transform]]))
 

@@ -17,7 +17,7 @@
             [faceboard.views.boards.people.gizmos.tags :refer [tags-gizmo-component]]
             [faceboard.views.boards.people.gizmos.social :refer [social-gizmo-component]]
             [faceboard.views.boards.people.card-basic-info :refer [card-basic-info-component]]
-            [faceboard.helpers.social :refer [parse-social social-info]]
+            [faceboard.helpers.social :refer [social-info]]
             [faceboard.helpers.utils :refer [non-sanitized-div css-transform]]))
 
 (defn get-current-window-dimensions []
