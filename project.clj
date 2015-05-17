@@ -38,7 +38,7 @@
 
   :source-paths ["backend" "target/classes" "resources" "frontend"]
 
-  :clean-targets ^{:protect false} ["resources/public/_generated"]
+  :clean-targets ^{:protect false} ["target" "resources/public/_generated"]
 
   :ring {:handler server.core/app}
 
