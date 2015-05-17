@@ -7,7 +7,8 @@
             [faceboard.helpers.filters.tags :refer [build-tags-tally]]
             [faceboard.helpers.gizmos :refer [debounce-commit gizmo-form-key-down]]
             [phalanges.core :as phalanges]
-            [cuerdas.core :as str]))
+            [cuerdas.core :as str]
+            [faceboard.helpers.utils :refer [swallow]]))
 
 (def tags-path [:tags])
 
@@ -15,6 +16,10 @@
   (om/update! person tags-path value))
 
 (def debounced-commit-tags-change (debounce-commit commit-tags-change))
+
+(defn focus-main-input [owner]
+  (let [focus-node (om/get-node owner "focus")]
+    (.focus focus-node)))
 
 (defn toggle-tag [tag tags]
   (if (some #(= tag %) tags)
@@ -30,7 +35,9 @@
   (let [node (om/get-node owner name)
         value (str/trim (str (.-value node)))]
     (when-not (empty? value)
-      (updater {:tags (append-tag value tags) :add ""}))))
+      (updater {:tags (append-tag value tags)
+                :add ""})
+      (focus-main-input owner))))
 
 (defn clear-all-tags [updater]
   (updater {:tags []}))
@@ -48,8 +55,7 @@
           last? (and selected? (= count 1))]
       (dom/div {:class    (str "tag-item" (when selected? " selected") (if last? " last"))
                 :on-click (fn [e]
-                            (.preventDefault e)
-                            (.stopPropagation e)
+                            (swallow e)
                             (let [toggled-tags {:tags (toggle-tag tag tags)}
                                   modified-add-field (if last? {:add tag})]
                               (updater (merge toggled-tags modified-add-field))))}
@@ -62,8 +68,7 @@
       {:tags (person/tags person)
        :add  ""}))
   (did-mount [_]
-    (let [focus-node (om/get-node owner "focus")]
-      (.focus focus-node)))
+    (focus-main-input owner))
   (render-state [_ state]
     (let [{:keys [person people]} data
           tags (:tags state)
@@ -90,18 +95,20 @@
                                                       :selected? (boolean (some #(= tag %) tags))
                                                       :report    (get-in tags-tally [:tally tag])})))))
         (dom/div {:class "controls-row"}
-          (dom/label "Add a new interest:"
+          (dom/label "Add:"
             (dom/input {:ref         "focus"
                         :type        "text"
                         :value       (:add state)
-                        :placeholder "tag name"
-                        :on-change   #()
+                        :placeholder "an interest"
+                        :on-change   #(om/set-state! owner :add (.. % -target -value))
                         :on-key-down (partial handle-add-input-keys add-tag-handler)})
-            (dom/button {:class    "add-tag-action"
-                         :on-click add-tag-handler}
+            (dom/button {:class     "add-tag-action"
+                         :tab-index -1
+                         :on-click  add-tag-handler}
               "⏎"))
-          (dom/button {:class    "clear-all-action fix-float-button"
-                       :on-click clear-all-handler}
+          (dom/button {:class     "clear-all-action fix-float-button"
+                       :tab-index -1
+                       :on-click  clear-all-handler}
             "clear all"))))))
 
 (def tags-gizmo-descriptor {:id       :tags

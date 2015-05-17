@@ -50,7 +50,7 @@
 (defn detect-type [url]
   (let [full-domain-name (parse-domain url)
         parts (str/split full-domain-name "\\.")
-        second-level-domain (nth parts (- (count parts) 2))]
+        second-level-domain (nth parts (- (count parts) 2) (first parts))]
     (or
       (special-case-mappings second-level-domain)
       (match-known-icon second-level-domain))))

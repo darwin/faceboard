@@ -19,10 +19,17 @@
 (defn append-social [social socials]
   (concat socials [social]))
 
+(defn focus-main-input [owner]
+  (let [focus-node (om/get-node owner "focus")]
+    (.focus focus-node)))
+
 (defn add-social [owner name socials updater]
   (let [node (om/get-node owner name)
         value (str/trim (str (.-value node)))]
-    (updater {:socials (append-social value socials)})))
+    (when-not (empty? value)
+      (updater {:socials (append-social value socials)
+                :add ""})
+      (focus-main-input owner))))
 
 (defn remove-social [index socials updater]
   (updater {:socials (remove nil? (assoc (vec socials) index nil))}))
@@ -47,9 +54,10 @@
                     :placeholder (if type "user profile url" "web url")
                     :title       url
                     :on-change   (partial update-social index socials updater)})
-        (dom/button {:class    "remove-action"
-                     :on-click (partial remove-social index socials updater)}
-          "✘")))))
+        (dom/button {:class     "remove-action"
+                     :tab-index -1
+                     :on-click  (partial remove-social index socials updater)}
+          "✖")))))
 
 (defn handle-add-input-keys [adder e]
   (let [key (phalanges/key-set e)]
@@ -63,8 +71,7 @@
       {:socials (person/socials person)
        :add     ""}))
   (did-mount [_]
-    (let [focus-node (om/get-node owner "focus")]
-      (.focus focus-node)))
+    (focus-main-input owner))
   (render-state [_ state]
     (let [{:keys [person]} data
           socials (:socials state)
@@ -91,13 +98,15 @@
                         :type        "text"
                         :value       (:add state)
                         :placeholder "a web link"
-                        :on-change   #()
+                        :on-change   #(om/set-state! owner :add (.. % -target -value))
                         :on-key-down (partial handle-add-input-keys add-social-handler)})
-            (dom/button {:class    "add-social-action"
-                         :on-click add-social-handler}
+            (dom/button {:class     "add-social-action"
+                         :tab-index -1
+                         :on-click  add-social-handler}
               "⏎"))
-          (dom/button {:class    "clear-all-action fix-float-button"
-                       :on-click clear-all-handler}
+          (dom/button {:class     "clear-all-action fix-float-button"
+                       :tab-index -1
+                       :on-click  clear-all-handler}
             "clear all"))))))
 
 (def social-gizmo-descriptor {:id       :social
