@@ -33,7 +33,7 @@
     (sanitize (get-in person [:bio :nickname]))))
 
 (defn photo-url [person]
-  (or (get-in person [:bio :photo :url] nil) "/images/unknown.jpg"))
+  (or (sanitize (get-in person [:bio :photo :url] nil)) "/images/unknown.jpg"))
 
 (defn photo-has-frame? [person]
   (not (get-in person [:bio :photo :no-frame])))
