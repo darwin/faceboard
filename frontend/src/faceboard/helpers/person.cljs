@@ -11,10 +11,10 @@
 (def photo-url-placeholder "http://some.server.com/photo.jpg")
 (def email-placeholder "you@somewhere.com")
 (def tags-placeholder ["movies" "internet" "yoga" "running"])
-(def socials-placeholder ["facebook|some-facebook-user-id"
-                          "twitter|some-twitter-handle"
-                          "skype|some-skype-id"
-                          "instagram|some-instagram-user-id"
+(def socials-placeholder ["https://www.facebook.com/user-id"
+                          "https://twitter.com/user-id"
+                          "skype:user-id"
+                          "https://instagram.com/user-id"
                           "http://www.yourweb.com"])
 
 (defn sanitize [v]
