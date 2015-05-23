@@ -18,9 +18,9 @@
                  [com.sgrove/cljs-time "0.3.5"]
                  [markdown-clj "0.9.66"]
                  [com.cemerick/pprng "0.0.3"]
-                 [org.webjars/codemirror "5.2"]
+                 [org.webjars/codemirror "5.3"]
                  [garden "1.2.5"]
-                 [figwheel "0.3.1"]]
+                 [figwheel "0.3.3"]]
 
   :min-lein-version "2.0.0"
 
