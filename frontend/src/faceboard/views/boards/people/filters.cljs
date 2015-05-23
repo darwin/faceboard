@@ -6,13 +6,14 @@
             [faceboard.views.boards.people.filter-groups :refer [filter-groups-component]]
             [faceboard.views.boards.people.filter-countries :refer [filter-countries-component]]
             [faceboard.views.boards.people.filter-tags :refer [filter-tags-component]]
-            [faceboard.views.boards.people.filter-socials :refer [filter-socials-component]]))
+            [faceboard.views.boards.people.filter-socials :refer [filter-socials-component]]
+            [faceboard.router :as router]))
 
 (defcomponent filters-component [data _ _]
   (render [_]
 
     (dom/div {:class    "people-filters no-select"
-              :on-click #(.stopPropagation %)}
+              :on-click #(router/switch-person nil)}
       (om/build filter-groups-component data)
       (om/build filter-countries-component data)
       (om/build filter-socials-component data)

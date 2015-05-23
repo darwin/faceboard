@@ -100,8 +100,7 @@
 
 (defcomponent people-component [data _ _]
   (render [_]
-    (let [static-data (apply dissoc data [:transient :anims :cache])
-          editing? (:editing? (:ui data))]
+    (let [editing? (:editing? (:ui data))]
       (dom/div {:class    (str "desktop no-select" (if editing? " editing"))
                 :on-click #(router/switch-person nil)}
         (if-not (embedded?)
