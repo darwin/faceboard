@@ -100,8 +100,11 @@
            (>> &.expanded
              (>> filter-indicator
                [:position :relative
+                :padding (px 0 6)
                 :top (px 2)
                 :float :right]))
+           (>> filter-label
+             [:margin-right (px 6)])
            (>> caret
              [:margin-right (px 6)
               :font-size (px 16)
@@ -111,19 +114,14 @@
            (>> &.active-filter
              (>> filter-indicator
                (>> fa-filter
-                 [:color filter-item-background-selected-color])))
+                 [:color filter-item-background-selected-color])
+               (>> &:hover
+                 (>> fa-filter
+                   [:color filter-item-background-hovered-color]))))
            (>> filter-indicator
              [:display :inline-block]
              (>> fa-filter
-               [:color "#ccc"])
-             (>> filter-clear
-               [:color filter-item-background-selected-color
-                :position :relative
-                :top (px 1)
-                :padding-right (px 6)
-                :font-weight :normal]
-               (>> &:hover
-                 [:text-decoration :underline]))))
+               [:color "#ccc"])))
          (>> filter-section-body
            [:margin-left (px 14)
             :border-top "2px solid transparent"

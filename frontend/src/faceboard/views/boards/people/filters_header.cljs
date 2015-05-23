@@ -2,6 +2,7 @@
   (:require-macros [faceboard.macros.logging :refer [log log-err log-warn log-info]])
   (:require [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.helpers.utils :refer [swallow]]
             [faceboard.controller :refer [perform!]]))
 
 (defcomponent filters-header-component [data _ _]
@@ -11,12 +12,16 @@
                 :title    (or title (str "filtering by " label))
                 :on-click #(perform! :toggle-filter-expansion key)}
         (dom/span {:class (str "caret fa" (if expanded? " fa-caret-down" " fa-caret-right"))})
-        (dom/span label)
-        (dom/div {:class "filter-indicator"}
-          (when active?
-            (dom/span {:class    "filter-clear"
-                       :on-click (fn [e]
-                                   (.stopPropagation e)
-                                   (perform! :clear-filter key))}
-              (str "clear " label " filter")))
+        (dom/span {:class "filter-label"} label)
+        (dom/div {:class    "filter-indicator"
+                  :title    (if active?
+                              (str "clear " label " filter")
+                              (str "revert " label " filter"))
+                  :on-click (if active?
+                              (fn [e]
+                                (swallow e)
+                                (perform! :clear-filter key))
+                              (fn [e]
+                                (swallow e)
+                                (perform! :revert-filter key)))}
           (dom/span {:class "fa fa-filter"}))))))

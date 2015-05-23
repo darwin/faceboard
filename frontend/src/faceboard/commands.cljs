@@ -176,7 +176,14 @@
 (defmethod handle-command :clear-filter [_ which]
   (router/switch-person nil)
   (transform-app-state
+    (model/set [:ui :filters :revertible which] (model/get [:ui :filters :active which]))
     (model/set [:ui :filters :active which] #{})))
+
+(defmethod handle-command :revert-filter [_ which]
+  (router/switch-person nil)
+  (transform-app-state
+    (model/set [:ui :filters :active which] (model/get [:ui :filters :revertible which]))
+    (model/set [:ui :filters :revertible which] #{})))
 
 (defmethod handle-command :open-editor [_ path external?]
   (when external?

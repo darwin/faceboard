@@ -25,7 +25,7 @@
 (def taglike-background-hovered-color signature-color)
 
 (def filter-item-background-normal-color "#aaa")
-(def filter-item-background-hovered-color signature-color)
+(def filter-item-background-hovered-color "#5077cc")
 (def filter-item-background-selected-color signature-color)
 (def filter-item-background-deselected-color "#ddd")
 
