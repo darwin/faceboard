@@ -66,7 +66,7 @@
             (dom/div {:class "right-part"}
               (if editing?
                 (om/build card-controls-component {:person   person
-                                                   :is-last? (= (count people) 1)})
+                                                   :last? (= (count people) 1)})
                 (if-not (embedded?)
                   (dom/div {:class "person-buttons"}
                     (dom/div {:class    "person-edit-button"

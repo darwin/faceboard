@@ -28,7 +28,7 @@
 
 (defcomponent card-controls-component [data _ _]
   (render [_]
-    (let [{:keys [person is-last?]} data]
+    (let [{:keys [person last?]} data]
       (dom/div {:class "card-controls-wrapper"}
         (dom/div {:class "card-controls bottom-right"}
           (dom/div {:class    "card-control json-control"
@@ -42,7 +42,7 @@
                     :on-click (partial clear-card-handler person)}
             (dom/i {:class "fa fa-eraser"})
             "clear")
-          (if-not is-last?
+          (if-not last?
             (dom/div {:class    "card-control delete-control"
                       :title    "delete the card"
                       :on-click (partial delete-card-handler person)}
