@@ -185,11 +185,11 @@
     (model/set [:ui :filters :active which] (model/get [:ui :filters :revertible which]))
     (model/set [:ui :filters :revertible which] #{})))
 
-(defmethod handle-command :open-editor [_ path external?]
-  (when external?
+(defmethod handle-command :open-editor [_ path in-window?]
+  (when in-window?
     (editor/open-editor-window))
   (transform-app-state
-    (model/set [:ui :show-editor] (if external? false true))
+    (model/set [:ui :show-editor] (if in-window? false true))
     (model/set [:ui :editor-path] path)))
 
 (defmethod handle-command :refresh-editor []

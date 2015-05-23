@@ -12,7 +12,8 @@
 
 (defn open-editor-handler [person e]
   (swallow e)
-  (perform! :open-editor (om/path person) (.-shiftKey e)))
+  (let [in-window? (.-shiftKey e)]
+    (perform! :open-editor (om/path person) in-window?)))
 
 (defn duplicate-card-handler [person e]
   (swallow e)
