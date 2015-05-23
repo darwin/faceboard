@@ -107,7 +107,8 @@
           ; filters component is slow, be careful to pass only relevant data
           (om/build filters-component {:content (:content data)
                                        :expanded (get-in data [:ui :filters :expanded-set])
-                                       :active (get-in data [:ui :filters :active])}))
+                                       :active (get-in data [:ui :filters :active])
+                                       :revertible (get-in data [:ui :filters :revertible])}))
         (om/build people-layout-component data)
         (om/build people-scaffold-component {:id (:id data)
                                              :content (:content data)

@@ -68,3 +68,13 @@
 (defn generate-board-id []
   (let [guid (str/ireplace (str (uuid/make-random)) #"-" "")]
     (str/slice guid 0 20)))
+
+(defn human-str-join
+  ([words] (human-str-join words ", " " and "))
+  ([words separator last-separator]
+   (cond
+     (empty? words) ""
+     (= (count words) 1) (first words)
+     :else (let [words-but-last (butlast words)
+                 last-word (last words)]
+             (apply str (concat (interpose separator words-but-last) [last-separator last-word]))))))

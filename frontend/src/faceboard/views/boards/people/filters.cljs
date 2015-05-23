@@ -3,6 +3,7 @@
   (:require [om.core :as om]
             [om-tools.core :refer-macros [defcomponent]]
             [om-tools.dom :as dom]
+            [faceboard.views.boards.people.filters-summary :refer [filters-summary-component]]
             [faceboard.views.boards.people.filter-groups :refer [filter-groups-component]]
             [faceboard.views.boards.people.filter-countries :refer [filter-countries-component]]
             [faceboard.views.boards.people.filter-tags :refer [filter-tags-component]]
@@ -14,6 +15,7 @@
 
     (dom/div {:class    "people-filters no-select"
               :on-click #(router/switch-person nil)}
+      (om/build filters-summary-component data)
       (om/build filter-groups-component data)
       (om/build filter-countries-component data)
       (om/build filter-socials-component data)

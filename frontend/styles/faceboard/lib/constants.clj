@@ -9,6 +9,7 @@
 (def editor-font "monospace")
 (def signature-font "'Exo', sans-serif")
 (def gizmo-font "monospace")
+(def sticker-font board-font)
 
 (def signature-color "#3a5795")
 (def error-color "#e00000")

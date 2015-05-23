@@ -125,45 +125,53 @@
   (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :groups]) group)]
     (transform-app-state
-      (model/set [:ui :filters :active :groups] (if was-selected? #{} #{group})))))
+      (model/set [:ui :filters :active :groups] (if was-selected? #{} #{group}))
+      (model/set [:ui :filters :revertible] {}))))
 
 (defmethod handle-command :filter-shift-select-group [_ group]
   (router/switch-person nil)
   (transform-app-state
-    (model/toggle-set [:ui :filters :active :groups] group)))
+    (model/toggle-set [:ui :filters :active :groups] group)
+    (model/set [:ui :filters :revertible] {})))
 
 (defmethod handle-command :filter-select-country [_ country-code]
   (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :countries]) country-code)]
     (transform-app-state
-      (model/set [:ui :filters :active :countries] (if was-selected? #{} #{country-code})))))
+      (model/set [:ui :filters :active :countries] (if was-selected? #{} #{country-code}))
+      (model/set [:ui :filters :revertible] {}))))
 
 (defmethod handle-command :filter-shift-select-country [_ country-code]
   (router/switch-person nil)
   (transform-app-state
-    (model/toggle-set [:ui :filters :active :countries] country-code)))
+    (model/toggle-set [:ui :filters :active :countries] country-code)
+    (model/set [:ui :filters :revertible] {})))
 
 (defmethod handle-command :filter-select-tag [_ tag]
   (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :tags]) tag)]
     (transform-app-state
-      (model/set [:ui :filters :active :tags] (if was-selected? #{} #{tag})))))
+      (model/set [:ui :filters :active :tags] (if was-selected? #{} #{tag}))
+      (model/set [:ui :filters :revertible] {}))))
 
 (defmethod handle-command :filter-shift-select-tag [_ tag]
   (router/switch-person nil)
   (transform-app-state
-    (model/toggle-set [:ui :filters :active :tags] tag)))
+    (model/toggle-set [:ui :filters :active :tags] tag)
+    (model/set [:ui :filters :revertible] {})))
 
 (defmethod handle-command :filter-select-social [_ social]
   (router/switch-person nil)
   (let [was-selected? (contains? (get-in @app-state [:ui :filters :active :socials]) social)]
     (transform-app-state
-      (model/set [:ui :filters :active :socials] (if was-selected? #{} #{social})))))
+      (model/set [:ui :filters :active :socials] (if was-selected? #{} #{social}))
+      (model/set [:ui :filters :revertible] {}))))
 
 (defmethod handle-command :filter-shift-select-social [_ social]
   (router/switch-person nil)
   (transform-app-state
-    (model/toggle-set [:ui :filters :active :socials] social)))
+    (model/toggle-set [:ui :filters :active :socials] social)
+    (model/set [:ui :filters :revertible] {})))
 
 (defmethod handle-command :clear-filter [_ which]
   (router/switch-person nil)
@@ -176,6 +184,18 @@
   (transform-app-state
     (model/set [:ui :filters :active which] (model/get [:ui :filters :revertible which]))
     (model/set [:ui :filters :revertible which] #{})))
+
+(defmethod handle-command :clear-filters [_]
+  (router/switch-person nil)
+  (transform-app-state
+    (model/set [:ui :filters :revertible] (model/get [:ui :filters :active]))
+    (model/set [:ui :filters :active] {})))
+
+(defmethod handle-command :revert-filters [_]
+  (router/switch-person nil)
+  (transform-app-state
+    (model/set [:ui :filters :active] (model/get [:ui :filters :revertible]))
+    (model/set [:ui :filters :revertible] {})))
 
 (defmethod handle-command :open-editor [_ path in-window?]
   (when in-window?

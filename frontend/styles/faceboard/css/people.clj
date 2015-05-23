@@ -91,6 +91,27 @@
         :width (px 300)
         :height "100%"
         :padding (px 10) (px 20)]
+       (>> filters-summary-wrapper
+         [:background-color "#fffeb3"
+          :font-family sticker-font
+          :border-radius (px 2)
+          :margin-left (px -6)
+          :margin-right (px -6)
+          :margin-bottom (px 10)
+          :padding (px 6 6 4 6)
+          :border "1px solid #ddd"]
+         (>> controls
+           [:border-top "1px dashed #ccc"
+            :margin-top (px 2)
+            :padding-top (px 4)
+            :font-size (px 10)]
+           (>> command
+             [:cursor :pointer]
+             (>> &:hover
+               [:text-decoration :underline
+                :color filter-item-background-hovered-color])
+             (>> fa-filter
+               [:margin-right (px 4)]))))
        (>> filter-section
          [:margin-bottom (px 0)]
          (>> filter-section-label
