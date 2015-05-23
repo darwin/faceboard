@@ -92,17 +92,9 @@
                             (router/navigate! ((router/route :board-tab) {:id board-id :tab "people"})))]
     (db/connect-board board-id {:on-connect init-and-navigate})))
 
-(defmethod handle-command :start-anim [_ anim-path]
+(defmethod handle-command :animate [_ anim-path phase]
   (transform-app-state
-    (model/set anim-path 0)))
-
-(defmethod handle-command :stop-anim [_ anim-path]
-  (transform-app-state
-    (model/set anim-path nil)))
-
-(defmethod handle-command :animate [_ anim-path]
-  (transform-app-state
-    (model/inc anim-path)))
+    (model/set anim-path phase)))
 
 (defmethod handle-command :inc-loading-counter []
   (transform-app-state

@@ -38,7 +38,7 @@
 
 (defn animate [anim]
   (let [{:keys [path timing]} anim]
-    (perform! :start-anim path)
+    (perform! :animate path 0)                              ; start animation
     (go-loop [current-phase 0]
       (let [prefixes (build-prefixes path)                  ; animation can be invalidated using any prefix
             pre-generations (collect-generations prefixes)
@@ -50,9 +50,9 @@
             (let [next-phase (inc current-phase)]
               (if (< next-phase (count timing))
                 (do
-                  (perform! :animate path current-phase)
+                  (perform! :animate path (inc current-phase)) ; next animation phase
                   (recur next-phase))
-                (perform! :stop-anim path)))))))))
+                (perform! :animate path nil)))))))))        ; end animation
 
 ; a quick way how to invalidate animations in-flight
 (defn invalidate-animations [path]
