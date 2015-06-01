@@ -17,21 +17,21 @@ But you are of course free to invent your own usage scenarios.
 
 ### Install (OSX)
 First, install clojurescript dependencies through homebrew.
+
 `brew install lein`
+
 `brew install caskroom/cask/brew-cask`
+
 `brew cask install java`
 
 ### Running
 Run each of these in a separate process:
 
-1. Like Guard, but for cljs
-> lein figwheel
+`lein figwheel` (Like Guard, but for cljs)
 
-2. Like LESS/SASS - please recompile assets
-> lein garden auto
+`lein garden auto` (Like LESS/SASS - recompiles assets)
 
-3. Open Faceboard editor in a separate app
-> lein cljsbuild auto dev-editor
+`lein cljsbuild auto dev-editor` (Open Faceboard editor in a separate app)
 
 Then go to http://localhost:8000/#board/sample
 
